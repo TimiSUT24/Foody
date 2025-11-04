@@ -36,18 +36,18 @@ namespace Infrastructure.ExternalService
         {
             int importedCount = 0;
 
-            // 1️⃣ Get list of Livsmedel
+            //Get list of Livsmedel
             var listResponse = await GetLivsmedelListAsync(offset, limit, sprak);
             if (listResponse?.Livsmedel == null || !listResponse.Livsmedel.Any())
                 return importedCount;
 
             foreach (var foodDto in listResponse.Livsmedel)
             {
-                // 2️ Check if product already exists
+                //Check if product already exists
                 if (_context.Products.Any(p => p.Number == foodDto.Nummer))
                     continue;
 
-                // 3️ Create base product
+                //Create base product
                 var product = new Product
                 {
                     Number = foodDto.Nummer,
@@ -56,12 +56,12 @@ namespace Infrastructure.ExternalService
 
                 await FillProductDetailsAsync(product, foodDto.Nummer);
 
-                // 5️⃣ Add to DbContext
+                //Add to DbContext
                 _context.Products.Add(product);
                 importedCount++;
             }
 
-            // 6️⃣ Save changes to DB
+            //Save changes to DB
             await _context.SaveChangesAsync();
             return importedCount;
         }
@@ -70,7 +70,7 @@ namespace Infrastructure.ExternalService
         {
             // Nutrition
             var url =
-                $"https://dataportal.livsmedelsverket.se/api/v1/livsmedel/{nummer}/naringsvarden?sprak=1";
+                $"https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel/{nummer}/naringsvarden?sprak=1";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
