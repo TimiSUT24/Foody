@@ -26,4 +26,12 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Product\Dto\" />
+    <Folder Include="Product\Mapper\" />
+    <Folder Include="Product\Interfaces\" />
+    <Folder Include="Product\Validator\" />
+    <Folder Include="Product\Service\" />
+  </ItemGroup>
+
 </Project>
