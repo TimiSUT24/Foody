@@ -19,7 +19,7 @@ namespace Domain.Models
         public string? Project { get; set; }
         public string? Analysis { get; set; }
         public string? CookingMethod { get; set; }
-        public string? CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category? Category { get; set; }
 
         // E-commerce fields

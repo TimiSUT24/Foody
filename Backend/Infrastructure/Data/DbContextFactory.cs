@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public sealed class DbContextFactory : IDesignTimeDbContextFactory<DbContext>
+    public sealed class DbContextFactory : IDesignTimeDbContextFactory<FoodyDbContext>
     {
-        public DbContext CreateDbContext(string[] args)
+        public FoodyDbContext CreateDbContext(string[] args)
         {
             // Determine environment (Development / Production / etc.)
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
@@ -36,14 +36,14 @@ namespace Infrastructure.Data
             }
                
             // Configure options
-            var optionsBuilder = new DbContextOptionsBuilder<DbContext>()
+            var optionsBuilder = new DbContextOptionsBuilder<FoodyDbContext>()
                 .UseNpgsql(connectionString, options =>
                 {
                     // Ensure migrations stay in the Infrastructure project
-                    options.MigrationsAssembly(typeof(DbContext).Assembly.FullName);
+                    options.MigrationsAssembly(typeof(FoodyDbContext).Assembly.FullName);
                 });
 
-            return new DbContext(optionsBuilder.Options);
+            return new FoodyDbContext(optionsBuilder.Options);
         }
     }
 }

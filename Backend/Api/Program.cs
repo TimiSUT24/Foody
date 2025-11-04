@@ -18,10 +18,10 @@ namespace Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var connectionString_neon = Environment.GetEnvironmentVariable("DefaultConnection");
+            var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 
             builder.Services.AddDbContext<DbContext>(options =>
-                options.UseNpgsql(connectionString_neon));
+                options.UseNpgsql(connectionString));
 
             builder.Services.AddIdentity<User, IdentityRole<Guid>>(option =>
             {

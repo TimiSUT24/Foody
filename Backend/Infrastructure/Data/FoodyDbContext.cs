@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class DbContext : IdentityDbContext<User,               
+    public class FoodyDbContext : IdentityDbContext<User,               
                              IdentityRole<Guid>,  
                              Guid,               
                              IdentityUserClaim<Guid>,
@@ -20,7 +20,7 @@ namespace Infrastructure.Data
                              IdentityRoleClaim<Guid>,
                              IdentityUserToken<Guid>>
     {
-        public DbContext(DbContextOptions<DbContext> options) : base(options) { }
+        public FoodyDbContext(DbContextOptions<FoodyDbContext> options) : base(options) { }
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }

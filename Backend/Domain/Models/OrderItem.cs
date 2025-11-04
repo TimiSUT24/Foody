@@ -9,7 +9,7 @@ namespace Domain.Models
 {
     public class OrderItem : BaseEntity
     {
-        public int OrderId { get; set; }
+        public Guid OrderId { get; set; }
         public int FoodId { get; set; }
 
         public int Quantity { get; set; }
