@@ -1,4 +1,8 @@
 
+using Domain.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace Api
 {
     public class Program
@@ -14,6 +18,23 @@ namespace Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            var connectionString_neon = Environment.GetEnvironmentVariable("DefaultConnection");
+
+            builder.Services.AddDbContext<DbContext>(options =>
+                options.UseNpgsql(connectionString_neon));
+
+            builder.Services.AddIdentity<User, IdentityRole<Guid>>(option =>
+            {
+                option.User.RequireUniqueEmail = true;
+                option.Password.RequiredLength = 6;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequireUppercase = true;
+                option.Password.RequireDigit = true;
+            })
+           .AddEntityFrameworkStores<DbContext>()
+           .AddDefaultTokenProviders();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,7 +45,7 @@ namespace Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

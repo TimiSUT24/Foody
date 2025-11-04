@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,14 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class DbContext : IdentityDbContext<User>
+    public class DbContext : IdentityDbContext<User,               
+                             IdentityRole<Guid>,  
+                             Guid,               
+                             IdentityUserClaim<Guid>,
+                             IdentityUserRole<Guid>,
+                             IdentityUserLogin<Guid>,
+                             IdentityRoleClaim<Guid>,
+                             IdentityUserToken<Guid>>
     {
         public DbContext(DbContextOptions<DbContext> options) : base(options) { }
 
@@ -22,6 +30,7 @@ namespace Infrastructure.Data
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<RawMaterial> RawMaterials { get; set; }
         public DbSet<Classification> Classifications { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -102,19 +111,24 @@ namespace Infrastructure.Data
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Product>()
-                    .HasIndex(p => p.Name);
-
-            builder.Entity<Category>()
-                    .HasIndex(c => c.Name)
-                    .IsUnique();
-
-            builder.Entity<Order>()
-                    .HasIndex(o => o.CreatedAtUtc);
-
             builder.Entity<User>()
-                    .HasIndex(u => u.Email)
-                    .IsUnique();
+                .HasMany(u => u.RefreshTokens)
+                .WithOne(rt => rt.User!)
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<RefreshToken>()
+                .Property(r => r.Token)
+                .IsRequired()
+                .HasMaxLength(256);
+
+            builder.Entity<RefreshToken>()
+                .HasIndex(r => r.Token)
+                .IsUnique();
+
+            builder.Entity<RefreshToken>()
+                .Property(r => r.ExpiryDate)
+                .IsRequired();
 
         }
     }
