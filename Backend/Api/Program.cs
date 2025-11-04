@@ -1,5 +1,9 @@
 
+using Application.Livsmedel.Interfaces;
+using Application.Livsmedel.Service;
 using Domain.Models;
+using Infrastructure.Data;
+using Infrastructure.ExternalService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +22,14 @@ namespace Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //Services 
+            builder.Services.AddScoped<ILivsmedelService, LivsmedelService>();
+            builder.Services.AddHttpClient<ILivsmedelImportService,LivsmedelImportService>();
+
+
             var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 
-            builder.Services.AddDbContext<DbContext>(options =>
+            builder.Services.AddDbContext<FoodyDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
             builder.Services.AddIdentity<User, IdentityRole<Guid>>(option =>
@@ -31,7 +40,7 @@ namespace Api
                 option.Password.RequireUppercase = true;
                 option.Password.RequireDigit = true;
             })
-           .AddEntityFrameworkStores<DbContext>()
+           .AddEntityFrameworkStores<FoodyDbContext>()
            .AddDefaultTokenProviders();
 
 
