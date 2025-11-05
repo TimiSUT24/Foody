@@ -35,6 +35,9 @@ namespace Application.Livsmedel.Dto.Request
         public string Projekt { get; set; } = string.Empty;
         public string Tillagningsmetod { get; set; } = string.Empty;
         public string Analys { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+
 
     }
 
