@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿using Domain.Interfaces;
+using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.UnitOfWork
 {
-    public sealed class UnitOfWork
+    public sealed class UnitOfWork : IUnitOfWork
     {
         private readonly FoodyDbContext _context;
 

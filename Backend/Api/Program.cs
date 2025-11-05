@@ -1,9 +1,12 @@
 
 using Application.Livsmedel.Interfaces;
 using Application.Livsmedel.Service;
+using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
 using Infrastructure.ExternalService;
+using Infrastructure.Repositories;
+using Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +28,10 @@ namespace Api
             //Services 
             builder.Services.AddScoped<ILivsmedelService, LivsmedelService>();
             builder.Services.AddHttpClient<ILivsmedelImportService,LivsmedelImportService>();
+
+            //Unit Of Work + Repositories
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 
             var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
