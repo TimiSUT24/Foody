@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Livsmedel.Dto
+namespace Application.Livsmedel.Dto.Request
 {
     public class IngrediensDto
     {

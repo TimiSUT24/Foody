@@ -1,4 +1,5 @@
 ﻿using Application.Livsmedel.Dto;
+using Application.Livsmedel.Dto.Request;
 using Application.Livsmedel.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
