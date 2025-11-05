@@ -25,6 +25,11 @@ namespace Infrastructure.Repositories
         {
             return await _dbSet.AsNoTracking().ToListAsync(ct);
         }
+        public virtual async Task<IEnumerable<TEntity>> GetAsync(int offset, int limit, CancellationToken ct)
+        {
+            var query = _dbSet.AsNoTracking().Skip(offset).Take(limit).ToListAsync(ct);
+            return await query;
+        }
 
         public virtual async Task<TEntity?> GetByIdAsync<TKey>(TKey id, CancellationToken ct)
         {

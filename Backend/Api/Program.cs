@@ -1,8 +1,15 @@
 
+using Api.Middleware;
 using Application.Livsmedel.Interfaces;
 using Application.Livsmedel.Service;
+using Application.Product.Interfaces;
+using Application.Product.Mapper;
+using Application.Product.Service;
+using Application.Product.Validator;
 using Domain.Interfaces;
 using Domain.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure.Data;
 using Infrastructure.ExternalService;
 using Infrastructure.Repositories;
@@ -28,10 +35,23 @@ namespace Api
             //Services 
             builder.Services.AddScoped<ILivsmedelService, LivsmedelService>();
             builder.Services.AddHttpClient<ILivsmedelImportService,LivsmedelImportService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             //Unit Of Work + Repositories
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+            //Mapper
+            builder.Services.AddAutoMapper(cfg =>
+            {
+
+            },
+            typeof(ProductProfile));
+
+            //AutoValidation
+            builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);
+            builder.Services.AddFluentValidationAutoValidation();
 
 
             var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
@@ -61,6 +81,7 @@ namespace Api
             }
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
 

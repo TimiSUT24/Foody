@@ -12,9 +12,13 @@ namespace Infrastructure.UnitOfWork
     {
         private readonly FoodyDbContext _context;
 
-        public UnitOfWork(FoodyDbContext context)
+        public IProductRepository Products { get; }
+
+        public UnitOfWork(FoodyDbContext context, 
+                        IProductRepository products)
         {
             _context = context;
+            Products = products;
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken ct = default)

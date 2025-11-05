@@ -36,8 +36,6 @@
     <Folder Include="Controllers\OrderItem\" />
     <Folder Include="Controllers\Order\" />
     <Folder Include="Controllers\Nutrition\" />
-    <Folder Include="Controllers\Product\" />
-    <Folder Include="Middleware\" />
   </ItemGroup>
 
   <ItemGroup>
