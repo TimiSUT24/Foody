@@ -33,6 +33,8 @@ namespace Application.Livsmedel.Dto
 
         [JsonPropertyName("projekt")]
         public string Projekt { get; set; } = string.Empty;
+        public string Tillagningsmetod { get; set; } = string.Empty;
+        public string Analys { get; set; } = string.Empty;
 
     }
 

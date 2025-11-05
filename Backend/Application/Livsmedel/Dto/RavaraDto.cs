@@ -10,5 +10,9 @@ namespace Application.Livsmedel.Dto
     {
         public string Namn { get; set; } = string.Empty;
         public string Tillagning { get; set; } = string.Empty;
+        public string FoodEx2 { get; set; } = string.Empty;
+        public decimal Andel { get; set; }
+        public decimal Faktor { get; set; }
+        public decimal OmraknadTillRa { get; set; }
     }
 }

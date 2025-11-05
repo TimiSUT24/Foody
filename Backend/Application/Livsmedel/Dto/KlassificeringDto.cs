@@ -10,5 +10,9 @@ namespace Application.Livsmedel.Dto
     {
         public string Typ { get; set; } = string.Empty;
         public string Namn { get; set; } = string.Empty;
+        public string Fasett { get; set; } = string.Empty;
+        public string FasettKod { get; set; } = string.Empty;
+        public string Kod { get; set; } = string.Empty;
+        public string LangualId { get; set; } = string.Empty;
     }
 }

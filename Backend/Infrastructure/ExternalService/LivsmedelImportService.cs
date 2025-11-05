@@ -51,7 +51,14 @@ namespace Infrastructure.ExternalService
                 var product = new Product
                 {
                     Number = foodDto.Nummer,
-                    Name = foodDto.Namn,                 
+                    Name = foodDto.Namn,    
+                    ScientificName = foodDto.VetenskapligtNamn,
+                    FoodTypeId = foodDto.LivsmedelsTypId,
+                    FoodType = foodDto.LivsmedelsTyp,
+                    //Version = int.TryParse(foodDto.Version, out var ver) ? ver : 0,
+                    Project = foodDto.Projekt,
+                    Analysis = foodDto.Analys,
+                    CookingMethod = foodDto.Tillagningsmetod                   
                 };
 
                 await FillProductDetailsAsync(product, foodDto.Nummer, sprak);
@@ -83,7 +90,26 @@ namespace Infrastructure.ExternalService
                     product.NutritionValues.Add(new NutritionValue
                     {
                         Name = n.Namn,
-                        EuroFIRCode = n.EuroFIRkod
+                        EuroFIRCode = n.EuroFIRkod,
+                        Abbreviation = n.Forkortning,
+                        Value = n.Value,
+                        Unit = n.Enhet,
+                        WeightGram = n.ViktGram,
+                        MatrixUnit = n.MatrisEnhet,
+                        MatrixUnitCode = n.MatrisEnhetKod,
+                        Calculation = n.Berakning,
+                        ValueType = n.VardeTyp,
+                        ValueTypeCode = n.VardeTypKod,
+                        Origin = n.Ursprung,
+                        OriginCode = n.UrsprungKod,
+                        Publication = n.Publikation,
+                        MethodType = n.MetodTyp,
+                        MethodTypeCode = n.MetodTypKod,
+                        MethodIndicator = n.MetodIndikator,
+                        MethodIndicatorCode = n.MetodIndikatorKod,
+                        ReferenceType = n.ReferensTyp,
+                        ReferenceTypeCode = n.ReferensTypKod,
+                        Comment = n.Kommentar
                     });
                 }
             }
@@ -99,7 +125,11 @@ namespace Infrastructure.ExternalService
                      product.Classifications.Add(new Classification
                      {
                          Type = i.Typ,
-                         Name = i.Namn
+                         Name = i.Namn,
+                         Facet = i.Fasett,
+                         FacetCode = i.FasettKod,
+                         Code = i.Kod,
+                         LangualId = i.LangualId
                      });
                  }
              }
@@ -115,7 +145,11 @@ namespace Infrastructure.ExternalService
                      product.RawMaterials.Add(new RawMaterial
                      {
                          Name = r.Namn,
-                         Cooking = r.Tillagning
+                         Cooking = r.Tillagning,
+                         FoodEx2 = r.FoodEx2,
+                         Portion = r.Andel,
+                         Factor = r.Faktor,
+                         ConvertedToRaw = r.OmraknadTillRa
                      });
                  }
              }
@@ -130,8 +164,13 @@ namespace Infrastructure.ExternalService
                 {
                     product.Ingredients.Add(new Ingredient
                     {
+                        Number = c.Nummer,
                         Name = c.Namn,
-                        WaterFactor = c.VattenFaktor
+                        WaterFactor = c.VattenFaktor,
+                        FatFactor = c.FettFaktor,
+                        WeightBeforeCooking = c.ViktForeTillagning,
+                        WeightAfterCooking = c.ViktEfterTillagning,
+                        //CookingFactor = decimal.TryParse(c.TillangingsFaktor, out var factor) ? factor : null
                     });
                 }
             }
