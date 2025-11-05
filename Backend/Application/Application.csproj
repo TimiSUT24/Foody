@@ -27,14 +27,63 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Category\Dto\Request\" />
+    <Folder Include="Category\Dto\Response\" />
+    <Folder Include="Category\Interfaces\" />
+    <Folder Include="Category\Mapper\" />
+    <Folder Include="Category\Service\" />
+    <Folder Include="Category\Validator\" />
+    <Folder Include="Classification\Dto\Request\" />
+    <Folder Include="Classification\Dto\Response\" />
+    <Folder Include="Classification\Interfaces\" />
+    <Folder Include="Classification\Mapper\" />
+    <Folder Include="Classification\Service\" />
+    <Folder Include="Classification\Validator\" />
+    <Folder Include="Ingredient\Dto\Request\" />
+    <Folder Include="Ingredient\Dto\Response\" />
+    <Folder Include="Ingredient\Interfaces\" />
+    <Folder Include="Ingredient\Mapper\" />
+    <Folder Include="Ingredient\Service\" />
+    <Folder Include="Ingredient\Validator\" />
     <Folder Include="Livsmedel\Dto\Response\" />
     <Folder Include="Livsmedel\Mapper\" />
     <Folder Include="Livsmedel\Validator\" />
-    <Folder Include="Product\Dto\" />
+    <Folder Include="NutritionValue\Dto\Request\" />
+    <Folder Include="NutritionValue\Dto\Response\" />
+    <Folder Include="NutritionValue\Interfaces\" />
+    <Folder Include="NutritionValue\Mapper\" />
+    <Folder Include="NutritionValue\Service\" />
+    <Folder Include="NutritionValue\Validator\" />
+    <Folder Include="OrderItem\Dto\Request\" />
+    <Folder Include="OrderItem\Dto\Response\" />
+    <Folder Include="OrderItem\Interfaces\" />
+    <Folder Include="OrderItem\Mapper\" />
+    <Folder Include="OrderItem\Service\" />
+    <Folder Include="OrderItem\Validator\" />
+    <Folder Include="Order\Dto\Request\" />
+    <Folder Include="Order\Dto\Response\" />
+    <Folder Include="Order\Interfaces\" />
+    <Folder Include="Order\Mapper\" />
+    <Folder Include="Order\Service\" />
+    <Folder Include="Order\Validator\" />
+    <Folder Include="RawMaterial\Dto\Request\" />
+    <Folder Include="RawMaterial\Dto\Response\" />
+    <Folder Include="RawMaterial\Interfaces\" />
+    <Folder Include="RawMaterial\Mapper\" />
+    <Folder Include="RawMaterial\Service\" />
+    <Folder Include="RawMaterial\Validator\" />
+    <Folder Include="Product\Dto\Response\" />
+    <Folder Include="Product\Dto\Request\" />
     <Folder Include="Product\Mapper\" />
     <Folder Include="Product\Interfaces\" />
     <Folder Include="Product\Validator\" />
     <Folder Include="Product\Service\" />
+    <Folder Include="Auth\Dto\Request\" />
+    <Folder Include="Auth\Dto\Response\" />
+    <Folder Include="Auth\Interfaces\" />
+    <Folder Include="Auth\Mapper\" />
+    <Folder Include="Auth\Service\" />
+    <Folder Include="Auth\Validator\" />
   </ItemGroup>
 
   <ItemGroup>
