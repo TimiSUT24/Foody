@@ -11,6 +11,6 @@ namespace Application.Livsmedel.Interfaces
     public interface ILivsmedelImportService
     {
         Task<LivsmedelListResponse> GetLivsmedelListAsync(int offset, int limit, int sprak);
-        Task<int> ImportLivsmedelBatchAsync(int offset, int limit, int sprak);
+        Task<int> ImportLivsmedelBatchAsync(int offset, int limit, int sprak, CancellationToken ct);
     }
 }

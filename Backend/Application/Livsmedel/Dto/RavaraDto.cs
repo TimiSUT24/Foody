@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Application.Livsmedel.Dto
 {
-    public class NaringvardeResponse
+    public class RavaraDto
     {
-        public List<NaringsvardeDto> Naringsvarde { get; set; } = new List<NaringsvardeDto>();
+        public string Namn { get; set; } = string.Empty;
+        public string Tillagning { get; set; } = string.Empty;
     }
 }

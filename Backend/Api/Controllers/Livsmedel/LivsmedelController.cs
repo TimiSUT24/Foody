@@ -17,9 +17,9 @@ namespace Api.Controllers.Livsmedel
         }
 
         [HttpPost("/livsmedel")]
-        public async Task<IActionResult> ImportLivsmedel(int offset, int limit, int sprak)
+        public async Task<IActionResult> ImportLivsmedel(int offset, int limit, int sprak, CancellationToken ct)
         {
-            var product = await _livsmedelImportService.ImportLivsmedelBatchAsync(offset,limit,sprak);
+            var product = await _livsmedelImportService.ImportLivsmedelBatchAsync(offset,limit,sprak, ct);
             return Ok(product);
         }
     }

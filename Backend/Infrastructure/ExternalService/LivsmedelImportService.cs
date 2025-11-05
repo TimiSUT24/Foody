@@ -32,7 +32,7 @@ namespace Infrastructure.ExternalService
             return list!;
         }
 
-        public async Task<int> ImportLivsmedelBatchAsync(int offset, int limit, int sprak)
+        public async Task<int> ImportLivsmedelBatchAsync(int offset, int limit, int sprak, CancellationToken ct)
         {
             int importedCount = 0;
 
@@ -54,7 +54,7 @@ namespace Infrastructure.ExternalService
                     Name = foodDto.Namn,                 
                 };
 
-                await FillProductDetailsAsync(product, foodDto.Nummer);
+                await FillProductDetailsAsync(product, foodDto.Nummer, sprak);
 
                 //Add to DbContext
                 _context.Products.Add(product);
@@ -62,15 +62,15 @@ namespace Infrastructure.ExternalService
             }
 
             //Save changes to DB
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(ct);
             return importedCount;
         }
 
-        private async Task FillProductDetailsAsync(Product product, int nummer)
+        private async Task FillProductDetailsAsync(Product product, int nummer, int sprak)
         {
             // Nutrition
             var url =
-                $"https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel/{nummer}/naringsvarden?sprak=1";
+                $"https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel/{nummer}/naringsvarden?sprak={sprak}";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
@@ -89,55 +89,52 @@ namespace Infrastructure.ExternalService
             }
 
             // Ingredients
-           /* var ingredients = await _httpClient.GetFromJsonAsync<List<IngrediensDto>>(
-                $"https://dataportal.livsmedelsverket.se/api/v1/livsmedel/{number}/ingredienser");
+             var classification = await _httpClient.GetFromJsonAsync<List<KlassificeringDto>>(
+                 $"https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel/{nummer}/klassificeringar?sprak={sprak}");
+
+             if (classification != null)
+             {
+                 foreach (var i in classification)
+                 {
+                     product.Classifications.Add(new Classification
+                     {
+                         Type = i.Typ,
+                         Name = i.Namn
+                     });
+                 }
+             }
+
+             // Raw Materials
+             var rawMaterials = await _httpClient.GetFromJsonAsync<List<RavaraDto>>(
+                 $"https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel/{nummer}/ravaror?sprak={sprak}");
+
+             if (rawMaterials != null)
+             {
+                 foreach (var r in rawMaterials)
+                 {
+                     product.RawMaterials.Add(new RawMaterial
+                     {
+                         Name = r.Namn,
+                         Cooking = r.Tillagning
+                     });
+                 }
+             }
+
+            // Classifications
+            var ingredients = await _httpClient.GetFromJsonAsync<List<IngrediensDto>>(
+                $"https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel/{nummer}/ingredienser?sprak={sprak}");
 
             if (ingredients != null)
             {
-                foreach (var i in ingredients)
+                foreach (var c in ingredients)
                 {
                     product.Ingredients.Add(new Ingredient
                     {
-                        Name = i.Namn,
-                        WaterFactor = i.VattenFaktor,
-                        FatFactor = i.FettFaktor
-                    });
-                }
-            }
-
-            // Raw Materials
-            var rawMaterials = await _httpClient.GetFromJsonAsync<List<RavaraDto>>(
-                $"https://dataportal.livsmedelsverket.se/api/v1/livsmedel/{number}/ravaror");
-
-            if (rawMaterials != null)
-            {
-                foreach (var r in rawMaterials)
-                {
-                    product.RawMaterials.Add(new RawMaterial
-                    {
-                        Name = r.Namn,
-                        Share = r.Andel,
-                        Factor = r.Faktor
-                    });
-                }
-            }
-
-            // Classifications
-            var classifications = await _httpClient.GetFromJsonAsync<List<KlassificeringDto>>(
-                $"https://dataportal.livsmedelsverket.se/api/v1/livsmedel/{number}/klassificeringar");
-
-            if (classifications != null)
-            {
-                foreach (var c in classifications)
-                {
-                    product.Classifications.Add(new Classification
-                    {
-                        Type = c.Typ,
                         Name = c.Namn,
-                        Code = c.Kod
+                        WaterFactor = c.VattenFaktor
                     });
                 }
-            }*/
+            }
         }
     }
 }
