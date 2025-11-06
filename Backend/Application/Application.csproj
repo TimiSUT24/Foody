@@ -60,12 +60,6 @@
     <Folder Include="Order\Mapper\" />
     <Folder Include="Order\Service\" />
     <Folder Include="Order\Validator\" />
-    <Folder Include="RawMaterial\Dto\Request\" />
-    <Folder Include="RawMaterial\Dto\Response\" />
-    <Folder Include="RawMaterial\Interfaces\" />
-    <Folder Include="RawMaterial\Mapper\" />
-    <Folder Include="RawMaterial\Service\" />
-    <Folder Include="RawMaterial\Validator\" />
   </ItemGroup>
 
   <ItemGroup>

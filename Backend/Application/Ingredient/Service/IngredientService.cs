@@ -38,7 +38,7 @@ namespace Application.Ingredient.Service
 
         }
 
-        public async Task<IngredientResponse> GetAllAsync(int foodId, CancellationToken ct)
+        public async Task<IEnumerable<IngredientResponse>> GetAllAsync(int foodId, CancellationToken ct)
         {
             var existFood = await _uow.Products.GetByIdAsync<int>(foodId, ct);
             if (existFood == null)
@@ -46,12 +46,12 @@ namespace Application.Ingredient.Service
                 throw new KeyNotFoundException($"Food with id {foodId} not found.");
             }
             var ingredients = await _uow.Ingredients.GetAllAsync(ct);
-            var ingredient = ingredients.FirstOrDefault(i => i.FoodId == foodId);
+            var ingredient = ingredients.Where(i => i.FoodId == foodId);
             if(ingredient == null)
             {
                 throw new KeyNotFoundException($"Ingredient for food id {foodId} not found.");
             }
-            return _mapper.Map<IngredientResponse>(ingredient);
+            return _mapper.Map<IEnumerable<IngredientResponse>>(ingredient);
         }
 
         public async Task<IngredientResponse> GetByIdAsync(int foodId, CancellationToken ct)

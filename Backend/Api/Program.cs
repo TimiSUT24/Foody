@@ -4,6 +4,7 @@ using Application.Auth.Interfaces;
 using Application.Auth.Mapper;
 using Application.Auth.Service;
 using Application.Ingredient.Interfaces;
+using Application.Ingredient.Mapper;
 using Application.Ingredient.Service;
 using Application.Livsmedel.Interfaces;
 using Application.Livsmedel.Service;
@@ -11,6 +12,9 @@ using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
 using Application.Product.Validator;
+using Application.RawMaterial.Interfaces;
+using Application.RawMaterial.Mapper;
+using Application.RawMaterial.Service;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
@@ -78,6 +82,7 @@ namespace Api
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IIngredientService, IngredientService>();
+            builder.Services.AddScoped<IRawMaterialService, RawMaterialService>();
 
 
             //Unit Of Work + Repositories
@@ -85,6 +90,7 @@ namespace Api
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+            builder.Services.AddScoped<IRawMaterialRepository, RawMaterialRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>
@@ -92,7 +98,9 @@ namespace Api
 
             },
             typeof(ProductProfile),
-            typeof(AuthProfile));
+            typeof(AuthProfile),
+            typeof(IngredientProfile),
+            typeof(RawMaterialProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);

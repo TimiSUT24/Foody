@@ -37,7 +37,7 @@ namespace Api.Controllers.Product
             return Ok(products);
         }
 
-        [HttpGet("/Products/{id}")]
+        [HttpGet("/Products/Id")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         public async Task<IActionResult> GetProductById([FromRoute] int id, CancellationToken ct)
