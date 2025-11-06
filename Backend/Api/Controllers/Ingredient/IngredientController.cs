@@ -34,7 +34,7 @@ namespace Api.Controllers.Ingredient
             return Ok(ingredients);
         }
 
-        [HttpGet("Id")]
+        [HttpGet("{foodId:int}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         public async Task<IActionResult> GetIngredientById([FromRoute] int foodId, CancellationToken ct)

@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Application.RawMaterial.Dto.Response
 {
-    public record RawMaterialResponse(
-        int Id,
-        int FoodId,
-        string Name,
-        string? FoodEx2,
-        string? Cooking,
-        decimal? Portion,
-        decimal? Factor,
-        decimal? ConvertedToRaw
-        );
+    public class RawMaterialResponse
+    {
+        public int Id { get; set; }
+        public int FoodId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? FoodEx2 { get; set; }
+        public string? Cooking { get; set; }
+        public decimal? Portion { get; set; }
+        public decimal? Factor { get; set; }
+        public decimal? ConvertedToRaw { get; set; }
+    }
 }

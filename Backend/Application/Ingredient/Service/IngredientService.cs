@@ -56,12 +56,13 @@ namespace Application.Ingredient.Service
 
         public async Task<IngredientResponse> GetByIdAsync(int foodId, CancellationToken ct)
         {
-            var ingredient = await _uow.Ingredients.GetByIdAsync<int>(foodId, ct);
-            if(ingredient == null)
+            var existFood = await _uow.Products.GetByIdAsync<int>(foodId, ct);
+            if(existFood == null)
             {
                 throw new KeyNotFoundException($"Ingredient with id {foodId} not found.");
             }
-            return _mapper.Map<IngredientResponse>(ingredient);
+            var ingred = existFood.Ingredients.Where(i => i.FoodId == foodId).FirstOrDefault();
+            return _mapper.Map<IngredientResponse>(ingred);
         }
 
         public async Task<bool> Update(UpdateIngredientDto request, CancellationToken ct)
