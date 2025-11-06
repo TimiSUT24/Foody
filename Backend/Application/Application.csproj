@@ -72,12 +72,6 @@
     <Folder Include="RawMaterial\Mapper\" />
     <Folder Include="RawMaterial\Service\" />
     <Folder Include="RawMaterial\Validator\" />
-    <Folder Include="Auth\Dto\Request\" />
-    <Folder Include="Auth\Dto\Response\" />
-    <Folder Include="Auth\Interfaces\" />
-    <Folder Include="Auth\Mapper\" />
-    <Folder Include="Auth\Service\" />
-    <Folder Include="Auth\Validator\" />
   </ItemGroup>
 
   <ItemGroup>
