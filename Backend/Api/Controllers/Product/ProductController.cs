@@ -18,7 +18,7 @@ namespace Api.Controllers.Product
             _productService = productService;
         }
 
-        [HttpPost("/create")]
+        [HttpPost("/Products/create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:409)]
         [ProducesResponseType(statusCode:401)]
@@ -46,6 +46,16 @@ namespace Api.Controllers.Product
             return Ok(product);
         }
 
+        [HttpPut("/Products/{id}")]
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
+        [ProducesResponseType(statusCode: 401)]
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDto request, CancellationToken ct)
+        {
+            var result = await _productService.Update(request, ct);
+            return Ok(result);
+        }
+
         [HttpDelete("/Products/{id}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
@@ -55,16 +65,5 @@ namespace Api.Controllers.Product
             var result = await _productService.DeleteAsync(id, ct);
             return Ok(result);
         }
-
-        [HttpPut("/Products/{id}")]
-        [ProducesResponseType(statusCode:200)]
-        [ProducesResponseType(statusCode:404)]
-        [ProducesResponseType(statusCode:401)]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductDto request, CancellationToken ct)
-        {
-            var result = await _productService.Update(id, request, ct);
-            return Ok(result);
-        }
-
     }
 }

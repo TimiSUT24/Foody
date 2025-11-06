@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Ingredient.Dto.Request
+namespace Application.Ingredient.Dto.Response
 {
-    public record CreateIngredientDto(
-        int FoodId,
+    public record IngredientResponse(
+        int Id,
         string Name,
         decimal? WaterFactor,
         decimal? FatFactor,
@@ -15,5 +15,4 @@ namespace Application.Ingredient.Dto.Request
         decimal? WeightAfterCooking,
         decimal? CookingFactor
         );
-    
 }

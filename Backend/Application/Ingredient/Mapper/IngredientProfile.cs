@@ -1,4 +1,5 @@
 ﻿using Application.Ingredient.Dto.Request;
+using Application.Ingredient.Dto.Response;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,10 @@ namespace Application.Ingredient.Mapper
         {
             //Request
             CreateMap<CreateIngredientDto, Domain.Models.Ingredient>();
+            CreateMap<UpdateIngredientDto, Domain.Models.Ingredient>();
 
             //Response
+            CreateMap<Domain.Models.Ingredient, IngredientResponse>();
         }
     }
 }

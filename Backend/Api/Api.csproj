@@ -30,7 +30,6 @@
   <ItemGroup>
     <Folder Include="Controllers\Category\" />
     <Folder Include="Controllers\Classification\" />
-    <Folder Include="Controllers\Ingredient\" />
     <Folder Include="Controllers\RawMaterial\" />
     <Folder Include="Controllers\OrderItem\" />
     <Folder Include="Controllers\Order\" />

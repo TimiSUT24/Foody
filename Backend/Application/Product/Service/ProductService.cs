@@ -57,9 +57,9 @@ namespace Application.Product.Service
             return _mapper.Map<ProductResponseDto>(product);
         }
 
-        public async Task<bool> Update(int id, UpdateProductDto request, CancellationToken ct)
+        public async Task<bool> Update(UpdateProductDto request, CancellationToken ct)
         {
-            var product = await _uow.Products.GetByIdAsync<int>(id, ct);
+            var product = await _uow.Products.GetByIdAsync<int>(request.Id, ct);
             if(product == null)
             {
                 throw new KeyNotFoundException("Product not found");
@@ -71,7 +71,7 @@ namespace Application.Product.Service
             return true; 
         }
 
-        public async Task<bool> DeleteAsync(int id , CancellationToken ct)
+        public async Task<bool> DeleteAsync(int id ,CancellationToken ct)
         {
             var product = await _uow.Products.GetByIdAsync<int>(id, ct);
             if (product == null)

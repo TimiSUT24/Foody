@@ -56,7 +56,7 @@ namespace Infrastructure.ExternalService
                     ScientificName = foodDto.VetenskapligtNamn,
                     FoodTypeId = foodDto.LivsmedelsTypId,
                     FoodType = foodDto.LivsmedelsTyp,
-                    //Version = int.TryParse(foodDto.Version, out var ver) ? ver : 0,
+                    Version = foodDto.Version,
                     Project = foodDto.Projekt,
                     Analysis = foodDto.Analys,
                     CookingMethod = foodDto.Tillagningsmetod                   
@@ -170,7 +170,7 @@ namespace Infrastructure.ExternalService
                         FatFactor = c.FettFaktor,
                         WeightBeforeCooking = c.ViktForeTillagning,
                         WeightAfterCooking = c.ViktEfterTillagning,
-                        //CookingFactor = decimal.TryParse(c.TillangingsFaktor, out var factor) ? factor : null
+                        CookingFactor = c.TillangingsFaktor
                     });
                 }
             }

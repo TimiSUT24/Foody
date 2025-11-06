@@ -14,6 +14,6 @@ namespace Application.Product.Interfaces
         Task<IEnumerable<ProductResponseDto>> GetAsync(int offset, int limit, CancellationToken ct);
         Task<ProductResponseDto> GetByIdAsync(int id, CancellationToken ct);
         Task<bool> DeleteAsync(int id, CancellationToken ct);
-        Task<bool> Update(int id, UpdateProductDto request, CancellationToken ct);
+        Task<bool> Update(UpdateProductDto request, CancellationToken ct);
     }
 }

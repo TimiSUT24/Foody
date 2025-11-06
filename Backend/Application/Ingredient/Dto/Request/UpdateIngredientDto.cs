@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.Ingredient.Dto.Request
 {
-    public record CreateIngredientDto(
+    public record UpdateIngredientDto
+    (
         int FoodId,
         string Name,
         decimal? WaterFactor,
@@ -14,6 +15,5 @@ namespace Application.Ingredient.Dto.Request
         decimal? WeightBeforeCooking,
         decimal? WeightAfterCooking,
         decimal? CookingFactor
-        );
-    
+    );
 }

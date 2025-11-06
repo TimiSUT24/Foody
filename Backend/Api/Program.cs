@@ -3,6 +3,8 @@ using Api.Middleware;
 using Application.Auth.Interfaces;
 using Application.Auth.Mapper;
 using Application.Auth.Service;
+using Application.Ingredient.Interfaces;
+using Application.Ingredient.Service;
 using Application.Livsmedel.Interfaces;
 using Application.Livsmedel.Service;
 using Application.Product.Interfaces;
@@ -74,12 +76,15 @@ namespace Api
             builder.Services.AddHttpClient<ILivsmedelImportService,LivsmedelImportService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IIngredientService, IngredientService>();
+
 
             //Unit Of Work + Repositories
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>
