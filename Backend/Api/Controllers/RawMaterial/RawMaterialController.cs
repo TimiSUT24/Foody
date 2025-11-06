@@ -16,7 +16,7 @@ namespace Api.Controllers.RawMaterial
             _rawMaterialService = rawMaterialService;
         }
 
-        [HttpPost("RawMaterial/create")]
+        [HttpPost("create")]
         [ProducesResponseType(statusCode: 201)]
         [ProducesResponseType(statusCode: 404)]
         [ProducesResponseType(statusCode: 401)]
@@ -26,7 +26,7 @@ namespace Api.Controllers.RawMaterial
             return CreatedAtAction(nameof(CreateRawMaterial), new {id = request.FoodId}, result);
         }
 
-        [HttpGet("RawMaterial/GetAll")]
+        [HttpGet("GetAll")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         public async Task<IActionResult> GetRawMaterials([FromQuery] int foodId, CancellationToken ct)
@@ -35,7 +35,7 @@ namespace Api.Controllers.RawMaterial
             return Ok(rawMaterials);
         }
 
-        [HttpGet("RawMaterial/Id")]
+        [HttpGet("Id")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         public async Task<IActionResult> GetRawMaterialById([FromRoute] int foodId, CancellationToken ct)

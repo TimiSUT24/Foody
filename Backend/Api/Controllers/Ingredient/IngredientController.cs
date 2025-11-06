@@ -15,7 +15,7 @@ namespace Api.Controllers.Ingredient
             _ingredientService = ingredientService;
         }
 
-        [HttpPost("Ingredient/create")]
+        [HttpPost("create")]
         [ProducesResponseType(statusCode: 201)]
         [ProducesResponseType(statusCode: 404)]
         [ProducesResponseType(statusCode: 401)]
@@ -25,7 +25,7 @@ namespace Api.Controllers.Ingredient
             return CreatedAtAction(nameof(CreateIngredient), new { id = request.FoodId }, result);
         }
 
-        [HttpGet("Ingredient/GetAll")]
+        [HttpGet("GetAll")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         public async Task<IActionResult> GetIngredients([FromQuery] int foodId, CancellationToken ct)
@@ -34,7 +34,7 @@ namespace Api.Controllers.Ingredient
             return Ok(ingredients);
         }
 
-        [HttpGet("Ingredient/Id")]
+        [HttpGet("Id")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         public async Task<IActionResult> GetIngredientById([FromRoute] int foodId, CancellationToken ct)
@@ -43,7 +43,7 @@ namespace Api.Controllers.Ingredient
             return Ok(ingredient);
         }
 
-        [HttpPut("Ingredient/update")]
+        [HttpPut("update")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         [ProducesResponseType(statusCode: 401)]
@@ -53,7 +53,7 @@ namespace Api.Controllers.Ingredient
             return Ok(result);
         }
 
-        [HttpDelete("Ingredient/delete")]
+        [HttpDelete("delete")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         [ProducesResponseType(statusCode: 401)]

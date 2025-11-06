@@ -18,7 +18,7 @@ namespace Api.Controllers.Product
             _productService = productService;
         }
 
-        [HttpPost("/Products/create")]
+        [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:409)]
         [ProducesResponseType(statusCode:401)]
@@ -28,7 +28,7 @@ namespace Api.Controllers.Product
             return CreatedAtAction(nameof(CreateProduct), new { id = request.Id }, result);
         }
 
-        [HttpGet("/Products")]
+        [HttpGet("GetSome")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         public async Task<IActionResult> GetProducts([FromQuery] int offset, [FromQuery] int limit, CancellationToken ct)
@@ -37,7 +37,7 @@ namespace Api.Controllers.Product
             return Ok(products);
         }
 
-        [HttpGet("/Products/Id")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         public async Task<IActionResult> GetProductById([FromRoute] int id, CancellationToken ct)
@@ -46,7 +46,7 @@ namespace Api.Controllers.Product
             return Ok(product);
         }
 
-        [HttpPut("/Products/{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         [ProducesResponseType(statusCode: 401)]
@@ -56,7 +56,7 @@ namespace Api.Controllers.Product
             return Ok(result);
         }
 
-        [HttpDelete("/Products/{id}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         [ProducesResponseType(statusCode:401)]

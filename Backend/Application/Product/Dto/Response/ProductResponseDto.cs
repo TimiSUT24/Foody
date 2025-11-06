@@ -12,7 +12,7 @@ namespace Application.Product.Dto.Response
         int Number,
         int FoodTypeId,
         string? FoodType,
-        int Version,
+        string Version,
         string Name,
         string? ScientificName,
         string? Project,

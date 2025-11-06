@@ -13,6 +13,6 @@ namespace Application.Ingredient.Dto.Response
         decimal? FatFactor,
         decimal? WeightBeforeCooking,
         decimal? WeightAfterCooking,
-        decimal? CookingFactor
+        string? CookingFactor
         );
 }
