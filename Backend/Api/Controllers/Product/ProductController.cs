@@ -8,6 +8,7 @@ namespace Api.Controllers.Product
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Admin")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;

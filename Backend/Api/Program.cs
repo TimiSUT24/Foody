@@ -1,5 +1,8 @@
 
 using Api.Middleware;
+using Application.Auth.Interfaces;
+using Application.Auth.Mapper;
+using Application.Auth.Service;
 using Application.Livsmedel.Interfaces;
 using Application.Livsmedel.Service;
 using Application.Product.Interfaces;
@@ -13,15 +16,19 @@ using FluentValidation.AspNetCore;
 using Infrastructure.Data;
 using Infrastructure.ExternalService;
 using Infrastructure.Repositories;
+using Infrastructure.Seeding;
 using Infrastructure.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Threading.Tasks;
 
 namespace Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -30,24 +37,57 @@ namespace Api
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Foody API", Version = "v1" });
+
+                // === JWT i Swagger (Authorize-knappen) ===
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Skriv: Bearer {ditt_jwt}"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
+            builder.Services.AddAuthorization();
 
             //Services 
             builder.Services.AddScoped<ILivsmedelService, LivsmedelService>();
             builder.Services.AddHttpClient<ILivsmedelImportService,LivsmedelImportService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             //Unit Of Work + Repositories
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IJwtService, JwtService>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>
             {
 
             },
-            typeof(ProductProfile));
+            typeof(ProductProfile),
+            typeof(AuthProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);
@@ -67,18 +107,47 @@ namespace Api
                 option.Password.RequireUppercase = true;
                 option.Password.RequireDigit = true;
             })
+           .AddRoles<IdentityRole<Guid>>()
            .AddEntityFrameworkStores<FoodyDbContext>()
            .AddDefaultTokenProviders();
 
-
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
+                };
+            });
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            //Seed users and roles
+            using (var scope = app.Services.CreateScope())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                var services = scope.ServiceProvider;
+                var userManager = services.GetRequiredService<UserManager<User>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+                await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
             }
+
+                // Configure the HTTP request pipeline.
+                if (app.Environment.IsDevelopment())
+                {
+                    app.UseSwagger();
+                    app.UseSwaggerUI();
+                }
 
             app.UseHttpsRedirection();
             app.UseMiddleware<GlobalExceptionMiddleware>();
