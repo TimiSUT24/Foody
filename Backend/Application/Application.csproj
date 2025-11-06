@@ -39,11 +39,7 @@
     <Folder Include="Classification\Mapper\" />
     <Folder Include="Classification\Service\" />
     <Folder Include="Classification\Validator\" />
-    <Folder Include="Ingredient\Dto\Request\" />
     <Folder Include="Ingredient\Dto\Response\" />
-    <Folder Include="Ingredient\Interfaces\" />
-    <Folder Include="Ingredient\Mapper\" />
-    <Folder Include="Ingredient\Service\" />
     <Folder Include="Ingredient\Validator\" />
     <Folder Include="Livsmedel\Dto\Response\" />
     <Folder Include="Livsmedel\Mapper\" />

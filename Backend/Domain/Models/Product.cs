@@ -10,10 +10,9 @@ namespace Domain.Models
     public class Product
     {
         public int Id { get; set; }
-        public int Number { get; set; }
         public int FoodTypeId { get; set; }
         public string? FoodType { get; set; }
-        public int Version { get; set; }
+        public string Version { get; set; } = string.Empty;
         public string Name { get; set; } = null!;
         public string? ScientificName { get; set; }
         public string? Project { get; set; }

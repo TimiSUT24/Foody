@@ -25,7 +25,7 @@ namespace Api.Controllers.Product
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto request, CancellationToken ct)
         {
             var result = await _productService.AddAsync(request, ct);
-            return CreatedAtAction(nameof(CreateProduct), new { id = request.Number }, result);
+            return CreatedAtAction(nameof(CreateProduct), new { id = request.Id }, result);
         }
 
         [HttpGet("/Products")]

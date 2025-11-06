@@ -45,13 +45,13 @@ namespace Infrastructure.ExternalService
             foreach (var foodDto in listResponse.Livsmedel)
             {
                 //Check if product already exists
-                if (_context.Products.Any(p => p.Number == foodDto.Nummer))
+                if (_context.Products.Any(p => p.Id == foodDto.Nummer))
                     continue;
 
                 //Create base product
                 var product = new Product
                 {
-                    Number = foodDto.Nummer,
+                    Id = foodDto.Nummer,
                     Name = foodDto.Namn,    
                     ScientificName = foodDto.VetenskapligtNamn,
                     FoodTypeId = foodDto.LivsmedelsTypId,
@@ -165,7 +165,6 @@ namespace Infrastructure.ExternalService
                 {
                     product.Ingredients.Add(new Ingredient
                     {
-                        Number = c.Nummer,
                         Name = c.Namn,
                         WaterFactor = c.VattenFaktor,
                         FatFactor = c.FettFaktor,
