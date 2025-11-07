@@ -13,5 +13,7 @@ namespace Application.RawMaterial.Interfaces
         Task<bool> AddAsync(CreateRawMaterialDto request, CancellationToken ct);
         Task<IEnumerable<RawMaterialResponse>> GetAllAsync(int foodId, CancellationToken ct);
         Task<RawMaterialResponse> GetByIdAsync(int Id, CancellationToken ct);
+        Task<bool> Update(UpdateRawMaterialDto request, CancellationToken ct);
+        Task<bool> Delete(int Id, CancellationToken ct);
     }
 }

@@ -44,5 +44,24 @@ namespace Api.Controllers.RawMaterial
             return Ok(rawMaterial);
         }
 
+        [HttpPut("update")]
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
+        [ProducesResponseType(statusCode: 401)]
+        public async Task<IActionResult> UpdateRawMaterial([FromBody] UpdateRawMaterialDto request, CancellationToken ct)
+        {
+            var result = await _rawMaterialService.Update(request, ct);
+            return Ok(result);
+        }
+
+        [HttpDelete("delete/{Id:int}")]
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
+        [ProducesResponseType(statusCode: 401)]
+        public async Task<IActionResult> DeleteRawMaterial([FromRoute]int Id, CancellationToken ct)
+        {
+            var result = await _rawMaterialService.Delete(Id, ct);
+            return Ok(result);
+        }
     }
 }

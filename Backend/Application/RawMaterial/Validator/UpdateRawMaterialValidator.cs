@@ -8,16 +8,15 @@ using System.Threading.Tasks;
 
 namespace Application.RawMaterial.Validator
 {
-    public class CreateRawMaterialValidator : AbstractValidator<CreateRawMaterialDto>
+    public class UpdateRawMaterialValidator : AbstractValidator<UpdateRawMaterialDto>
     {
-        public CreateRawMaterialValidator()
+        public UpdateRawMaterialValidator()
         {
+            RuleFor(x => x.Id)
+                .GreaterThan(0).WithMessage("Id must be greater than 0.");
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Raw material name is required.")
-                .MaximumLength(200).WithMessage("Raw material name cannot exceed 200 characters.");
-
-            RuleFor(x => x.FoodId)
-                .NotEmpty().GreaterThan(0).WithMessage("Raw material number must be greater than zero.");
+                .NotEmpty().WithMessage("Name is required.")
+                .MaximumLength(200).WithMessage("Name must not exceed 200 characters.");
             RuleFor(x => x.FoodEx2)
                 .MaximumLength(100).WithMessage("FoodEx2 must not exceed 100 characters.");
             RuleFor(x => x.Cooking)

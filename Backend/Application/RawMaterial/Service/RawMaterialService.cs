@@ -3,6 +3,7 @@ using Application.RawMaterial.Dto.Response;
 using Application.RawMaterial.Interfaces;
 using AutoMapper;
 using Domain.Interfaces;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,32 @@ namespace Application.RawMaterial.Service
             }
             return _mapper.Map<RawMaterialResponse>(rawMaterial);
 
+        }
+
+        public async Task<bool> Update(UpdateRawMaterialDto request, CancellationToken ct)
+        {
+            var existRawMaterial = await _uow.RawMaterials.GetByIdAsync<int>(request.Id, ct);
+            if (existRawMaterial == null)
+            {
+                throw new KeyNotFoundException($"Raw material with id {request.Id} not found.");
+            }
+
+            _mapper.Map(request, existRawMaterial);
+            _uow.RawMaterials.Update(existRawMaterial);
+            await _uow.SaveChangesAsync(ct);
+            return true;
+        }
+
+        public async Task<bool> Delete(int Id, CancellationToken ct)
+        {
+            var rawMaterial = await _uow.RawMaterials.GetByIdAsync(Id, ct);
+            if (rawMaterial == null)
+            {
+                throw new KeyNotFoundException($"Rawmaterial with id {Id} not found");
+            }
+            _uow.RawMaterials.Delete(rawMaterial);
+            await _uow.SaveChangesAsync(ct);
+            return true;
         }
     }
 }

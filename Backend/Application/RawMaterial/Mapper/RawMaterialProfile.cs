@@ -15,6 +15,7 @@ namespace Application.RawMaterial.Mapper
         {
             //Request
             CreateMap<CreateRawMaterialDto, Domain.Models.RawMaterial>();
+            CreateMap<UpdateRawMaterialDto, Domain.Models.RawMaterial>();
             //Response
             CreateMap<Domain.Models.RawMaterial, RawMaterialResponse>();
         }

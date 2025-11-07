@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace Application.Ingredient.Validator
 {
-    public class CreateIngredientValidator : AbstractValidator<CreateIngredientDto>
+    public class UpdateIngredientValidator : AbstractValidator<UpdateIngredientDto>
     {
-        public CreateIngredientValidator()
+        public UpdateIngredientValidator()
         {
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Ingredient name is required.")
-                .MaximumLength(200).WithMessage("Ingredient name cannot exceed 200 characters.");
-            RuleFor(x => x.FoodId)
-                .NotEmpty().GreaterThan(0).WithMessage("Ingredient number must be greater than zero.");
+            RuleFor(x => x.Id).NotEmpty().GreaterThan(0).WithMessage("Id cant be empty or equal or less than 0");
+                RuleFor(x => x.Name).NotEmpty().WithMessage("Name cant be empty")
+                .MaximumLength(200).WithMessage("Cant exceed 200 length");
 
             RuleFor(x => x.WaterFactor)
                 .GreaterThanOrEqualTo(0).When(x => x.WaterFactor.HasValue).WithMessage("Portion must be greater than or equal to 0 if provided.");
