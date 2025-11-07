@@ -42,12 +42,7 @@
     <Folder Include="OrderItem\Mapper\" />
     <Folder Include="OrderItem\Service\" />
     <Folder Include="OrderItem\Validator\" />
-    <Folder Include="Order\Dto\Request\" />
     <Folder Include="Order\Dto\Response\" />
-    <Folder Include="Order\Interfaces\" />
-    <Folder Include="Order\Mapper\" />
-    <Folder Include="Order\Service\" />
-    <Folder Include="Order\Validator\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,5 +14,6 @@ namespace Domain.Interfaces
         IRawMaterialRepository RawMaterials { get; }
         INutritionValueRepository NutritionValues { get; } 
         IClassificationRepository Classifications { get; }
+        IOrderRepository Orders { get; }
     }
 }
