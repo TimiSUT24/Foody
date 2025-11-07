@@ -32,7 +32,6 @@
     <Folder Include="Controllers\Classification\" />
     <Folder Include="Controllers\OrderItem\" />
     <Folder Include="Controllers\Order\" />
-    <Folder Include="Controllers\Nutrition\" />
   </ItemGroup>
 
   <ItemGroup>

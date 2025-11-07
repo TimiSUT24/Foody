@@ -42,12 +42,6 @@
     <Folder Include="Livsmedel\Dto\Response\" />
     <Folder Include="Livsmedel\Mapper\" />
     <Folder Include="Livsmedel\Validator\" />
-    <Folder Include="NutritionValue\Dto\Request\" />
-    <Folder Include="NutritionValue\Dto\Response\" />
-    <Folder Include="NutritionValue\Interfaces\" />
-    <Folder Include="NutritionValue\Mapper\" />
-    <Folder Include="NutritionValue\Service\" />
-    <Folder Include="NutritionValue\Validator\" />
     <Folder Include="OrderItem\Dto\Request\" />
     <Folder Include="OrderItem\Dto\Response\" />
     <Folder Include="OrderItem\Interfaces\" />

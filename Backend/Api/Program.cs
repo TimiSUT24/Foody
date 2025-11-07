@@ -8,6 +8,9 @@ using Application.Ingredient.Mapper;
 using Application.Ingredient.Service;
 using Application.Livsmedel.Interfaces;
 using Application.Livsmedel.Service;
+using Application.NutritionValue.Interfaces;
+using Application.NutritionValue.Mapper;
+using Application.NutritionValue.Service;
 using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
@@ -83,6 +86,7 @@ namespace Api
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IIngredientService, IngredientService>();
             builder.Services.AddScoped<IRawMaterialService, RawMaterialService>();
+            builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
 
 
             //Unit Of Work + Repositories
@@ -91,6 +95,7 @@ namespace Api
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
             builder.Services.AddScoped<IRawMaterialRepository, RawMaterialRepository>();
+            builder.Services.AddScoped<INutritionValueRepository, NutritionValueRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>
@@ -100,7 +105,8 @@ namespace Api
             typeof(ProductProfile),
             typeof(AuthProfile),
             typeof(IngredientProfile),
-            typeof(RawMaterialProfile));
+            typeof(RawMaterialProfile),
+            typeof(NutritionValueProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);
