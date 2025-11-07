@@ -16,18 +16,21 @@ namespace Infrastructure.UnitOfWork
         public IIngredientRepository Ingredients { get; }
         public IRawMaterialRepository RawMaterials { get; }
         public INutritionValueRepository NutritionValues { get; }
+        public IClassificationRepository Classifications { get; }
 
         public UnitOfWork(FoodyDbContext context, 
                         IProductRepository products,
                         IIngredientRepository ingredients,
                         IRawMaterialRepository rawMaterials,
-                        INutritionValueRepository nutritionValues)
+                        INutritionValueRepository nutritionValues,
+                        IClassificationRepository classifications)
         {
             _context = context;
             Products = products;
             Ingredients = ingredients;
             RawMaterials = rawMaterials;
             NutritionValues = nutritionValues;
+            Classifications = classifications;
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken ct = default)

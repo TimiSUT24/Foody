@@ -57,7 +57,7 @@ namespace Application.RawMaterial.Service
             var rawMaterial = await _uow.RawMaterials.GetByIdAsync<int>(Id, ct);
             if (rawMaterial == null)
             {
-                throw new KeyNotFoundException($"Raw material for food id {Id} not found.");
+                throw new KeyNotFoundException($"Raw material id {Id} not found.");
             }
             return _mapper.Map<RawMaterialResponse>(rawMaterial);
 

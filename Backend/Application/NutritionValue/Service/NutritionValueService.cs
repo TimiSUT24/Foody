@@ -64,7 +64,7 @@ namespace Application.NutritionValue.Service
             var nutrition = await _uow.NutritionValues.GetByIdAsync<int>(Id, ct);
             if (nutrition == null)
             {
-                throw new KeyNotFoundException($"Raw material for food id {Id} not found.");
+                throw new KeyNotFoundException($"NutritionValue for id {Id} not found.");
             }
             return _mapper.Map<NutritionValueResponse>(nutrition);
 

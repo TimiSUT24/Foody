@@ -12,6 +12,9 @@ namespace Application.NutritionValue.Validator
     {
         public CreateNutritionValueValidator()
         {
+            RuleFor(n => n.Name).NotEmpty().WithMessage("name cannot be empty")
+                .MaximumLength(200).WithMessage("cannot exceed 200 length");
+            RuleFor(i => i.FoodId).NotEmpty().GreaterThan(0).WithMessage("FoodId cannot be empty");
 
         }
     }

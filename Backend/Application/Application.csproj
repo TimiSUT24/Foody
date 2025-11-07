@@ -33,12 +33,6 @@
     <Folder Include="Category\Mapper\" />
     <Folder Include="Category\Service\" />
     <Folder Include="Category\Validator\" />
-    <Folder Include="Classification\Dto\Request\" />
-    <Folder Include="Classification\Dto\Response\" />
-    <Folder Include="Classification\Interfaces\" />
-    <Folder Include="Classification\Mapper\" />
-    <Folder Include="Classification\Service\" />
-    <Folder Include="Classification\Validator\" />
     <Folder Include="Livsmedel\Dto\Response\" />
     <Folder Include="Livsmedel\Mapper\" />
     <Folder Include="Livsmedel\Validator\" />
