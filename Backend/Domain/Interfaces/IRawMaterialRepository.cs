@@ -9,5 +9,7 @@ namespace Domain.Interfaces
 {
     public interface IRawMaterialRepository : IGenericRepository<RawMaterial>
     {
+        Task<IEnumerable<RawMaterial>> GetRawMaterialsByFoodIdAsync(int foodId, CancellationToken ct);
+        
     }
 }

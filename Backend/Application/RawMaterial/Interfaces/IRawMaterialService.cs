@@ -12,6 +12,6 @@ namespace Application.RawMaterial.Interfaces
     {
         Task<bool> AddAsync(CreateRawMaterialDto request, CancellationToken ct);
         Task<IEnumerable<RawMaterialResponse>> GetAllAsync(int foodId, CancellationToken ct);
-        Task<RawMaterialResponse> GetByIdAsync(int foodId, CancellationToken ct);
+        Task<RawMaterialResponse> GetByIdAsync(int Id, CancellationToken ct);
     }
 }

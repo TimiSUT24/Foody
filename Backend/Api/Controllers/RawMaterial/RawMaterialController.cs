@@ -26,21 +26,21 @@ namespace Api.Controllers.RawMaterial
             return CreatedAtAction(nameof(CreateRawMaterial), new {id = request.FoodId}, result);
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("GetAllByProduct/{foodId:int}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
-        public async Task<IActionResult> GetRawMaterials([FromQuery] int foodId, CancellationToken ct)
+        public async Task<IActionResult> GetRawMaterialsByProduct([FromRoute] int foodId, CancellationToken ct)
         {
             var rawMaterials = await _rawMaterialService.GetAllAsync(foodId, ct);
             return Ok(rawMaterials);
         }
 
-        [HttpGet("Id")]
+        [HttpGet("{Id:int}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
-        public async Task<IActionResult> GetRawMaterialById([FromRoute] int foodId, CancellationToken ct)
+        public async Task<IActionResult> GetRawMaterialById([FromRoute] int Id, CancellationToken ct)
         {
-            var rawMaterial = await _rawMaterialService.GetByIdAsync(foodId, ct);
+            var rawMaterial = await _rawMaterialService.GetByIdAsync(Id, ct);
             return Ok(rawMaterial);
         }
 

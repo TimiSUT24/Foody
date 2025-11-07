@@ -8,7 +8,7 @@ namespace Application.Ingredient.Dto.Request
 {
     public record UpdateIngredientDto
     (
-        int FoodId,
+        int Id,
         string Name,
         decimal? WaterFactor,
         decimal? FatFactor,

@@ -1,6 +1,7 @@
 ﻿using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,13 @@ namespace Infrastructure.Repositories
         public IngredientRepository(FoodyDbContext context) : base(context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<Ingredient>> GetIngredientsByFoodIdAsync(int foodId, CancellationToken ct)
+        {
+            return await _context.Ingredients
+                                 .Where(i => i.FoodId == foodId)
+                                 .ToListAsync(ct);
         }
     }
 }

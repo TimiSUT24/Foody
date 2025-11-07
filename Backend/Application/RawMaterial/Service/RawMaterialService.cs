@@ -43,21 +43,20 @@ namespace Application.RawMaterial.Service
             {
                 throw new KeyNotFoundException($"Food with id {foodId} not found.");
             }
-            var rawMaterials = await _uow.RawMaterials.GetAllAsync(ct);
-            var rawMaterial = rawMaterials.Where(rm => rm.FoodId == foodId);
-            if (rawMaterial == null)
+            var rawMaterials = await _uow.RawMaterials.GetRawMaterialsByFoodIdAsync(foodId, ct);
+            if (rawMaterials == null)
             {
-                throw new KeyNotFoundException($"Raw material for food id {foodId} not found.");
+                throw new KeyNotFoundException($"Raw materials for food id {foodId} not found.");
             }
-            return _mapper.Map<IEnumerable<RawMaterialResponse>>(rawMaterial);
+            return _mapper.Map<IEnumerable<RawMaterialResponse>>(rawMaterials);
         }
 
-        public async Task<RawMaterialResponse> GetByIdAsync(int foodId, CancellationToken ct)
+        public async Task<RawMaterialResponse> GetByIdAsync(int Id, CancellationToken ct)
         {
-            var rawMaterial = await _uow.RawMaterials.GetByIdAsync<int>(foodId, ct);
+            var rawMaterial = await _uow.RawMaterials.GetByIdAsync<int>(Id, ct);
             if (rawMaterial == null)
             {
-                throw new KeyNotFoundException($"Raw material for food id {foodId} not found.");
+                throw new KeyNotFoundException($"Raw material for food id {Id} not found.");
             }
             return _mapper.Map<RawMaterialResponse>(rawMaterial);
 

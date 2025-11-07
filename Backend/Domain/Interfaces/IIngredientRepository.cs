@@ -9,5 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IIngredientRepository : IGenericRepository<Ingredient>
     {
+        Task<IEnumerable<Ingredient>> GetIngredientsByFoodIdAsync(int foodId, CancellationToken ct);
     }
 }

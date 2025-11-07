@@ -46,7 +46,7 @@ namespace Api.Controllers.Product
             return Ok(product);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         [ProducesResponseType(statusCode: 401)]
@@ -56,7 +56,7 @@ namespace Api.Controllers.Product
             return Ok(result);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         [ProducesResponseType(statusCode:401)]

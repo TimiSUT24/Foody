@@ -1,4 +1,5 @@
-﻿using Application.Ingredient.Dto.Request;
+﻿using Application.Exceptions;
+using Application.Ingredient.Dto.Request;
 using Application.Ingredient.Dto.Response;
 using Application.Ingredient.Interfaces;
 using AutoMapper;
@@ -30,7 +31,7 @@ namespace Application.Ingredient.Service
                 throw new KeyNotFoundException($"Food with id {request.FoodId} not found.");
             }
             var ingredient = _mapper.Map<Domain.Models.Ingredient>(request);
-            ingredient.FoodId = request.FoodId;
+
             await _uow.Ingredients.AddAsync(ingredient, ct);
             await  _uow.SaveChangesAsync(ct);
 
@@ -45,32 +46,31 @@ namespace Application.Ingredient.Service
             {
                 throw new KeyNotFoundException($"Food with id {foodId} not found.");
             }
-            var ingredients = await _uow.Ingredients.GetAllAsync(ct);
-            var ingredient = ingredients.Where(i => i.FoodId == foodId);
-            if(ingredient == null)
+            var ingredients = await _uow.Ingredients.GetIngredientsByFoodIdAsync(foodId, ct);
+        
+            if(ingredients == null)
             {
-                throw new KeyNotFoundException($"Ingredient for food id {foodId} not found.");
+                throw new KeyNotFoundException($"Ingredients for food id {foodId} not found.");
             }
-            return _mapper.Map<IEnumerable<IngredientResponse>>(ingredient);
+            return _mapper.Map<IEnumerable<IngredientResponse>>(ingredients);
         }
 
-        public async Task<IngredientResponse> GetByIdAsync(int foodId, CancellationToken ct)
+        public async Task<IngredientResponse> GetByIdAsync(int Id, CancellationToken ct)
         {
-            var existFood = await _uow.Products.GetByIdAsync<int>(foodId, ct);
-            if(existFood == null)
+            var existIngredient = await _uow.Ingredients.GetByIdAsync<int>(Id, ct);
+            if(existIngredient == null)
             {
-                throw new KeyNotFoundException($"Ingredient with id {foodId} not found.");
+                throw new KeyNotFoundException($"Ingredient with id {Id} not found.");
             }
-            var ingred = existFood.Ingredients.Where(i => i.FoodId == foodId).FirstOrDefault();
-            return _mapper.Map<IngredientResponse>(ingred);
+            return _mapper.Map<IngredientResponse>(existIngredient);
         }
 
         public async Task<bool> Update(UpdateIngredientDto request, CancellationToken ct)
         {
-            var ingredient = await _uow.Ingredients.GetByIdAsync<int>(request.FoodId, ct);
+            var ingredient = await _uow.Ingredients.GetByIdAsync<int>(request.Id, ct);
             if(ingredient == null)
             {
-                throw new KeyNotFoundException($"Ingredient with id {request.FoodId} not found.");
+                throw new KeyNotFoundException($"Ingredient with id {request.Id} not found.");
             }
             _mapper.Map(request, ingredient);
             _uow.Ingredients.Update(ingredient);
@@ -78,12 +78,12 @@ namespace Application.Ingredient.Service
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int foodId, CancellationToken ct)
+        public async Task<bool> DeleteAsync(int Id, CancellationToken ct)
         {
-            var ingredient = await _uow.Ingredients.GetByIdAsync<int>(foodId, ct);
+            var ingredient = await _uow.Ingredients.GetByIdAsync<int>(Id, ct);
             if (ingredient == null)
             {
-                throw new KeyNotFoundException($"Ingredient with id {foodId} not found.");
+                throw new KeyNotFoundException($"Ingredient with id {Id} not found.");
             }
             _uow.Ingredients.Delete(ingredient);
             await _uow.SaveChangesAsync(ct);
