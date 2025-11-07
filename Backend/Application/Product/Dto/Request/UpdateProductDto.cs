@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Application.Product.Dto.Request
 {
     public record UpdateProductDto(       
-        int Number,
+        int Id,
         int FoodTypeId,
         string? FoodType,
         int Version,

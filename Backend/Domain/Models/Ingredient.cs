@@ -11,14 +11,12 @@ namespace Domain.Models
     {
         public int Id { get; set; }
         public int FoodId { get; set; }
-
-        public int Number { get; set; }
         public string Name { get; set; } = null!;
         public decimal? WaterFactor { get; set; }
         public decimal? FatFactor { get; set; }
         public decimal? WeightBeforeCooking { get; set; }
         public decimal? WeightAfterCooking { get; set; }
-        public decimal? CookingFactor { get; set; }
+        public string CookingFactor { get; set; } = string.Empty;
 
         // Retention factors stored as JSON if complex
         public string? RetentionFactorsJson { get; set; }

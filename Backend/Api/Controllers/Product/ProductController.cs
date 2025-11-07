@@ -18,17 +18,17 @@ namespace Api.Controllers.Product
             _productService = productService;
         }
 
-        [HttpPost("/create")]
+        [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:409)]
         [ProducesResponseType(statusCode:401)]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto request, CancellationToken ct)
         {
             var result = await _productService.AddAsync(request, ct);
-            return CreatedAtAction(nameof(CreateProduct), new { id = request.Number }, result);
+            return CreatedAtAction(nameof(CreateProduct), new { id = request.Id }, result);
         }
 
-        [HttpGet("/Products")]
+        [HttpGet("GetSome")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         public async Task<IActionResult> GetProducts([FromQuery] int offset, [FromQuery] int limit, CancellationToken ct)
@@ -37,7 +37,7 @@ namespace Api.Controllers.Product
             return Ok(products);
         }
 
-        [HttpGet("/Products/{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         public async Task<IActionResult> GetProductById([FromRoute] int id, CancellationToken ct)
@@ -46,7 +46,17 @@ namespace Api.Controllers.Product
             return Ok(product);
         }
 
-        [HttpDelete("/Products/{id}")]
+        [HttpPut("update")]
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
+        [ProducesResponseType(statusCode: 401)]
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDto request, CancellationToken ct)
+        {
+            var result = await _productService.Update(request, ct);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         [ProducesResponseType(statusCode:401)]
@@ -55,16 +65,5 @@ namespace Api.Controllers.Product
             var result = await _productService.DeleteAsync(id, ct);
             return Ok(result);
         }
-
-        [HttpPut("/Products/{id}")]
-        [ProducesResponseType(statusCode:200)]
-        [ProducesResponseType(statusCode:404)]
-        [ProducesResponseType(statusCode:401)]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductDto request, CancellationToken ct)
-        {
-            var result = await _productService.Update(id, request, ct);
-            return Ok(result);
-        }
-
     }
 }

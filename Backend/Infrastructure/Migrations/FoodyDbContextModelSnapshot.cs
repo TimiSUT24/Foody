@@ -83,8 +83,9 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("CookingFactor")
-                        .HasColumnType("numeric");
+                    b.Property<string>("CookingFactor")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal?>("FatFactor")
                         .HasColumnType("numeric");
@@ -95,9 +96,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("integer");
 
                     b.Property<string>("RetentionFactorsJson")
                         .HasColumnType("text");
@@ -312,9 +310,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Number")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime?>("OfferValidUntil")
                         .HasColumnType("timestamp with time zone");
 
@@ -336,8 +331,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Supplier")
                         .HasColumnType("text");
 
-                    b.Property<int>("Version")
-                        .HasColumnType("integer");
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
