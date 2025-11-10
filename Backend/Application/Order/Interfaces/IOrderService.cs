@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Application.Order.Dto.Request;
+using Application.Order.Dto.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,11 @@ namespace Application.Order.Interfaces
 {
     public interface IOrderService
     {
+        Task<bool> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct);
+        Task<OrderResponse> GetByIdAsync(Guid id, CancellationToken ct);
+        Task<List<UserOrderResponse>> GetUserOrders(Guid userId, CancellationToken ct);
+        Task<UserOrderResponse> GetUserOrder(Guid userId, Guid orderId, CancellationToken ct);
+        Task<bool> CancelMyOrder(Guid userId, Guid orderId, CancellationToken ct);
+        
     }
 }

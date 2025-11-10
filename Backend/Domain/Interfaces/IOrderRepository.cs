@@ -9,5 +9,8 @@ namespace Domain.Interfaces
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
+        Task<Order> GetOrder(Guid id, CancellationToken ct);
+        Task<List<Order>> GetMyOrders(Guid userId, CancellationToken ct);
+        Task<Order> GetMyOrder(Guid userId, Guid orderId, CancellationToken ct);
     }
 }

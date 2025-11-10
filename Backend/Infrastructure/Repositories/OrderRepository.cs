@@ -18,10 +18,41 @@ namespace Infrastructure.Repositories
             _context = context; 
         }
 
-        public async Task<Order> GetUserOrder(Guid userId)
+        public async Task<List<Order>> GetMyOrders(Guid userId, CancellationToken ct)
         {
-            var query = await _context.Orders.FirstOrDefaultAsync(u => u.UserId == userId);
+            return await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderItems)
+                    .ThenInclude(f => f.Food)
+                    .Include(u => u.User)
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync(ct);
+        }
+
+        public async Task<Order> GetMyOrder(Guid userId, Guid orderId, CancellationToken ct)
+        {
+            var query = await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderItems)
+                    .ThenInclude(o => o.Food)
+                    .Include(u => u.User)
+                    .OrderDescending()
+                    .FirstOrDefaultAsync(u => u.UserId == userId && u.Id == orderId, ct);
+
+                    return query;
+                   
+        }
+
+        public async Task<Order> GetOrder(Guid id, CancellationToken ct)
+        {
+            var query = await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderItems)
+                .ThenInclude(f => f.Food)
+                .FirstOrDefaultAsync(i => i.Id == id, ct);
             return query;
+                
         }
     }
 }

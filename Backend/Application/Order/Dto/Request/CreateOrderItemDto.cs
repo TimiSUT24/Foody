@@ -1,5 +1,4 @@
-﻿using Domain.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Dto.Request
 {
-    public record CreateOrderDto
+    public record CreateOrderItemDto
     {
-        public required List<CreateOrderItemDto> Items { get; init; }
+        public int FoodId { get; init; }
+        public int Quantity { get; init; }
+        
     }
 }

@@ -12,7 +12,7 @@ namespace Application.Order.Validator
     {
         public CreateOrderValidator()
         {
-
+            RuleFor(r => r.Items).NotEmpty().WithMessage("FoodID and Quantity cannot be empty");
         }
     }
 }

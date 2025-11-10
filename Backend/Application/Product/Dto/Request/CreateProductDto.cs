@@ -9,7 +9,6 @@ namespace Application.Product.Dto.Request
 {
     public class CreateProductDto
     {
-        public int Id { get; set; }
         public int FoodTypeId { get; set; }
         public string? FoodType { get; set; }
         public int Version { get; set; }
