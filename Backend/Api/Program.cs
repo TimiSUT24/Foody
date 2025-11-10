@@ -95,6 +95,7 @@ namespace Api
             builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
             builder.Services.AddScoped<IClassificationService, ClassificationService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddTransient<ImageSeeder>();
 
 
             //Unit Of Work + Repositories
@@ -169,8 +170,11 @@ namespace Api
                 var services = scope.ServiceProvider;
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                var seeder = scope.ServiceProvider.GetRequiredService<ImageSeeder>();
 
+                
                 await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
+                await seeder.RunAsync();
             }
 
                 // Configure the HTTP request pipeline.

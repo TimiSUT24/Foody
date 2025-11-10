@@ -33,7 +33,6 @@
     <Folder Include="Category\Mapper\" />
     <Folder Include="Category\Service\" />
     <Folder Include="Category\Validator\" />
-    <Folder Include="Livsmedel\Dto\Response\" />
     <Folder Include="Livsmedel\Mapper\" />
     <Folder Include="Livsmedel\Validator\" />
     <Folder Include="OrderItem\Dto\Request\" />

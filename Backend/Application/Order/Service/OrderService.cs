@@ -76,8 +76,9 @@ namespace Application.Order.Service
 
         public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, CancellationToken ct)
         {
-            var userOrders = await _uow.Orders.GetMyOrders(userId, ct);
-            if(userOrders == null)
+            var userOrders = await _uow.Orders.GetMyOrders(userId, ct) ??
+                throw new KeyNotFoundException("User has no orders");
+            if (userOrders == null)
             {
                 throw new KeyNotFoundException("User has no orders");
             }

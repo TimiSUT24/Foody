@@ -7,23 +7,23 @@ using System.Threading.Tasks;
 
 namespace Application.Product.Dto.Response
 {
-    public class ProductResponseDto()
+    public record ProductResponseDto()
     {
-        public int Id { get; set; }
-        public int FoodTypeId { get; set; }
-        public string? FoodType { get; set; }
-        public string Version { get; set; } = string.Empty;
-        public string Name { get; set; } = null!;
-        public string? ScientificName { get; set; }
-        public string? Project { get; set; }
-        public string? Analysis { get; set; }
-        public string? CookingMethod { get; set; }
-        public decimal Price { get; set; }
-        public int? Stock { get; set; }
-        public string? DiscountInfo { get; set; }
-        public DateTime? OfferValidUntil { get; set; }
-        public string? Supplier { get; set; }
-        public string? Origin { get; set; }
-        public string? ImageUrl { get; set; }
+        public int Id { get; init; }
+        public int FoodTypeId { get; init; }
+        public string FoodType { get; init; } = string.Empty;
+        public string Version { get; init; } = string.Empty;
+        public string Name { get; init; } = null!;
+        public string ScientificName { get; init; } = string.Empty;
+        public string Project { get; init; } = string.Empty;
+        public string Analysis { get; init; } = string.Empty;
+        public string CookingMethod { get; init; } = string.Empty;
+        public decimal Price { get; init; }
+        public int Stock { get; init; }
+        public string DiscountInfo { get; init; } = string.Empty;
+        public DateTime? OfferValidUntil { get; init; }
+        public string Supplier { get; init; } = string.Empty;
+        public string Origin { get; init; } = string.Empty;
+        public string ImageUrl { get; init; } = string.Empty;
     }
 }
