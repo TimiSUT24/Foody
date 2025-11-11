@@ -26,7 +26,7 @@ namespace Application.Product.Service
 
         public async Task<bool> AddAsync(CreateProductDto request, CancellationToken ct)
         {
-            var exists = await _uow.Products.AnyAsync(p => p.Id == request.Id || p.Name == request.Name, ct);
+            var exists = await _uow.Products.AnyAsync(p => p.Name == request.Name, ct);
             if (exists)
             {
                 throw new ConflictException("Product already exists");

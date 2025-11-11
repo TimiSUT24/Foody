@@ -14,6 +14,9 @@ using Application.Livsmedel.Service;
 using Application.NutritionValue.Interfaces;
 using Application.NutritionValue.Mapper;
 using Application.NutritionValue.Service;
+using Application.Order.Interfaces;
+using Application.Order.Mapper;
+using Application.Order.Service;
 using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
@@ -91,6 +94,8 @@ namespace Api
             builder.Services.AddScoped<IRawMaterialService, RawMaterialService>();
             builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
             builder.Services.AddScoped<IClassificationService, ClassificationService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddTransient<ImageSeeder>();
 
 
             //Unit Of Work + Repositories
@@ -101,6 +106,7 @@ namespace Api
             builder.Services.AddScoped<IRawMaterialRepository, RawMaterialRepository>();
             builder.Services.AddScoped<INutritionValueRepository, NutritionValueRepository>();
             builder.Services.AddScoped<IClassificationRepository, ClassificationRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>
@@ -112,7 +118,8 @@ namespace Api
             typeof(IngredientProfile),
             typeof(RawMaterialProfile),
             typeof(NutritionValueProfile),
-            typeof(ClassificationProfile));
+            typeof(ClassificationProfile),
+            typeof(OrderProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);
@@ -163,8 +170,11 @@ namespace Api
                 var services = scope.ServiceProvider;
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                var seeder = scope.ServiceProvider.GetRequiredService<ImageSeeder>();
 
+                
                 await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
+                await seeder.RunAsync();
             }
 
                 // Configure the HTTP request pipeline.
