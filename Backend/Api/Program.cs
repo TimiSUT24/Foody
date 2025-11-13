@@ -169,12 +169,10 @@ namespace Api
             {
                 var services = scope.ServiceProvider;
                 var userManager = services.GetRequiredService<UserManager<User>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-                var seeder = scope.ServiceProvider.GetRequiredService<ImageSeeder>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();;
 
                 
                 await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
-                await seeder.RunAsync();
             }
 
                 // Configure the HTTP request pipeline.
