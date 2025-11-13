@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Identity.Client;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,31 +11,30 @@ namespace Domain.Models
     public class Product
     {
         public int Id { get; set; }
-        public int FoodTypeId { get; set; }
-        public string? FoodType { get; set; }
-        public string Version { get; set; } = string.Empty;
-        public string Name { get; set; } = null!;
-        public string? ScientificName { get; set; }
-        public string? Project { get; set; }
-        public string? Analysis { get; set; }
-        public string? CookingMethod { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? WeightText { get; set; } = string.Empty;
+        public decimal? WeightValue { get; set; }
+        public string? WeightUnit { get; set; } = string.Empty;
+        public string? Ca { get; set; } = string.Empty; 
+        public string? ComparePrice {  get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public string? Currency { get; set; } = "SEK";
+        public string? ImageUrl { get; set; } = string.Empty;
+        public string? ProductInformation { get; set; } = string.Empty;
+        public string? Country { get; set; } = string.Empty;
+        public string? Brand {  get; set; } = string.Empty;
+        public string? Ingredients {  get; set; } = string.Empty;
+        public int Stock {  get; set; }
+        public bool IsAvailable { get; set; }
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
-
-        // E-commerce fields
-        public decimal Price { get; set; }
-        public int Stock { get; set; }
-        public string? DiscountInfo { get; set; }
-        public DateTime? OfferValidUntil { get; set; } = DateTime.UtcNow; 
-        public string? Supplier { get; set; }
-        public string? Origin { get; set; }
-        public string? ImageUrl { get; set; }
+        public int SubCategoryId { get; set; }
+        public SubCategory? SubCategory { get; set; }
+        public int SubSubCategoryId { get; set; }
+        public SubSubCategory? SubSubCategory { get; set; }
 
         public ICollection<NutritionValue> NutritionValues { get; set; } = new List<NutritionValue>();
-        public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
-        public ICollection<RawMaterial> RawMaterials { get; set; } = new List<RawMaterial>();
-        public ICollection<Classification> Classifications { get; set; } = new List<Classification>();
-
+        public ICollection<ProductAttribute> ProductAttributes { get; set; } = new List<ProductAttribute>();
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 

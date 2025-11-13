@@ -1,0 +1,96 @@
+[
+  {
+    "name": "Rotselleri ca 900g Klass 1 ICA",
+    "weightText": "Ca 900 g",
+    "caPart": "Ca",
+    "weightValue": "900",
+    "weightUnit": "g",
+    "comparePrice": "15,00 kr/kg",
+    "currentPrice": 13.5,
+    "attributes": [
+      "Ursprungsland Sverige"
+    ],
+    "imgUrl": "https://handlaprivatkund.ica.se/images-v3/bf7a00ca-390e-4769-865f-dc369586872e/3a2eea5c-e914-447c-b1ce-78a75b419e73/500x500.jpg",
+    "productInformation": "",
+    "countryText": "Sverige",
+    "companyText": "",
+    "ingrediensText": "",
+    "nutrition": [],
+    "categories": {
+      "mainCategory": "Frukt & Grönt",
+      "subCategories": [
+        {
+          "name": "Rotfrukter",
+          "subSubCategories": [
+            "Rotselleri"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Medelhavsmix Rosa Bandet ICA",
+    "weightText": "0.125 kg",
+    "caPart": "",
+    "weightValue": "0.125",
+    "weightUnit": "kg",
+    "comparePrice": "160,00 kr/kg",
+    "currentPrice": 20,
+    "attributes": [],
+    "imgUrl": "https://handlaprivatkund.ica.se/images-v3/bf7a00ca-390e-4769-865f-dc369586872e/278be2ba-afcf-49da-9945-1b07efa0443e/500x500.jpg",
+    "productInformation": "",
+    "countryText": "",
+    "companyText": "ICA",
+    "ingrediensText": "Friséesallat, röd sallat*, babyspenat, rucola. *Varierar beroende på tillgång mellan lollo rosso, röd batavia sallat, ekbladsallat.",
+    "nutrition": [
+      {
+        "Näringsvärde": "Energi (kcal)",
+        "100 Gram": "17 kcal"
+      },
+      {
+        "Näringsvärde": "Energi (kJ)",
+        "100 Gram": "70 kJ"
+      },
+      {
+        "Näringsvärde": "Fett",
+        "100 Gram": "0 g"
+      },
+      {
+        "Näringsvärde": "Varav mättat fett",
+        "100 Gram": "0 g"
+      },
+      {
+        "Näringsvärde": "Kolhydrat",
+        "100 Gram": "1.5 g"
+      },
+      {
+        "Näringsvärde": "Varav sockerarter",
+        "100 Gram": "0.6 g"
+      },
+      {
+        "Näringsvärde": "Fiber",
+        "100 Gram": "1.7 g"
+      },
+      {
+        "Näringsvärde": "Protein",
+        "100 Gram": "1.8 g"
+      },
+      {
+        "Näringsvärde": "Salt",
+        "100 Gram": "0.1 g"
+      }
+    ],
+    "categories": {
+      "mainCategory": "Frukt & Grönt",
+      "subCategories": [
+        {
+          "name": "Grönsaker",
+          "subSubCategories": [
+            "Sallad",
+            "Salladsmix"
+          ]
+        }
+      ]
+    }
+  }
+]
