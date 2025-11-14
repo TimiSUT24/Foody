@@ -3,6 +3,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -34,62 +35,73 @@ namespace Infrastructure.Seeding
 
                 foreach (var prodJson in productsJson)
                 {
-                    // --- Handle Categories ---
-                    var mainCategory = await _context.Categories
-                        .Include(c => c.SubCategories)
-                            .ThenInclude(sc => sc.SubSubCategories)
-                        .FirstOrDefaultAsync(c => c.MainCategory == prodJson.Categories.MainCategory);
+                // --- Handle Categories ---
+                     var mainCategory = await _context.Categories
+                    .Include(c => c.SubCategories)
+                        .ThenInclude(sc => sc.SubSubCategories)
+                    .FirstOrDefaultAsync(c => c.MainCategory == prodJson.Categories.MainCategory);
 
-                    if (mainCategory == null)
+                if (mainCategory == null)
+                {
+                    mainCategory = new Category
                     {
-                        mainCategory = new Category
-                        {
-                            MainCategory = prodJson.Categories.MainCategory,
-                            SubCategories = new List<SubCategory>()
-                        };
-                        _context.Categories.Add(mainCategory);
-                    }
+                        MainCategory = prodJson.Categories.MainCategory,
+                        SubCategories = new List<SubCategory>()
+                    };
+                    _context.Categories.Add(mainCategory);
+                }
 
                     SubCategory? subCategory = null;
                     SubSubCategory? subSubCategory = null;
 
-                    if (prodJson.Categories.SubCategories?.Any() ?? false)
-                    {
-                        var subCatJson = prodJson.Categories.SubCategories[0];
-                        subCategory = mainCategory.SubCategories.FirstOrDefault(sc => sc.Name == subCatJson.Name);
-                        if (subCategory == null)
-                        {
-                            subCategory = new SubCategory
-                            {
-                                Name = subCatJson.Name,
-                                Category = mainCategory,
-                                SubSubCategories = new List<SubSubCategory>()
-                            };
-                            mainCategory.SubCategories.Add(subCategory);
-                        }
+                // --- Handle SubCategory ---
+                if (prodJson.Categories.SubCategories?.Any() ?? false)
+                {
+                    var subCatJson = prodJson.Categories.SubCategories[0];
 
-                        if (subCatJson.SubSubCategories?.Any() ?? false)
+                    // Check DB first
+                    subCategory = await _context.SubCategories
+                        .Include(sc => sc.SubSubCategories)
+                        .FirstOrDefaultAsync(sc => sc.Name == subCatJson.Name && sc.CategoryId == mainCategory.Id);
+
+                    if (subCategory == null)
+                    {
+                        subCategory = new SubCategory
                         {
-                            var subSubName = subCatJson.SubSubCategories[0]; // you can loop if needed
-                            subSubCategory = subCategory.SubSubCategories.FirstOrDefault(ssc => ssc.Name == subSubName);
-                            if (subSubCategory == null)
-                            {
-                                subSubCategory = new SubSubCategory
-                                {
-                                    Name = subSubName,
-                                    SubCategory = subCategory
-                                };
-                                subCategory.SubSubCategories.Add(subSubCategory);
-                            }
-                        }
+                            Name = subCatJson.Name,
+                            Category = mainCategory,
+                            SubSubCategories = new List<SubSubCategory>()
+                        };
+                        mainCategory.SubCategories.Add(subCategory);
                     }
 
-                    // --- Create Product ---
-                    var product = new Product
+                    // --- Handle SubSubCategory ---
+                    if (subCatJson.SubSubCategories?.Any() ?? false)
+                    {
+                        var subSubName = subCatJson.SubSubCategories[0]; // loop if needed
+
+                        // Check DB first
+                        subSubCategory = await _context.SubSubCategories
+                            .FirstOrDefaultAsync(ssc => ssc.Name == subSubName && ssc.SubCategoryId == subCategory.Id);
+
+                        if (subSubCategory == null)
+                        {
+                            subSubCategory = new SubSubCategory
+                            {
+                                Name = subSubName,
+                                SubCategory = subCategory
+                            };
+                            subCategory.SubSubCategories.Add(subSubCategory);
+                        }
+                    }
+                }
+
+                // --- Create Product ---
+                var product = new Product
                     {
                         Name = prodJson.Name,
                         WeightText = prodJson.WeightText,
-                        WeightValue = decimal.TryParse(prodJson.WeightValue, out var w) ? w : null,
+                        WeightValue = prodJson.WeightValue,
                         WeightUnit = prodJson.WeightUnit,
                         Ca = prodJson.CaPart,
                         ComparePrice = prodJson.ComparePrice,
@@ -108,6 +120,10 @@ namespace Infrastructure.Seeding
                         SubCategory = subCategory,
                         SubSubCategory = subSubCategory
                     };
+
+                    product.Category = mainCategory;
+                    product.SubCategory = subCategory;
+                    product.SubSubCategory = subSubCategory;
 
                     // --- Attributes ---
                     foreach (var attr in prodJson.Attributes ?? new List<string>())
@@ -144,7 +160,7 @@ namespace Infrastructure.Seeding
         public string Name { get; set; } = string.Empty;
         public string WeightText { get; set; } = string.Empty;
         public string? CaPart { get; set; }
-        public string WeightValue { get; set; } = string.Empty;
+        public decimal WeightValue { get; set; } 
         public string WeightUnit { get; set; } = string.Empty;
         public string ComparePrice { get; set; } = string.Empty;
         public decimal CurrentPrice { get; set; }

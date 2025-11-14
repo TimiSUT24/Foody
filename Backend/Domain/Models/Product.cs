@@ -31,9 +31,9 @@ namespace Domain.Models
         public bool IsAvailable { get; set; }
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
-        public int SubCategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
         public SubCategory? SubCategory { get; set; }
-        public int SubSubCategoryId { get; set; }
+        public int? SubSubCategoryId { get; set; }
         public SubSubCategory? SubSubCategory { get; set; }
 
         public ICollection<NutritionValue> NutritionValues { get; set; } = new List<NutritionValue>();

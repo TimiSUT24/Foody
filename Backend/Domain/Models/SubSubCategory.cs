@@ -10,7 +10,7 @@ namespace Domain.Models
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public int SubCategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
         public SubCategory? SubCategory { get; set; }
         public ICollection<Product> Food {  get; set; } = new List<Product>();
     }
