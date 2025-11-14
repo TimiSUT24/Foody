@@ -24,6 +24,9 @@ namespace Domain.Models
         public string? Country { get; set; } = string.Empty;
         public string? Brand {  get; set; } = string.Empty;
         public string? Ingredients {  get; set; } = string.Empty;
+        public string? Storage {  get; set; } = string.Empty;
+        public string? Usage {  get; set; } = string.Empty;
+        public string? Allergens {  get; set; } = string.Empty;
         public int Stock {  get; set; }
         public bool IsAvailable { get; set; }
         public int? CategoryId { get; set; }

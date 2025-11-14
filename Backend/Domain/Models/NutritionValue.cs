@@ -13,6 +13,7 @@ namespace Domain.Models
         public int FoodId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Value { get; set; } = string.Empty;
+        public string? NutritionUnitText { get; set; } = string.Empty; 
         public Product? Food { get; set; }
     }
 

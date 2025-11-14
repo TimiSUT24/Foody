@@ -99,6 +99,9 @@ namespace Infrastructure.Seeding
                         Country = prodJson.CountryText,
                         Brand = prodJson.CompanyText,
                         Ingredients = prodJson.IngrediensText,
+                        Usage = prodJson.Usage,
+                        Allergens = prodJson.Allergens,
+                        Storage = prodJson.Storage,
                         Stock = 10, // default stock
                         IsAvailable = true,
                         Category = mainCategory,
@@ -115,11 +118,15 @@ namespace Infrastructure.Seeding
                     // --- Nutrition ---
                     foreach (var nut in prodJson.Nutrition ?? new List<NutritionJson>())
                     {
+                        string unit = nut.Values?.Keys.FirstOrDefault();   // "100 Gram" or "100 Milliliter"
+                        string value = nut.Values?.Values.FirstOrDefault().GetString();
                         product.NutritionValues.Add(new NutritionValue
                         {
                             Name = nut.Näringsvärde,
-                            Value = nut.Gram100,
+                            Value = value,
+                            NutritionUnitText = nut.NutritionUnit,
                             Food = product
+
                         });
                     }
 
@@ -147,14 +154,18 @@ namespace Infrastructure.Seeding
         public string CountryText { get; set; } = string.Empty;
         public string CompanyText { get; set; } = string.Empty;
         public string IngrediensText { get; set; } = string.Empty;
+        public string Storage { get; set; } = string.Empty;
+        public string Usage { get; set; } = string.Empty;
+        public string Allergens { get; set; } = string.Empty;
         public List<NutritionJson>? Nutrition { get; set; }
         public IcaCategoryJson Categories { get; set; } = new();
     }
     public class NutritionJson
     {
         public string Näringsvärde { get; set; } = string.Empty;
-        [JsonPropertyName("100 Gram")]
-        public string Gram100 { get; set; } = string.Empty;
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> Values { get; set; } = null!;
+        public string NutritionUnit {  get; set; } = string.Empty;
     }
 
     public class IcaCategoryJson
