@@ -33,13 +33,16 @@ namespace Infrastructure.Seeding
 
                 if (productsJson == null) return;
 
-                foreach (var prodJson in productsJson)
+                var existingMainCategory = await _context.Categories
+                  .Include(c => c.SubCategories)
+                      .ThenInclude(sc => sc.SubSubCategories)
+                  .ToListAsync();
+
+            foreach (var prodJson in productsJson)
                 {
-                // --- Handle Categories ---
-                     var mainCategory = await _context.Categories
-                    .Include(c => c.SubCategories)
-                        .ThenInclude(sc => sc.SubSubCategories)
-                    .FirstOrDefaultAsync(c => c.MainCategory == prodJson.Categories.MainCategory);
+                
+                var mainCategory = existingMainCategory
+                    .FirstOrDefault(s => s.MainCategory == prodJson.Categories.MainCategory);
 
                 if (mainCategory == null)
                 {
@@ -48,6 +51,7 @@ namespace Infrastructure.Seeding
                         MainCategory = prodJson.Categories.MainCategory,
                         SubCategories = new List<SubCategory>()
                     };
+                    existingMainCategory.Add(mainCategory);
                     _context.Categories.Add(mainCategory);
                 }
 
@@ -59,10 +63,8 @@ namespace Infrastructure.Seeding
                 {
                     var subCatJson = prodJson.Categories.SubCategories[0];
 
-                    // Check DB first
-                    subCategory = await _context.SubCategories
-                        .Include(sc => sc.SubSubCategories)
-                        .FirstOrDefaultAsync(sc => sc.Name == subCatJson.Name && sc.CategoryId == mainCategory.Id);
+                    subCategory = mainCategory.SubCategories
+                        .FirstOrDefault(s => s.Name == subCatJson.Name);
 
                     if (subCategory == null)
                     {
@@ -81,8 +83,8 @@ namespace Infrastructure.Seeding
                         var subSubName = subCatJson.SubSubCategories[0]; // loop if needed
 
                         // Check DB first
-                        subSubCategory = await _context.SubSubCategories
-                            .FirstOrDefaultAsync(ssc => ssc.Name == subSubName && ssc.SubCategoryId == subCategory.Id);
+                        subSubCategory = subCategory.SubSubCategories
+                            .FirstOrDefault(ssc => ssc.Name == subSubName);
 
                         if (subSubCategory == null)
                         {
@@ -114,7 +116,7 @@ namespace Infrastructure.Seeding
                         Usage = prodJson.Usage,
                         Allergens = prodJson.Allergens,
                         Storage = prodJson.Storage,
-                        Stock = 10, // default stock
+                        Stock = 40, 
                         IsAvailable = true,
                         Category = mainCategory,
                         SubCategory = subCategory,
