@@ -75,6 +75,20 @@ namespace Application.Product.Service
             return mapping;
         }
 
+        public async Task<IEnumerable<ProductResponseDto>> FilterProducts(string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price , CancellationToken ct)
+        {
+            var filter = await _uow.Products.FilterProducts(brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
+            if(filter == null)
+            {
+                throw new KeyNotFoundException("No Filter found for products");
+            }
+
+            var mapping = _mapper.Map<IEnumerable<ProductResponseDto>>(filter)
+                ?? throw new InvalidOperationException("Mapping failer");
+
+            return mapping;
+        }
+
         public async Task<bool> Update(UpdateProductDto request, CancellationToken ct)
         {
             var product = await _uow.Products.GetByIdAsync<int>(request.Id, ct);

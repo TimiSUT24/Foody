@@ -20,8 +20,12 @@ namespace Application.Product.Mapper
 
             //Responses
             CreateMap<Domain.Models.Product,ProductResponseDto>();
+            CreateMap<Domain.Models.ProductAttribute, ProductAttributeResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(s => s.Id))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(s => s.Value));
             CreateMap<Domain.Models.Product, ProductDetailsResponse>()
                 .ForMember(dest => dest.Product, opt => opt.MapFrom(s => s))
+                .ForMember(dest => dest.Attribute, opt => opt.MapFrom(s => s.ProductAttributes))
                 .ForMember(dest => dest.Nutrition, opt => opt.MapFrom(s => s.NutritionValues));
                 
                 

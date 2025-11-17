@@ -55,6 +55,15 @@ namespace Api.Controllers.Product
             return Ok(result);
         }
 
+        [HttpGet("filter")]
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
+        public async Task<IActionResult> FilterProducts(string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct)
+        {
+            var result = await _productService.FilterProducts(brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
+            return Ok(result);
+        }
+
         [HttpPut("update")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]

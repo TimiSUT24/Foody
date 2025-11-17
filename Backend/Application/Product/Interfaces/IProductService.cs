@@ -16,5 +16,6 @@ namespace Application.Product.Interfaces
         Task<bool> DeleteAsync(int id, CancellationToken ct);
         Task<bool> Update(UpdateProductDto request, CancellationToken ct);
         Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct);
+        Task<IEnumerable<ProductResponseDto>> FilterProducts(string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct);
     }
 }

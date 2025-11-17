@@ -11,6 +11,6 @@ namespace Application.Product.Dto.Response
     {
         public ProductResponseDto? Product { get; init; }
         public List<NutritionValueResponse>? Nutrition { get; init; }
-
+        public List<ProductAttributeResponse>? Attribute { get; init; }
     }
 }

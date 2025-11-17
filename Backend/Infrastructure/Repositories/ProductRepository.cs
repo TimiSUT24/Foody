@@ -25,9 +25,51 @@ namespace Infrastructure.Repositories
                 .Include(s => s.ProductAttributes)
                 .Include(s => s.NutritionValues)
                 .Include(s => s.Category).ThenInclude(s => s.SubCategories).ThenInclude(s => s.SubSubCategories)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id, ct);
 
             return query; 
+        }
+
+        public async Task<IEnumerable<Product>> FilterProducts(  
+            string? brand,
+            int? categoryId,
+            int? subCategoryId,
+            int? subSubCategoryId,
+            decimal? price,
+            CancellationToken ct)
+        {
+            IQueryable<Product> query = _context.Products
+                .AsNoTracking()
+                .Include(s => s.Category)
+                .ThenInclude(s => s.SubCategories)
+                .ThenInclude(s => s.SubSubCategories);
+
+            if (!string.IsNullOrWhiteSpace(brand))
+                query = query.Where(p => p.Brand == brand);
+
+            // Filter by Category
+            if (categoryId.HasValue && categoryId > 0)
+                query = query.Where(p => p.Category.Id == categoryId.Value);
+
+            // Filter by SubCategory
+            if (subCategoryId.HasValue && subCategoryId > 0)
+                query = query.Where(p =>
+                    p.Category.SubCategories.Any(sc => sc.Id == subCategoryId.Value));
+
+            // Filter by SubSubCategory
+            if (subSubCategoryId.HasValue && subSubCategoryId > 0)
+                query = query.Where(p =>
+                    p.Category.SubCategories
+                        .SelectMany(sc => sc.SubSubCategories)
+                        .Any(ssc => ssc.Id == subSubCategoryId.Value));
+
+            // Filter by Price
+            if (price.HasValue && price > 0)
+                query = query.Where(s => s.Price <= price);
+
+            query = query.Take(100);
+            return await query.ToListAsync(ct);
+
         }
     }
 }

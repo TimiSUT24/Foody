@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Product.Dto.Response
 {
-    public record ProductResponseDto()
+    public record ProductResponseDto
     {
         public int Id { get; init; }
         public string Name { get; init; } = string.Empty;
@@ -28,5 +28,8 @@ namespace Application.Product.Dto.Response
         public bool IsAvailable { get; init; }
         public decimal Price { get; init; }
         public int Stock { get; init; }
+        public int CategoryId { get; init; }
+        public int SubCategoryId { get; init; }
+        public int SubSubCategoryId { get; init; }  
     }
 }
