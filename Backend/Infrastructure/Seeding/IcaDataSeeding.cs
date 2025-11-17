@@ -18,7 +18,7 @@ namespace Infrastructure.Seeding
         {
    
                 // Path to your JSON file
-                var jsonFile = Path.Combine("icaDetails.json");
+                var jsonFile = Path.Combine("JsonFiles/icaDetailsGodis.json");
                 if (!File.Exists(jsonFile))
                 {
                     Console.WriteLine("Couldnt seed");
@@ -142,7 +142,7 @@ namespace Infrastructure.Seeding
                         {
                             Name = nut.Näringsvärde,
                             Value = value,
-                            NutritionUnitText = nut.NutritionUnit,
+                            NutritionUnitText = prodJson.NutritionUnitText,
                             Food = product
 
                         });
@@ -175,6 +175,8 @@ namespace Infrastructure.Seeding
         public string Storage { get; set; } = string.Empty;
         public string Usage { get; set; } = string.Empty;
         public string Allergens { get; set; } = string.Empty;
+        [JsonPropertyName("nutritionUnitText")]
+        public string NutritionUnitText { get; set; } = string.Empty;
         public List<NutritionJson>? Nutrition { get; set; }
         public IcaCategoryJson Categories { get; set; } = new();
     }
@@ -183,7 +185,6 @@ namespace Infrastructure.Seeding
         public string Näringsvärde { get; set; } = string.Empty;
         [JsonExtensionData]
         public Dictionary<string, JsonElement> Values { get; set; } = null!;
-        public string NutritionUnit {  get; set; } = string.Empty;
     }
 
     public class IcaCategoryJson

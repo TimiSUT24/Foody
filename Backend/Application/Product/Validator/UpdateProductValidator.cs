@@ -17,8 +17,6 @@ namespace Application.Product.Validator
                .MaximumLength(200).WithMessage("Product name cannot exceed 200 characters.");
             RuleFor(x => x.Id)
                 .NotEmpty().GreaterThan(0).WithMessage("Product number must be greater than zero.");
-            RuleFor(x => x.FoodTypeId)
-                .GreaterThan(0).WithMessage("Food type ID must be greater than zero.");
             RuleFor(x => x.Price)
                 .GreaterThanOrEqualTo(0).WithMessage("Price must be a non-negative value.");
             RuleFor(x => x.Stock)
