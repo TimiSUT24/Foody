@@ -23,13 +23,13 @@ namespace Infrastructure.Data
         public FoodyDbContext(DbContextOptions<FoodyDbContext> options) : base(options) { }
 
         public DbSet<Category> Categories { get; set; }
+        public DbSet<SubSubCategory> SubSubCategories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductAttribute> ProductAttributes { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<NutritionValue> NutritionValues { get; set; }
-        public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<RawMaterial> RawMaterials { get; set; }
-        public DbSet<Classification> Classifications { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -63,21 +63,9 @@ namespace Infrastructure.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Product>()
-                .HasMany(f => f.Ingredients)
-                .WithOne(i => i.Food!)
-                .HasForeignKey(i => i.FoodId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Product>()
-                .HasMany(f => f.RawMaterials)
-                .WithOne(r => r.Food!)
-                .HasForeignKey(r => r.FoodId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Product>()
-                .HasMany(f => f.Classifications)
-                .WithOne(c => c.Food!)
-                .HasForeignKey(c => c.FoodId)
+                .HasMany(a => a.ProductAttributes)
+                .WithOne(f => f.Food)
+                .HasForeignKey(f => f.FoodId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Order>(e =>
@@ -106,9 +94,33 @@ namespace Infrastructure.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Category>()
-                .HasMany(c => c.Products)
+                .HasMany(c => c.Food)
                 .WithOne(p => p.Category!)
                 .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Category>()
+               .HasMany(c => c.SubCategories)
+               .WithOne(p => p.Category!)
+               .HasForeignKey(p => p.CategoryId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SubCategory>()
+                .HasMany(c => c.Food)
+                .WithOne(p => p.SubCategory)
+                .HasForeignKey(p => p.SubCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SubCategory>()
+                .HasMany(c => c.SubSubCategories)
+                .WithOne(s => s.SubCategory)
+                .HasForeignKey(f => f.SubCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SubSubCategory>()
+                .HasMany(f => f.Food)
+                .WithOne(p => p.SubSubCategory)
+                .HasForeignKey(f => f.SubSubCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<User>()

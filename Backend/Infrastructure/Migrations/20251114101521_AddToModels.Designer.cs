@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FoodyDbContext))]
-    partial class FoodyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251114101521_AddToModels")]
+    partial class AddToModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,10 +203,10 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Storage")
                         .HasColumnType("text");
 
-                    b.Property<int?>("SubCategoryId")
+                    b.Property<int>("SubCategoryId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SubSubCategoryId")
+                    b.Property<int>("SubSubCategoryId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Usage")
@@ -305,7 +308,7 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -330,7 +333,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("SubCategoryId")
+                    b.Property<int>("SubCategoryId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -596,12 +599,14 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Models.SubCategory", "SubCategory")
                         .WithMany("Food")
                         .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Domain.Models.SubSubCategory", "SubSubCategory")
                         .WithMany("Food")
                         .HasForeignKey("SubSubCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
@@ -637,7 +642,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Models.Category", "Category")
                         .WithMany("SubCategories")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Category");
                 });
@@ -647,7 +653,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Models.SubCategory", "SubCategory")
                         .WithMany("SubSubCategories")
                         .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("SubCategory");
                 });

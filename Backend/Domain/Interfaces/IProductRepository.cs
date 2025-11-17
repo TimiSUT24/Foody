@@ -9,5 +9,13 @@ namespace Domain.Interfaces
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
+        Task<Product> GetProductDetailsById(int id, CancellationToken ct);
+        Task<IEnumerable<Product>> FilterProducts(
+            string? brand,
+            int? categoryId,
+            int? subCategoryId,
+            int? subSubCategoryId,
+            decimal? price,
+            CancellationToken ct);
     }
 }

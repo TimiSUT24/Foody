@@ -3,14 +3,6 @@ using Api.Middleware;
 using Application.Auth.Interfaces;
 using Application.Auth.Mapper;
 using Application.Auth.Service;
-using Application.Classification.Interfaces;
-using Application.Classification.Mapper;
-using Application.Classification.Service;
-using Application.Ingredient.Interfaces;
-using Application.Ingredient.Mapper;
-using Application.Ingredient.Service;
-using Application.Livsmedel.Interfaces;
-using Application.Livsmedel.Service;
 using Application.NutritionValue.Interfaces;
 using Application.NutritionValue.Mapper;
 using Application.NutritionValue.Service;
@@ -21,9 +13,6 @@ using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
 using Application.Product.Validator;
-using Application.RawMaterial.Interfaces;
-using Application.RawMaterial.Mapper;
-using Application.RawMaterial.Service;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
@@ -85,27 +74,18 @@ namespace Api
             builder.Services.AddAuthorization();
 
             //Services 
-            builder.Services.AddScoped<ILivsmedelService, LivsmedelService>();
-            builder.Services.AddHttpClient<ILivsmedelImportService,LivsmedelImportService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
-            builder.Services.AddScoped<IIngredientService, IngredientService>();
-            builder.Services.AddScoped<IRawMaterialService, RawMaterialService>();
             builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
-            builder.Services.AddScoped<IClassificationService, ClassificationService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddTransient<ImageSeeder>();
 
 
             //Unit Of Work + Repositories
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
-            builder.Services.AddScoped<IRawMaterialRepository, RawMaterialRepository>();
             builder.Services.AddScoped<INutritionValueRepository, NutritionValueRepository>();
-            builder.Services.AddScoped<IClassificationRepository, ClassificationRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
             //Mapper
@@ -115,10 +95,7 @@ namespace Api
             },
             typeof(ProductProfile),
             typeof(AuthProfile),
-            typeof(IngredientProfile),
-            typeof(RawMaterialProfile),
             typeof(NutritionValueProfile),
-            typeof(ClassificationProfile),
             typeof(OrderProfile));
 
             //AutoValidation
@@ -169,12 +146,12 @@ namespace Api
             {
                 var services = scope.ServiceProvider;
                 var userManager = services.GetRequiredService<UserManager<User>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-                var seeder = scope.ServiceProvider.GetRequiredService<ImageSeeder>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();;
+                var dbContext = services.GetRequiredService<FoodyDbContext>();
 
-                
+                await IcaDataSeeding.IcaSeed(dbContext);
                 await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
-                await seeder.RunAsync();
+                
             }
 
                 // Configure the HTTP request pipeline.

@@ -13,26 +13,17 @@ namespace Infrastructure.UnitOfWork
         private readonly FoodyDbContext _context;
 
         public IProductRepository Products { get; }
-        public IIngredientRepository Ingredients { get; }
-        public IRawMaterialRepository RawMaterials { get; }
         public INutritionValueRepository NutritionValues { get; }
-        public IClassificationRepository Classifications { get; }
         public IOrderRepository Orders { get; }
 
         public UnitOfWork(FoodyDbContext context, 
                         IProductRepository products,
-                        IIngredientRepository ingredients,
-                        IRawMaterialRepository rawMaterials,
                         INutritionValueRepository nutritionValues,
-                        IClassificationRepository classifications,
                         IOrderRepository orders)
         {
             _context = context;
             Products = products;
-            Ingredients = ingredients;
-            RawMaterials = rawMaterials;
             NutritionValues = nutritionValues;
-            Classifications = classifications;
             Orders = orders;
         }
 

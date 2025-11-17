@@ -8,21 +8,27 @@ namespace Application.Product.Dto.Request
 {
     public record UpdateProductDto(       
         int Id,
-        int FoodTypeId,
-        string? FoodType,
-        int Version,
         string Name,
-        string? ScientificName,
-        string? Project,
-        string? Analysis,
-        string? CookingMethod,
+        string? WeightText,
+        decimal? WeightValue,
+        string? WeightUnit,
+        string? Ca,
+        string? ComparePrice,
         decimal Price,
+        string? Currency,
+        string? ImageUrl,
+        string? ProductInformation,
+        string? Country,
+        string? Brand,
+        string? Ingredients,
+        string? Storage,
+        string? Usage,
+        string? Allergens,
         int Stock,
-        string? DiscountInfo,
-        DateTime? OfferValidUntil,
-        string? Supplier,
-        string? Origin,
-        string? ImageUrl
+        bool IsAvailable,
+        int? CategoryId,
+        int? SubCategoryId,
+        int? SubSubCategoryId
         );
     
 }

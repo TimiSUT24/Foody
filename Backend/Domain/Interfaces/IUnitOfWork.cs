@@ -10,10 +10,7 @@ namespace Domain.Interfaces
     {
         Task<int> SaveChangesAsync(CancellationToken ct = default);
         IProductRepository Products { get; }
-        IIngredientRepository Ingredients { get; }
-        IRawMaterialRepository RawMaterials { get; }
         INutritionValueRepository NutritionValues { get; } 
-        IClassificationRepository Classifications { get; }
         IOrderRepository Orders { get; }
     }
 }
