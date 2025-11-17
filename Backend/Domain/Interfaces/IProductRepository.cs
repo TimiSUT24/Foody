@@ -9,5 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
+        Task<Product> GetProductDetailsById(int id, CancellationToken ct);
     }
 }

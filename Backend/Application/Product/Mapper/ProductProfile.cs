@@ -1,4 +1,5 @@
-﻿using Application.Product.Dto.Request;
+﻿using Application.NutritionValue.Dto.Response;
+using Application.Product.Dto.Request;
 using Application.Product.Dto.Response;
 using AutoMapper;
 using System;
@@ -19,6 +20,11 @@ namespace Application.Product.Mapper
 
             //Responses
             CreateMap<Domain.Models.Product,ProductResponseDto>();
+            CreateMap<Domain.Models.Product, ProductDetailsResponse>()
+                .ForMember(dest => dest.Product, opt => opt.MapFrom(s => s))
+                .ForMember(dest => dest.Nutrition, opt => opt.MapFrom(s => s.NutritionValues));
+                
+                
 
         }
     }

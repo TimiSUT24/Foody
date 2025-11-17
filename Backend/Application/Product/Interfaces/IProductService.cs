@@ -15,5 +15,6 @@ namespace Application.Product.Interfaces
         Task<ProductResponseDto> GetByIdAsync(int id, CancellationToken ct);
         Task<bool> DeleteAsync(int id, CancellationToken ct);
         Task<bool> Update(UpdateProductDto request, CancellationToken ct);
+        Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct);
     }
 }

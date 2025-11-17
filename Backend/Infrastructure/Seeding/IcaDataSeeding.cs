@@ -97,9 +97,10 @@ namespace Infrastructure.Seeding
                         }
                     }
                 }
-
-                // --- Create Product ---
-                var product = new Product
+                if (!_context.Products.Any())
+                {
+                    // --- Create Product ---
+                    var product = new Product
                     {
                         Name = prodJson.Name,
                         WeightText = prodJson.WeightText,
@@ -116,7 +117,7 @@ namespace Infrastructure.Seeding
                         Usage = prodJson.Usage,
                         Allergens = prodJson.Allergens,
                         Storage = prodJson.Storage,
-                        Stock = 40, 
+                        Stock = 40,
                         IsAvailable = true,
                         Category = mainCategory,
                         SubCategory = subCategory,
@@ -150,10 +151,8 @@ namespace Infrastructure.Seeding
 
                     _context.Products.Add(product);
                 }
-
-                await _context.SaveChangesAsync();
-
-            
+            }              
+                await _context.SaveChangesAsync();         
         }
     }
 

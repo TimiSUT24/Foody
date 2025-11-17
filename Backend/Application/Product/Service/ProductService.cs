@@ -44,7 +44,9 @@ namespace Application.Product.Service
             {
                 throw new KeyNotFoundException("No products found");
             }
-            return _mapper.Map<IEnumerable<ProductResponseDto>>(products); 
+            var mapping = _mapper.Map<IEnumerable<ProductResponseDto>>(products)
+                ?? throw new InvalidOperationException("Mapping failed");
+            return mapping;
         }
 
         public async Task<ProductResponseDto> GetByIdAsync(int id, CancellationToken ct)
@@ -54,7 +56,23 @@ namespace Application.Product.Service
             {
                 throw new KeyNotFoundException("Product not found");
             }
-            return _mapper.Map<ProductResponseDto>(product);
+
+            var mapping = _mapper.Map<ProductResponseDto>(product)
+                ?? throw new InvalidOperationException("Mapping failed");
+            return mapping;
+        }
+
+        public async Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct)
+        {
+            var product = await _uow.Products.GetProductDetailsById(id, ct);
+            if(product == null)
+            {
+                throw new KeyNotFoundException("Couldnt find ProductDetails");
+            }
+
+            var mapping = _mapper.Map<ProductDetailsResponse>(product) 
+                ?? throw new InvalidOperationException("Mapping failed");
+            return mapping;
         }
 
         public async Task<bool> Update(UpdateProductDto request, CancellationToken ct)
