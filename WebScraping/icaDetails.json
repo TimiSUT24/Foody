@@ -1,0 +1,33 @@
+[
+  {
+    "name": "Päron Conference ca 220g Klass 1 ICA",
+    "weightText": "Ca 220 g",
+    "caPart": "Ca",
+    "weightValue": 220,
+    "weightUnit": "g",
+    "comparePrice": "20,00 kr/kg",
+    "currentPrice": 4.4,
+    "attributes": [],
+    "imgUrl": "https://handlaprivatkund.ica.se/images-v3/bf7a00ca-390e-4769-865f-dc369586872e/024d66eb-c994-41c6-83ef-c22e92f1aac3/500x500.jpg",
+    "productInformation": "ICA Päron Conference är sött och påminner om melon i smaken. Passar att äta som det är, till efterrätter, bakning eller till ostbrickan.",
+    "countryText": "Nederländerna",
+    "companyText": "ICA",
+    "ingrediensText": "",
+    "storage": "",
+    "allergens": "",
+    "usage": "",
+    "nutrition": [],
+    "nutritionUnitText": "",
+    "categories": {
+      "mainCategory": "Frukt & Grönt",
+      "subCategories": [
+        {
+          "name": "Frukt",
+          "subSubCategories": [
+            "Päron"
+          ]
+        }
+      ]
+    }
+  }
+]
