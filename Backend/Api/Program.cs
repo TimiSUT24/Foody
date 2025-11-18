@@ -139,6 +139,20 @@ namespace Api
                         System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
                 };
             });
+
+            //Cors
+            var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins(allowedOrigins!)
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
 
             //Seed users and roles

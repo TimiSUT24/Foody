@@ -66,9 +66,8 @@ namespace Infrastructure.Repositories
             // Filter by Price
             if (price.HasValue && price > 0)
                 query = query.Where(s => s.Price <= price);
-
-            query = query.Take(100);
-            return await query.ToListAsync(ct);
+            
+            return await query.Take(100).ToListAsync(ct);
 
         }
     }
