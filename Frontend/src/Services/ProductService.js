@@ -1,4 +1,4 @@
-import {api} from "../Api/api"
+import api from "../Api/api"
 
 export const ProductService = {
     async getProducts(filters = {}) {
