@@ -28,10 +28,6 @@
 
   <ItemGroup>
     <Folder Include="Category\Dto\Request\" />
-    <Folder Include="Category\Dto\Response\" />
-    <Folder Include="Category\Interfaces\" />
-    <Folder Include="Category\Mapper\" />
-    <Folder Include="Category\Service\" />
     <Folder Include="Category\Validator\" />
     <Folder Include="OrderItem\Dto\Request\" />
     <Folder Include="OrderItem\Dto\Response\" />

@@ -3,6 +3,9 @@ using Api.Middleware;
 using Application.Auth.Interfaces;
 using Application.Auth.Mapper;
 using Application.Auth.Service;
+using Application.Category.Interfaces;
+using Application.Category.Mapper;
+using Application.Category.Service;
 using Application.NutritionValue.Interfaces;
 using Application.NutritionValue.Mapper;
 using Application.NutritionValue.Service;
@@ -79,6 +82,7 @@ namespace Api
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
             //Unit Of Work + Repositories
@@ -87,6 +91,7 @@ namespace Api
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<INutritionValueRepository, NutritionValueRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>
@@ -96,7 +101,8 @@ namespace Api
             typeof(ProductProfile),
             typeof(AuthProfile),
             typeof(NutritionValueProfile),
-            typeof(OrderProfile));
+            typeof(OrderProfile),
+            typeof(CategoryProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);
@@ -153,7 +159,7 @@ namespace Api
                 });
             });
 
-            var app = builder.Build();
+            var app = builder.Build();       
 
             //Seed users and roles
             using (var scope = app.Services.CreateScope())
@@ -176,9 +182,10 @@ namespace Api
                 }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowFrontend"); // Cors after httpsredirection
             app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthorization(); //Authorization after authentication
 
 
             app.MapControllers();

@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         IProductRepository Products { get; }
         INutritionValueRepository NutritionValues { get; } 
         IOrderRepository Orders { get; }
+        ICategoryRepository Category { get; }
     }
 }
