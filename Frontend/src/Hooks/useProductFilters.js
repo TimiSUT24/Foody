@@ -9,9 +9,9 @@ export function useProductFilters(){
         price: null
     });
 
-    const updateFilter = (key, value) => {
-        setFilters(prev => ({...prev, [key]: value}))
-    };
+    const updateFilter = (newValues) => {
+    setFilters(prev => ({ ...prev, ...newValues }));
+};
 
     return{filters,updateFilter};
 

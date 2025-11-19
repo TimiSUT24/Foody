@@ -1,0 +1,88 @@
+.category-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-button {
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 220px;
+    z-index: 10;
+}
+
+.category-menu:hover .menu-dropdown {
+    display: block;
+}
+
+.menu-item {
+    padding: 8px 12px;
+    position: relative;
+}
+
+.menu-item:hover {
+    background: #eee;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    left: 220px;
+    top: 0;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 220px;
+}
+
+.menu-item:hover .submenu {
+    display: block;
+}
+
+.submenu-item {
+    padding: 8px 12px;
+    position: relative;
+}
+
+.submenu-item:hover {
+    background: #eee;
+}
+
+.subsubmenu {
+    display: none;
+    position: absolute;
+    left: 220px;
+    top: 0;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 220px;
+}
+
+.submenu-item:hover .subsubmenu {
+    display: block;
+}
+
+.submenu:hover{
+    display:block;
+}
+
+.subsubmenu:hover {
+    display: block;
+}
+
+.subsubmenu-item {
+    padding: 8px 12px;
+}
+
+.subsubmenu-item:hover {
+    background: #ddd;
+}

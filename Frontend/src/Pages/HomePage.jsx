@@ -15,6 +15,20 @@ export default function HomePage(){
         ProductService.getProducts(filters).then(setProducts);
     }, [filters])
 
+    //filter products by category
+    const filteredProducts = products.filter(p => {
+        if (filters.subSubCategoryId) {
+            return p.subSubCategoryId === filters.subSubCategoryId;
+        } else if (filters.subCategoryId) {
+            return p.subCategoryId === filters.subCategoryId;
+        } else if (filters.categoryId) {
+            return p.categoryId === filters.categoryId;
+        } else {
+            return true; 
+        }
+    });
+
+
     return (
         <div>
             <ProductFilters
@@ -23,7 +37,7 @@ export default function HomePage(){
             </ProductFilters>
 
             <div className ="product-grid">
-                {products.map(p => (
+                {filteredProducts.map(p => (
                   <div key={p.id} className="product-card">
                     <h4>{p.name}</h4>
                     <p>{p.brand}</p>
