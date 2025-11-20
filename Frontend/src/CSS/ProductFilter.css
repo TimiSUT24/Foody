@@ -1,5 +1,16 @@
+
+.filter-container{
+    background: purple;
+    height:100px;
+    display: flex;
+    gap:50px;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
 .category-menu {
-    position: relative;
+    position:relative;
     display: inline-block;
 }
 
@@ -85,4 +96,40 @@
 
 .subsubmenu-item:hover {
     background: #ddd;
+}
+
+.filter-container button{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    height:45px;
+    width:160px;
+    display: flex;
+    align-items: center;
+    border-width: 1px;
+    background-color: white;
+}
+
+.filter-container input{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-width: 1px;
+    height:40px;
+    width:160px;
+}
+
+.filter-container select{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-width: 1px;
+    height:45px;
+    width:160px;
 }

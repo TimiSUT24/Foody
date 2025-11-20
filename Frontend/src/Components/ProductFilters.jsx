@@ -26,7 +26,7 @@ export default function ProductFilters({
 
     return (
         <div className ="filter-container">
-            <h3>Filters</h3>
+            <h3>Sortera:</h3>
 
             <select 
             value ={filters.brand} 
@@ -39,8 +39,20 @@ export default function ProductFilters({
 
             <div className="category-menu">
                 <button className="menu-button">Välj kategori</button>
+                
 
                 <div className="menu-dropdown">
+                    <div 
+                        className="menu-item"
+                        onClick={() => updateFilter({
+                            categoryId: null,
+                            subCategoryId: null,
+                            subSubCategoryId: null
+                        })}                       
+                    >
+                        Alla kategorier
+                    </div>
+
                     {categories.map(cat => (
                         <div className="menu-item" key={cat.id}>
                             <span 
@@ -53,6 +65,7 @@ export default function ProductFilters({
                                 }
                             >
                                 {cat.mainCategory}
+                                {cat.subCategories?.length > 0 && <span className="arrow">▶</span>}
                             </span>
 
                                 {/*Sub category */}
@@ -69,6 +82,7 @@ export default function ProductFilters({
                                             }
                                         >
                                             {sc.name}
+                                            {sc.subSubCategories?.length > 0 && <span className="arrow">▶</span>}
                                         </span>
 
                                         {/* Subsub category */}
@@ -85,7 +99,7 @@ export default function ProductFilters({
                                                         })
                                                     }
                                                 >
-                                                    {ss.name}
+                                                    {ss.name}                                                    
                                                 </div>
                                             ))}
                                         </div>
@@ -101,10 +115,18 @@ export default function ProductFilters({
 
              <input  
                 type="number"
-                placeholder="Price"
+                placeholder="Pris"
                 value={filters.price}
                 onChange={(e) => updateFilter({price: Number(e.target.value)})}
             />
+
+            <button className="reset-filter" onClick = {() => updateFilter({
+                categoryId: null,
+                subCategoryId: null,
+                subSubCategoryId: null,
+                price: null,
+                brand: null
+            })}>Rensa filter</button>
             
         </div>
     )

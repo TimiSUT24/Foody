@@ -2,9 +2,12 @@ import {useState,useEffect} from 'react'
 import {ProductService} from "../Services/ProductService"
 import {useProductFilters} from "../Hooks/useProductFilters";
 import ProductFilters from "../Components/ProductFilters";
+import ProductCard from "../Components/ProductCard"
+import "../CSS/HomePage.css"
 
 export default function HomePage(){
     const [products, setProducts] = useState([]);
+
     
     const {
         filters,
@@ -30,19 +33,15 @@ export default function HomePage(){
 
 
     return (
-        <div>
+        <div className ="home-container">
             <ProductFilters
             filters={filters}
             updateFilter={updateFilter}>
             </ProductFilters>
 
             <div className ="product-grid">
-                {filteredProducts.map(p => (
-                  <div key={p.id} className="product-card">
-                    <h4>{p.name}</h4>
-                    <p>{p.brand}</p>
-                    <p>{p.price}</p>
-                  </div>  
+                {filteredProducts.map(p => (                   
+                    <ProductCard key={p.id} product={p}></ProductCard>         
                 ))}
             </div>
         </div>
