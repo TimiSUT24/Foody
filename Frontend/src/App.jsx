@@ -3,6 +3,7 @@ import HomePage from './Pages/HomePage'
 import NavBar from './Components/NavBar'
 import CartPage from './Pages/CartPage'
 import DetailsPage from './Pages/ProductDetailsPage'
+import LoginPage from './Pages/LoginPage'
 import './App.css'
 
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/cart" element={<CartPage />}></Route>
         <Route path="/product/:id" element={<DetailsPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
       </Routes>
     </>
   )
