@@ -4,6 +4,7 @@ import {useProductFilters} from "../Hooks/useProductFilters";
 import ProductFilters from "../Components/ProductFilters";
 import ProductCard from "../Components/ProductCard"
 import "../CSS/HomePage.css"
+import "../CSS/ProductCard.css"
 
 export default function HomePage(){
     const [products, setProducts] = useState([]);
