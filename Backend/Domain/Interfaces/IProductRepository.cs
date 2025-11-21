@@ -11,6 +11,7 @@ namespace Domain.Interfaces
     {
         Task<Product> GetProductDetailsById(int id, CancellationToken ct);
         Task<IEnumerable<Product>> FilterProducts(
+            string? name,
             string? brand,
             int? categoryId,
             int? subCategoryId,

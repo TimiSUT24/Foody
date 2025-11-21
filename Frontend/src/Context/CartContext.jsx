@@ -3,9 +3,22 @@ import {createContext,useContext,useState,useEffect} from 'react'
 const CartContext= createContext();
 
 export function CartProvider({children}){
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState(() => {
+        const saved = localStorage.getItem("cart")
+        return saved ? JSON.parse(saved)
+
+    :[]});
+
+      useEffect(() => {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    },[cart])
 
     const addToCart = (product) => {
+
+           if(!product || typeof product !== "object"){
+        console.error("product must be an object",product);
+        return;
+    }
         setCart(prev => {
             const existing = prev.find(p => p.id === product.id);
             if(existing){
@@ -30,7 +43,7 @@ export function CartProvider({children}){
         })
     }
 
-    const totalItems = cart.reduce((sum,item) => sum = item.qty, 0);
+    const totalItems = cart.reduce((sum,item) => sum + item.qty, 0);
     const totalPrice = cart.reduce((sum,item) => sum + item.price * item.qty, 0);
 
     return (
@@ -46,4 +59,6 @@ export function CartProvider({children}){
     );
 }
 
-export const useCart = () => useContext(CartContext);
+export function useCart(){
+    return useContext(CartContext);
+}

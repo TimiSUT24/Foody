@@ -79,7 +79,7 @@ export default function NavBar (){
         <NavLink to="/about">Om</NavLink>
         <NavLink to="/login">Logga in</NavLink>
         <NavLink to="/register">Registrera</NavLink>
-        <NavLink to="/cart">Varukorg {totalPrice} {totalItems}</NavLink>
+        <NavLink to="/cart">Varukorg {totalPrice.toFixed(2)} {totalItems}</NavLink>
       </> 
     );
   };

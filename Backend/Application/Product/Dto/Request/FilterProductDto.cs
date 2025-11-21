@@ -8,6 +8,7 @@ namespace Application.Product.Dto.Request
 {
     public record FilterProductDto
     {
+        public string? Name { get; init; }
         public string? Brand { get; init; }
         public int? CategoryId { get; init; }
         public int? SubCategoryId { get; init; }

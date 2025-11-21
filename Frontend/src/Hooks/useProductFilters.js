@@ -2,6 +2,7 @@ import {useState} from 'react'
 
 export function useProductFilters(){
     const [filters, setFilters] = useState({
+        name: "",
         brand: "",
         categoryId: null,
         subCategoryId: null,

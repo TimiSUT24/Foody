@@ -31,6 +31,7 @@ namespace Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Product>> FilterProducts(  
+            string name,
             string? brand,
             int? categoryId,
             int? subCategoryId,
@@ -43,6 +44,13 @@ namespace Infrastructure.Repositories
                 .Include(s => s.Category)
                 .ThenInclude(s => s.SubCategories)
                 .ThenInclude(s => s.SubSubCategories);
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                string lowerName = name.ToLower();
+                query = query.Where(s => s.Name.ToLower().Contains(lowerName));
+            }
+             
 
             if (!string.IsNullOrWhiteSpace(brand))
                 query = query.Where(p => p.Brand == brand);

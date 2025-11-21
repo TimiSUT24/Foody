@@ -127,7 +127,13 @@ export default function ProductFilters({
                 price: null,
                 brand: null
             })}>Rensa filter</button>
-            
+
+            <input 
+            type="text"
+            placeholder="Sök"
+            value={filters.name}
+            onChange={(e) => updateFilter({name: e.target.value})} >
+            </input>
         </div>
     )
 }
