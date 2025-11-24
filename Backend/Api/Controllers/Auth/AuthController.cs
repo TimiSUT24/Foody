@@ -51,7 +51,6 @@ namespace Api.Controllers.Auth
         [HttpPost("login")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
-        [ProducesResponseType(statusCode:409)]
         public async Task<IActionResult> Login([FromBody] LoginDto request, CancellationToken ct)
         {
             var result = await _authService.LoginAsync(request, ct);

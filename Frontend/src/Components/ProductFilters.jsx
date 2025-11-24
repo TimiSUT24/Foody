@@ -26,7 +26,8 @@ export default function ProductFilters({
 
     return (
         <div className ="filter-container">
-            <h3>Sortera:</h3>
+           
+            <h3 style={{display:"flex",alignItems:"center",gap:10}}> <img src="/IMG/icons8-sort-50.png" style={{height:40}}></img> Sortera:</h3>
 
             <select 
             value ={filters.brand} 
@@ -38,7 +39,7 @@ export default function ProductFilters({
             </select>
 
             <div className="category-menu">
-                <button className="menu-button">Välj kategori</button>
+                <button className="menu-button">Välj kategori <img src="/IMG/icons8-expand-arrow-50.png" style={{width:20,marginLeft:40}} /></button>
                 
 
                 <div className="menu-dropdown">
@@ -65,7 +66,7 @@ export default function ProductFilters({
                                 }
                             >
                                 {cat.mainCategory}
-                                {cat.subCategories?.length > 0 && <span className="arrow">▶</span>}
+                                {cat.subCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" style={{width:15}}></img>}
                             </span>
 
                                 {/*Sub category */}
@@ -82,7 +83,7 @@ export default function ProductFilters({
                                             }
                                         >
                                             {sc.name}
-                                            {sc.subSubCategories?.length > 0 && <span className="arrow">▶</span>}
+                                            {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" style={{width:15}}></img>}
                                         </span>
 
                                         {/* Subsub category */}
@@ -119,20 +120,25 @@ export default function ProductFilters({
                 value={filters.price}
                 onChange={(e) => updateFilter({price: Number(e.target.value)})}
             />
-
-            <input 
-            type="text"
-            placeholder="Sök"
-            value={filters.name}
-            onChange={(e) => updateFilter({name: e.target.value})} >
-            </input>
+            <div style={{display:"flex", flexDirection:"row",position:"absolute",top:400,backgroundColor:"white",borderRadius:10,paddingLeft:15}}>
+                <img src="/IMG/icons8-search-48.png" alt="" style={{width:20,placeSelf:"center",paddingRight:5}} />
+                 <input 
+                        type="text"
+                        placeholder="Sök"
+                        value={filters.name}
+                        onChange={(e) => updateFilter({name: e.target.value})}
+                        className="search">
+                    </input>                  
+            </div>
+           
 
             <button className="reset-filter" onClick = {() => updateFilter({
                 categoryId: null,
                 subCategoryId: null,
                 subSubCategoryId: null,
                 price: null,
-                brand: null
+                brand: null,
+                name: null
             })}>Rensa filter</button>
 
         </div>

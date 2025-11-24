@@ -1,6 +1,5 @@
 
 .filter-container{
-    position:fixed;
     height:100px;
     display: flex;
     gap:50px;
@@ -8,7 +7,7 @@
     align-items: center;
     background-color: white;
     width:100vw;
-    left:0;
+    justify-self: center;
 }
 
 .category-menu {
@@ -41,6 +40,7 @@
 .menu-item {
     padding: 8px 12px;
     position: relative;
+    display:flex;
 }
 
 .menu-item:hover {
@@ -64,6 +64,7 @@
 .submenu-item {
     padding: 8px 12px;
     position: relative;
+    display:flex;
 }
 
 .submenu-item:hover {
@@ -94,6 +95,7 @@
 
 .subsubmenu-item {
     padding: 8px 12px;
+    display: flex;
 }
 
 .subsubmenu-item:hover {
@@ -110,8 +112,8 @@
     width:160px;
     display: flex;
     align-items: center;
-    border-width: 1px;
     background-color: white;
+    border: 1px solid #5e5d5d; 
 }
 
 .filter-container input{
@@ -120,9 +122,10 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-    border-width: 1px;
+    border: 1px solid #5e5d5d; 
     height:40px;
     width:160px;
+    -webkit-text-fill-color: black;
 }
 
 .filter-container select{
@@ -131,7 +134,8 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-    border-width: 1px;
+    border: 1px solid #5e5d5d; 
     height:45px;
     width:160px;
+    -webkit-text-fill-color: black;
 }

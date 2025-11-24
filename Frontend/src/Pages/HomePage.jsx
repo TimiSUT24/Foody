@@ -35,6 +35,11 @@ export default function HomePage(){
 
     return (
         <div className ="home-container">
+            <div className="food-container">
+                <h2 style={{position:"absolute",top:250,placeSelf:"center",color:"white"}}>Premiumlivsmedel, levererade färska</h2>
+                <p style={{position:"absolute",top:300,placeSelf:"center",color:"white"}}>Upptäck utsökta köttdetaljer, hantverksbakat bröd och den allra färskaste havsmaten — direkt från noggrant utvalda kvalitetsleverantörer.</p>
+                <img src="IMG/food.jpg" alt="" className="food-pic" />
+            </div>
             <ProductFilters
             filters={filters}
             updateFilter={updateFilter}>

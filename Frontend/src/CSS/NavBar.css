@@ -11,14 +11,31 @@
     align-items: center;
     justify-content: center;
     z-index:9999;
+    border-bottom: 1px solid rgba(30, 58, 138, 0.5);
+    background-color: rgba(15, 23, 42, 0.95); 
+    backdrop-filter: blur(8px); 
 }
 
 .navbar-links{
     display: flex;
     gap:50px;
+    -webkit-text-fill-color: rgb(212, 210, 210);
+}
+
+.navbar-links a{
+    text-decoration: none;
+}
+
+.navbar-links a:hover{
+    -webkit-text-fill-color: whitesmoke;
 }
 
 .navbar-left{
    position:absolute;
-   left:250px;   
+   left:250px;
+   -webkit-text-fill-color: whitesmoke;
+}
+
+.navbar-logo{
+    text-decoration: none;
 }
