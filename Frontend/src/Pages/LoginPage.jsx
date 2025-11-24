@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import {useAuth} from "../Context/AuthContext"
 import { useNavigate } from 'react-router-dom'
+import "../CSS/LoginPage.css"
 
 export default function LoginPage () {
 
@@ -20,8 +21,12 @@ export default function LoginPage () {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-    
+
+          if (!loginRequest.email || !loginRequest.password) {
+            setError("Email and password required");
+            return;
+            }
+   
         try{
             await login(loginRequest.email,loginRequest.password);
             navigate("/");
@@ -32,24 +37,29 @@ export default function LoginPage () {
 
 
     return (
-        <div className="login-page">Login
+        <div className="login-page">
+            <h1>Logga in</h1>
+            <p>Skriv in dina uppgifter här</p>
 
             <form onSubmit={handleSubmit}>
-            <input 
+            <h3>E-post</h3>
+            <input
             type="text"
             name="email"
-            placeholder="email"
+            placeholder="namn@example.com"
             value={loginRequest.email} 
             onChange={handleChange}/>
 
+            <h3>Lösenord</h3>
             <input 
-            type="text"
+            type="password"
             name="password"
-            placeholder="password"
+            placeholder="••••••••"
             value={loginRequest.password} 
             onChange={handleChange}/>
 
-            <button type="submit" className="login-button">Login</button>
+            <button type="submit" className="login-button">Logga in</button>
+            {error && <p>{error}</p>}
             </form>
 
         </div>

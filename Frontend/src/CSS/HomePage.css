@@ -1,9 +1,10 @@
 
 body{
     background-color:rgb(225, 234, 241);
+    margin:0;
 }
+
 .product-grid{
-    margin-top:10px;
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     padding:10px;

@@ -40,6 +40,7 @@ export default function HomePage(){
             updateFilter={updateFilter}>
             </ProductFilters>
 
+
             <div className ="product-grid">
                 {filteredProducts.map(p => (                   
                     <ProductCard key={p.id} product={p}></ProductCard>         

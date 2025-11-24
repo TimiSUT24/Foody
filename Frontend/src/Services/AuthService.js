@@ -8,7 +8,7 @@ export const AuthService = {
     },
 
     register: async (body) => {
-        const response = await api.post("/api/Auth/register", {body});
+        const response = await api.post("/api/Auth/register", body);
         return response;
     },
 

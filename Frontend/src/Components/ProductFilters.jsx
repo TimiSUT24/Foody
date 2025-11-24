@@ -120,6 +120,13 @@ export default function ProductFilters({
                 onChange={(e) => updateFilter({price: Number(e.target.value)})}
             />
 
+            <input 
+            type="text"
+            placeholder="Sök"
+            value={filters.name}
+            onChange={(e) => updateFilter({name: e.target.value})} >
+            </input>
+
             <button className="reset-filter" onClick = {() => updateFilter({
                 categoryId: null,
                 subCategoryId: null,
@@ -128,12 +135,6 @@ export default function ProductFilters({
                 brand: null
             })}>Rensa filter</button>
 
-            <input 
-            type="text"
-            placeholder="Sök"
-            value={filters.name}
-            onChange={(e) => updateFilter({name: e.target.value})} >
-            </input>
         </div>
     )
 }
