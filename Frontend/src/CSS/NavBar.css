@@ -31,8 +31,7 @@
 }
 
 .navbar-left{
-   position:absolute;
-   left:250px;
+   position:static;
    -webkit-text-fill-color: whitesmoke;
 }
 

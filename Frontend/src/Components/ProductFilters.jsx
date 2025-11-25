@@ -114,12 +114,21 @@ export default function ProductFilters({
                 </div>
             </div>
 
-             <input  
-                type="number"
-                placeholder="Pris"
-                value={filters.price}
-                onChange={(e) => updateFilter({price: Number(e.target.value)})}
-            />
+                    <input  
+                    type="number"
+                    placeholder="Pris"
+                    value={filters.price}
+                    onChange={(e) =>{ 
+                        const value = e.target.value
+                        if(value === ""){
+                            updateFilter({price: ""})
+                            return;
+                        }
+                        updateFilter({price: Number(value)})}}
+                    id="filter-price"
+                    min="0"
+                />
+
             <div style={{display:"flex", flexDirection:"row",position:"absolute",top:400,backgroundColor:"white",borderRadius:10,paddingLeft:15}}>
                 <img src="/IMG/icons8-search-48.png" alt="" style={{width:20,placeSelf:"center",paddingRight:5}} />
                  <input 

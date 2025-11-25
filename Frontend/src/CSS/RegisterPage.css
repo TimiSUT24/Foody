@@ -24,7 +24,7 @@
 
 .register-row{
     display: flex;
-    gap:20px;
+    gap:40px;
     justify-content: center;
     margin-bottom:20px;
 }
