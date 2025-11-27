@@ -25,7 +25,7 @@
 .register-row{
     display: flex;
     gap:40px;
-    justify-content: center;
+    place-self: center;
     margin-bottom:20px;
 }
 

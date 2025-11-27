@@ -115,5 +115,18 @@ namespace Application.Product.Service
             return true;
         }
 
+        public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
+        {
+            var brands = await _uow.Products.GetBrands(categoryId);
+            if (brands == null)
+            {
+                throw new KeyNotFoundException("No brands found");
+            }
+
+            var mapping = _mapper.Map<IEnumerable<string?>>(brands);
+
+            return mapping;
+        }
+
     }
 }

@@ -30,6 +30,23 @@ namespace Infrastructure.Repositories
             return query; 
         }
 
+        public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
+        {
+            var query = _context.Products.AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(s => s.CategoryId == categoryId);
+            }
+
+            return await query
+                .AsNoTracking()
+                .Select(s => s.Brand)
+                .Where(s => s != null && s != "")
+                .Distinct()
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Product>> FilterProducts(  
             string name,
             string? brand,
@@ -75,7 +92,7 @@ namespace Infrastructure.Repositories
             if (price.HasValue && price > 0)
                 query = query.Where(s => s.Price <= price);
             
-            return await query.Take(100).ToListAsync(ct);
+            return await query.Take(200).OrderBy(s => s.Name).ToListAsync(ct);
 
         }
     }

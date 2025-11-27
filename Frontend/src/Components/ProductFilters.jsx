@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react'
 import {CategoryService} from '../Services/CategoryService'
+import { ProductService } from '../Services/ProductService';
 import "../CSS/ProductFilter.css"
 
 export default function ProductFilters({
@@ -8,6 +9,7 @@ export default function ProductFilters({
 }){
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [brands, setBrands] = useState([])
 
     useEffect(() => {
     const loadCategories = async () => {
@@ -24,6 +26,19 @@ export default function ProductFilters({
     loadCategories();
 }, []);
 
+    useEffect(() => {
+        const loadBrands = async () => {
+            try{
+                const params = filters.categoryId ? {categoryId: filters.categoryId} : {};
+                const data = await ProductService.getProductBrands(params);
+                setBrands(data);
+            }catch (err){
+                console.error("Failed to load brands", err)
+            }
+        }
+        loadBrands();
+    }, [filters.categoryId])
+
     return (
         <div className ="filter-container">
            
@@ -34,8 +49,11 @@ export default function ProductFilters({
             onChange={(e) => updateFilter({brand: e.target.value})}>
 
                 <option value="">Alla</option>
-                <option value="Scan">Scan</option>
-                <option value="ICA">ICA</option>
+                {brands.map((brand, index) => (
+                    <option key={index} value={brand}>
+                        {brand}
+                    </option>
+                ))}
             </select>
 
             <div className="category-menu">
@@ -130,24 +148,25 @@ export default function ProductFilters({
                 />
 
             <div style={{display:"flex", flexDirection:"row",position:"absolute",top:400,backgroundColor:"white",borderRadius:10,paddingLeft:15}}>
-                <img src="/IMG/icons8-search-48.png" alt="" style={{width:20,placeSelf:"center",paddingRight:5}} />
+                <img src="/IMG/icons8-search-48.png" alt="" style={{width:20,placeSelf:"center",paddingRight:5}} />              
                  <input 
                         type="text"
                         placeholder="Sök"
-                        value={filters.name}
+                        value={filters.name}                       
                         onChange={(e) => updateFilter({name: e.target.value})}
                         className="search">
                     </input>                  
             </div>
            
 
-            <button className="reset-filter" onClick = {() => updateFilter({
+            <button className="reset-filter" onClick = {() =>                
+                updateFilter({
                 categoryId: null,
                 subCategoryId: null,
                 subSubCategoryId: null,
-                price: null,
-                brand: null,
-                name: null
+                price: "",
+                brand: "",
+                name: ""
             })}>Rensa filter</button>
 
         </div>

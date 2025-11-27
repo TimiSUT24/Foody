@@ -83,5 +83,12 @@ namespace Api.Controllers.Product
             var result = await _productService.DeleteAsync(id, ct);
             return Ok(result);
         }
+
+        [HttpGet("brands")]
+        public async Task<IActionResult> GetBrands([FromQuery] int? categoryId)
+        {
+            var result = await _productService.GetBrands(categoryId);
+            return Ok(result);
+        }
     }
 }
