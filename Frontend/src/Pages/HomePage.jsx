@@ -19,7 +19,7 @@ export default function HomePage(){
         ProductService.getProducts(filters).then(setProducts);
     }, [filters])
 
-    //filter products by category
+    //filter products by categoryid
     const filteredProducts = products.filter(p => {
         if (filters.subSubCategoryId) {
             return p.subSubCategoryId === filters.subSubCategoryId;
