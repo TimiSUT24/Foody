@@ -10,5 +10,6 @@ namespace Application.Order.Dto.Request
     public record CreateOrderDto
     {
         public required List<CreateOrderItemDto> Items { get; init; }
+        public required ShippingInformation ShippingInformation { get; init; }
     }
 }

@@ -52,7 +52,18 @@ namespace Application.Order.Service
                 TotalPrice = totalPrice,
                 OrderStatus = Domain.Enum.OrderStatus.Pending,
                 OrderDate = DateTime.UtcNow,
-                OrderItems = orderItems
+                OrderItems = orderItems,
+                ShippingInformation = new Domain.Models.ShippingInformation
+                {
+                    FirstName = request.ShippingInformation.FirstName,
+                    LastName = request.ShippingInformation.LastName,
+                    Adress = request.ShippingInformation.Adress,
+                    City = request.ShippingInformation.City,
+                    State= request.ShippingInformation.State,
+                    PostalCode = request.ShippingInformation.PostalCode,
+                    PhoneNumber = request.ShippingInformation.PhoneNumber,
+                    Email = request.ShippingInformation.Email
+                }
             };
 
          

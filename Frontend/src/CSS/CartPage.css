@@ -11,7 +11,7 @@
 #shipping-information{  
     grid-area:shipping;
     width:800px;
-    height:420px;
+    height:480px;
     background-color: white;
     border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -66,7 +66,7 @@
     gap:20px;
     background-color: white;
     width:500px;
-    height:600px;
+    height: 670px;
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -86,9 +86,10 @@
     display:grid;
     grid-template-areas:     "img p2"    "img p"    "img qty";
     width:400px;
+    height:80px;
+    max-height:100px;
     align-items: center;
     justify-content: start;
-    gap:2px;
     padding:10px;
     margin-top:20px;
     background-color: whitesmoke;
@@ -99,6 +100,17 @@
     -o-border-radius: 10px;
 }
 
+#cart-header{
+    display:flex;
+    place-self: start;
+    margin-left:35px;
+}
+
+#cart-header h3{
+    font-size:22px;
+    margin-bottom:0;
+    margin-top:33px;
+}
 .cart-item img{
     grid-area:img;
     padding-left:20px;
@@ -110,12 +122,16 @@
     grid-area:p2;
     text-align: left;
     padding-left:10px;
+    margin-bottom:0;
+    font-weight: bold;
 }
 
 .cart-item p{
     grid-area:p;
     justify-self: start;
     padding-left:10px;
+    margin-bottom:5px;
+    margin-top:5px;
 }
 
 .qty-controls{

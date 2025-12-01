@@ -92,7 +92,7 @@ namespace Infrastructure.Repositories
             if (price.HasValue && price > 0)
                 query = query.Where(s => s.Price <= price);
             
-            return await query.Take(200).OrderBy(s => s.Name).ToListAsync(ct);
+            return await query.Take(200).OrderBy(s => s.Price).ToListAsync(ct);
 
         }
     }

@@ -20,7 +20,7 @@ namespace Api.Controllers.Order
         private Guid UserId =>
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)
                 ? id
-                : throw new InvalidOperationException("Ingen inloggad användare.");
+                : throw new UnauthorizedAccessException("Ingen inloggad användare.");
 
         [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
