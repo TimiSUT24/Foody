@@ -4,6 +4,7 @@ using Application.Order.Interfaces;
 using AutoMapper;
 using Domain.Interfaces;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace Application.Order.Service
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
         {
             decimal totalPrice = 0;
             var orderItems = new List<OrderItem>();
@@ -70,19 +71,17 @@ namespace Application.Order.Service
             await _uow.Orders.AddAsync(order, ct);
             await _uow.SaveChangesAsync(ct);
 
-            return true;
+            return order.Id;
         }
 
-        public async Task<OrderResponse> GetByIdAsync(Guid id, CancellationToken ct)
+        public async Task<Domain.Models.Order> GetByIdAsync(Guid id, CancellationToken ct)
         {
             var order = await _uow.Orders.GetOrder(id, ct);
             if(order == null)
             {
                 throw new KeyNotFoundException($"No Order found");
             }
-            var response = _mapper.Map<OrderResponse>(order);
-
-            return response;
+            return order;
         }
 
         public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, CancellationToken ct)
@@ -136,5 +135,25 @@ namespace Application.Order.Service
             }
 
         }
+
+        public async Task UpdateStatusAsync(Guid orderId, string status, CancellationToken ct)
+        {
+            var order = await _uow.Orders.GetByIdAsync(orderId, ct);
+            if (order == null)
+                throw new Exception("Order not found");
+
+            // Map Klarna status to your enum
+            order.OrderStatus = status switch
+            {
+                "checkout_incomplete" => Domain.Enum.OrderStatus.Pending,
+                "checkout_complete" => Domain.Enum.OrderStatus.Shipped,
+                "canceled" => Domain.Enum.OrderStatus.Cancelled,
+                _ => order.OrderStatus
+            };
+
+            _uow.Orders.Update(order);
+            await _uow.SaveChangesAsync();
+        }
+
     }
 }

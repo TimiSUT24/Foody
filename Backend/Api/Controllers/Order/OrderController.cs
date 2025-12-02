@@ -1,8 +1,11 @@
-﻿using Application.Order.Dto.Request;
+﻿using Application.Klarna.Interfaces;
+using Application.Order.Dto.Request;
 using Application.Order.Interfaces;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Api.Controllers.Order
 {
@@ -11,10 +14,14 @@ namespace Api.Controllers.Order
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IKlarnaService _klarnaSevice;
+        private readonly IConfiguration _config;
 
-        public OrderController (IOrderService orderService)
+        public OrderController (IOrderService orderService, IKlarnaService klarnaService,IConfiguration config)
         {
             _orderService = orderService;
+            _klarnaSevice = klarnaService;                    
+            _config = config;
         }
 
         private Guid UserId =>
@@ -29,8 +36,17 @@ namespace Api.Controllers.Order
         [ProducesResponseType(statusCode:401)]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto request, CancellationToken ct)
         {
-            var result = await _orderService.CreateAsync(UserId, request, ct);
-            return CreatedAtAction(nameof(CreateOrder), result);
+            var orderID = await _orderService.CreateAsync(UserId, request, ct);
+            var order = await _orderService.GetByIdAsync(orderID,ct);
+            var klarnaSession = await _klarnaSevice.CreatePaymentSession(order);
+            var klarnaResponse = JsonSerializer.Deserialize<JsonElement>(klarnaSession);
+
+            return Ok(new
+            {
+                orderId = orderID, // your internal order ID
+                clientToken = klarnaResponse.GetProperty("clientToken").GetString(),
+                sessionId = klarnaResponse.GetProperty("sessionId"),
+            });
         }
 
         [HttpGet("{id:Guid}")]

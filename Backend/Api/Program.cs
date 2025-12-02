@@ -6,6 +6,7 @@ using Application.Auth.Service;
 using Application.Category.Interfaces;
 using Application.Category.Mapper;
 using Application.Category.Service;
+using Application.Klarna.Interfaces;
 using Application.NutritionValue.Interfaces;
 using Application.NutritionValue.Mapper;
 using Application.NutritionValue.Service;
@@ -83,6 +84,7 @@ namespace Api
             builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IKlarnaService, KlarnaService>();
 
 
             //Unit Of Work + Repositories

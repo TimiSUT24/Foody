@@ -1,11 +1,17 @@
 import {useCart} from "../Context/CartContext"
 import {useState} from "react"
 import api from "../Api/api"
+import KlarnaExpress from "../Components/KlarnaCheckout"
 import "../CSS/CartPage.css"
 
 export default function CartPage(){
     const {cart, addToCart, removeFromCart, totalPrice} = useCart();
     const [error, setError] = useState({})
+    //const [klarnaSnippet, setKlarnaSnippet] = useState(null);
+    //const [klarnaToken, setKlarnaToken] = useState(null);
+       const [clientToken, setClientToken] = useState(null);
+              const [sessionId, setSessionId] = useState(null);
+    
     const [shipping, setShipping] = useState({
         firstName:"",
         lastName:"",
@@ -20,6 +26,7 @@ export default function CartPage(){
 
      const handleChange = (e) => {
         setShipping({...shipping, [e.target.name]: e.target.value})
+        setError(error => ({...error, [e.target.name]: ""}));
     }
 
     const placeOrder = async () => {
@@ -34,34 +41,30 @@ export default function CartPage(){
             setError(newErrors);
 
             if(Object.keys(newErrors).length > 0){
-                alert("Please fill in all required fields");
                 return;
             }
     
         const body = {
             items: cart.map(item => ({
                 foodId: item.id,
-                quantity: item.qty,
+                quantity: item.qty
             })),
-            shippingInformation:{
-                firstName: shipping.firstName,
-                lastName: shipping.lastName,
-                email: shipping.email,
-                adress: shipping.adress,
-                city: shipping.city,
-                state: shipping.state,
-                postalCode: shipping.postalCode,
-                phoneNumber: shipping.phoneNumber
-            }
+            shippingInformation: { ...shipping },
         }
 
-        try{
-            await api.post("/api/Order/create", body);
-            alert("Order tillagd");
-        }catch(err){
-            console.error(err);
-            alert("kunde inte lägga till order");
-        }
+         try {
+        // 3. Call backend endpoint to create order + Klarna session
+        const response = await api.post("/api/Order/create", body);
+
+        const token = response.data.clientToken; // Backend should return { clientToken: "..." }
+        const session = response.data.sessionId;
+        setSessionId(session);
+            setClientToken(token);
+
+    } catch(err) {
+        console.error(err);
+        alert("Klarna betalning misslyckades");
+    }
     }
 
     return(
@@ -77,41 +80,41 @@ export default function CartPage(){
                         <input type="text" name="firstName" value={shipping.firstName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.firstName ? "2px solid red" : "",}} />
                     </div>
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0"}}>Efternamn *</p>
-                        <input type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px"}} />
+                        <p style={{margin:"0",color: error.lastName ? "red" : ""}}>Efternamn *</p>
+                        <input type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
                     </div>              
                 </div>
 
                 <div style={{display:"flex", flexDirection:"column",gap:"20px"}}>
                     <div style={{display:"flex", flexDirection:"column", gap:"5px"}}>
-                        <p style={{margin:"0",textAlign:"left"}}>E-post *</p>
-                        <input type="email" name="email" value={shipping.email} onChange={handleChange} placeholder="jan@example.com" style={{paddingLeft:"10px"}} />
+                        <p style={{margin:"0",textAlign:"left",color: error.email ? "red" : ""}}>E-post *</p>
+                        <input type="email" name="email" value={shipping.email} onChange={handleChange} placeholder="jan@example.com" style={{paddingLeft:"10px",border: error.email ? "2px solid red" : ""}} />
                     </div>
                     <div style={{display:"flex", flexDirection:"column",gap:"5px"}}>
-                        <p style={{margin:"0",textAlign:"left"}}>Gatuadress *</p>
-                <input type="text" name="adress" value={shipping.adress} onChange={handleChange} placeholder="123 Malmgatan" style={{paddingLeft:"10px"}}/>
+                        <p style={{margin:"0",textAlign:"left",color: error.adress ? "red" : ""}}>Gatuadress *</p>
+                <input type="text" name="adress" value={shipping.adress} onChange={handleChange} placeholder="123 Malmgatan" style={{paddingLeft:"10px",border: error.adress ? "2px solid red" : ""}}/>
                     </div>              
                 </div>
        
                 <div style={{display:"flex", justifyContent:"space-between"}}>
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0"}}>Län *</p>
-                        <input type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{width:"350px",paddingLeft:"10px"}}/>
+                        <p style={{margin:"0",color: error.state ? "red" : ""}}>Län *</p>
+                        <input type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{width:"350px",paddingLeft:"10px",border: error.state ? "2px solid red" : ""}}/>
                     </div>                 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0"}}>Telefonnummer *</p>
-                        <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{width:"350px",paddingLeft:"10px"}}/>
+                        <p style={{margin:"0",color: error.phoneNumber ? "red" : ""}}>Telefonnummer *</p>
+                        <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{width:"350px",paddingLeft:"10px",border: error.phoneNumber ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
 
                 <div style={{display:"flex", justifyContent:"space-between"}}>
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0"}}>Ort *</p>
-                        <input type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{width:"350px",paddingLeft:"10px"}}/>
+                        <p style={{margin:"0",color: error.city ? "red" : ""}}>Ort *</p>
+                        <input type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{width:"350px",paddingLeft:"10px",border: error.city ? "2px solid red" : ""}}/>
                     </div>                 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0"}}>Postnummer *</p>
-                        <input className="postal-input" type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{width:"350px",paddingLeft:"10px"}}/>
+                        <p style={{margin:"0",color: error.postalCode ? "red" : ""}}>Postnummer *</p>
+                        <input className="postal-input" type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{width:"350px",paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
                 
@@ -174,7 +177,29 @@ export default function CartPage(){
             )}
             </div>
 
-            <div id="payment"></div>
+       <div id="payment">
+  {clientToken && cart.length > 0 && (
+    <KlarnaExpress
+      client_token={clientToken}
+      orderPayload={{
+        session_id: sessionId,
+        purchase_country: "SE",
+        purchase_currency: "SEK",
+        locale: "sv-SE",
+        order_amount: Math.round(totalPrice * 100),
+        order_lines: cart.map(item => ({
+          type: "physical",
+          name: item.name,
+          quantity: item.qty,
+          unit_price: Math.round(item.price * 100),
+          total_amount: Math.round(item.price * 100 * item.qty),
+          total_tax_amount: Math.round(item.price * 100 * item.qty * 0.25),
+        })),
+      }}
+    />
+  )}
+</div>
+
         </div>
     )
 }

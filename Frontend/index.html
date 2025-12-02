@@ -10,6 +10,54 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+    window.klarnaAsyncCallback = function () {
+      console.log("Klarna SDK loaded");
+
+      // You can call Buttons.load() here or just expose a function
+      window.initKlarnaButtons = function (client_token,payload) {
+        const container = document.querySelector("#klarna-express-container");
+        if (!container) return;
+
+        if (container.dataset.initialized === "true") {
+          console.log("Klarna button already initialized — skipping.");
+          return;
+        }
+        container.dataset.initialized = "true";
+
+        if (!window.Klarna || !window.Klarna.Payments?.Buttons) {
+          console.error("Klarna Buttons not available");
+          return;
+        }
+
+        window.Klarna.Payments.Buttons.init({
+          client_id: "klarna_test_client_dk5FbFBib2FycHNkTGNndDYodkJJSCNYNkxDbVpmNG4sYTFlYWM5NDgtMjA0MC00N2EwLTk4ZGEtNjc3MzVhODg2NDM5LDEsdHlRRUFjUllTWVdhRDVObXlsaTlzZUVmR0w3anJaeHEyV1hvU01xR1NEND0",
+          client_token: client_token,
+          session_id: payload.session_id,
+          payment_method_categories: ["pay_later","pay_now"],
+        }).load(
+          {
+            container: "#klarna-express-container",
+            theme: "default",
+            shape: "default",
+            on_click: (authorize) => {
+              authorize(
+                { collect_shipping_address: true },
+                payload,
+                (result) => console.log("Klarna auth:", result)
+              );
+            },
+          },
+          function (result) {
+            console.log("Button load:", result);
+          }
+        );
+      };
+    };
+  </script>
+
+  <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -44,7 +44,7 @@
 #payment{
     grid-area:payment;
     width:800px;
-    height:500px;
+    height:800px;
     background-color: white;
     border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -167,6 +167,10 @@
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
     margin-bottom:20px;
+    cursor: pointer;
+}
+.checkout-btn:hover{
+    opacity: 100%;
 }
 
 .custom-hr{
