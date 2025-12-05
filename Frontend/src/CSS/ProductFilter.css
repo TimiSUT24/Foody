@@ -1,0 +1,148 @@
+
+.filter-container{
+    height:100px;
+    display: flex;
+    gap:50px;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width:100vw;
+    justify-self: center;
+}
+
+.category-menu {
+    position:relative;
+    display: inline-block;
+}
+
+.menu-button {
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 220px;
+    z-index: 10;
+}
+
+.category-menu:hover .menu-dropdown {
+    display: block;
+}
+
+.menu-item {
+    padding: 8px 12px;
+    position: relative;
+    display:flex;
+}
+
+.menu-item:hover {
+    background: #eee;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    left: 220px;
+    top: 0;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 220px;
+}
+
+.menu-item:hover .submenu {
+    display: block;
+}
+
+.submenu-item {
+    padding: 8px 12px;
+    position: relative;
+    display:flex;
+}
+
+.submenu-item:hover {
+    background: #eee;
+}
+
+.subsubmenu {
+    display: none;
+    position: absolute;
+    left: 220px;
+    top: 0;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 220px;
+}
+
+.submenu-item:hover .subsubmenu {
+    display: block;
+}
+
+.submenu:hover{
+    display:block;
+}
+
+.subsubmenu:hover {
+    display: block;
+}
+
+.subsubmenu-item {
+    padding: 8px 12px;
+    display: flex;
+}
+
+.subsubmenu-item:hover {
+    background: #ddd;
+}
+
+.filter-container button{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    height:45px;
+    width:160px;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #5e5d5d; 
+    cursor: pointer;
+}
+
+.filter-container input{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border: 1px solid #5e5d5d; 
+    height:40px;
+    width:160px;
+    -webkit-text-fill-color: black;
+}
+
+.filter-container select{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border: 1px solid #5e5d5d; 
+    height:45px;
+    width:160px;
+    -webkit-text-fill-color: black;
+}
+
+
+#filter-price::-webkit-outer-spin-button,
+#filter-price::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+}

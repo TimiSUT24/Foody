@@ -30,7 +30,25 @@ namespace Infrastructure.Repositories
             return query; 
         }
 
+        public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
+        {
+            var query = _context.Products.AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(s => s.CategoryId == categoryId);
+            }
+
+            return await query
+                .AsNoTracking()
+                .Select(s => s.Brand)
+                .Where(s => s != null && s != "")
+                .Distinct()
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Product>> FilterProducts(  
+            string name,
             string? brand,
             int? categoryId,
             int? subCategoryId,
@@ -43,6 +61,13 @@ namespace Infrastructure.Repositories
                 .Include(s => s.Category)
                 .ThenInclude(s => s.SubCategories)
                 .ThenInclude(s => s.SubSubCategories);
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                string lowerName = name.ToLower();
+                query = query.Where(s => s.Name.ToLower().Contains(lowerName));
+            }
+             
 
             if (!string.IsNullOrWhiteSpace(brand))
                 query = query.Where(p => p.Brand == brand);
@@ -66,9 +91,8 @@ namespace Infrastructure.Repositories
             // Filter by Price
             if (price.HasValue && price > 0)
                 query = query.Where(s => s.Price <= price);
-
-            query = query.Take(100);
-            return await query.ToListAsync(ct);
+            
+            return await query.Take(200).OrderBy(s => s.Price).ToListAsync(ct);
 
         }
     }

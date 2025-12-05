@@ -1,0 +1,38 @@
+
+body{
+    background-color:rgb(225, 234, 241);
+}
+
+.product-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    padding:10px;
+    gap:10px;
+    row-gap: 30px;
+}
+.food-container{
+    margin-top:110px;
+    justify-self: center;
+    overflow: hidden;
+}
+
+.food-pic{
+    display:flex;
+    width:100vw;
+    height:400px;
+    justify-self: center;
+    object-fit:cover;
+}
+
+/*Home Search  search and icon inside div at productfilter.jsx div class not inside css file*/ 
+.search{
+    width:400px !important;
+    height:45px !important;
+    border-style:none !important;
+    
+}
+.search:focus{
+    outline: none !important;
+}
+
+

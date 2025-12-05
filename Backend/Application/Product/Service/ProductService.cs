@@ -75,9 +75,9 @@ namespace Application.Product.Service
             return mapping;
         }
 
-        public async Task<IEnumerable<ProductResponseDto>> FilterProducts(string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price , CancellationToken ct)
+        public async Task<IEnumerable<ProductResponseDto>> FilterProducts(string? name, string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price , CancellationToken ct)
         {
-            var filter = await _uow.Products.FilterProducts(brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
+            var filter = await _uow.Products.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
             if(filter == null)
             {
                 throw new KeyNotFoundException("No Filter found for products");
@@ -113,6 +113,19 @@ namespace Application.Product.Service
             _uow.Products.Delete(product);
             await _uow.SaveChangesAsync(ct);
             return true;
+        }
+
+        public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
+        {
+            var brands = await _uow.Products.GetBrands(categoryId);
+            if (brands == null)
+            {
+                throw new KeyNotFoundException("No brands found");
+            }
+
+            var mapping = _mapper.Map<IEnumerable<string?>>(brands);
+
+            return mapping;
         }
 
     }

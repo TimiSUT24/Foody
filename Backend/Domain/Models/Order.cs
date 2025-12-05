@@ -17,6 +17,7 @@ namespace Domain.Models
 
         public User? User { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ShippingInformation ShippingInformation { get; set; } = new ShippingInformation();
     }
 
 }

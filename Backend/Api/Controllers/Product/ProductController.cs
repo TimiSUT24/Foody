@@ -58,9 +58,9 @@ namespace Api.Controllers.Product
         [HttpGet("filter")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
-        public async Task<IActionResult> FilterProducts(string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct)
+        public async Task<IActionResult> FilterProducts(string? name,string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct)
         {
-            var result = await _productService.FilterProducts(brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
+            var result = await _productService.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
             return Ok(result);
         }
 
@@ -81,6 +81,13 @@ namespace Api.Controllers.Product
         public async Task<IActionResult> DeleteProduct([FromRoute] int id, CancellationToken ct)
         {
             var result = await _productService.DeleteAsync(id, ct);
+            return Ok(result);
+        }
+
+        [HttpGet("brands")]
+        public async Task<IActionResult> GetBrands([FromQuery] int? categoryId)
+        {
+            var result = await _productService.GetBrands(categoryId);
             return Ok(result);
         }
     }

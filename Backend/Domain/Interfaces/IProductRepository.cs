@@ -10,7 +10,9 @@ namespace Domain.Interfaces
     public interface IProductRepository : IGenericRepository<Product>
     {
         Task<Product> GetProductDetailsById(int id, CancellationToken ct);
+        Task<IEnumerable<string?>> GetBrands(int? categoryId);
         Task<IEnumerable<Product>> FilterProducts(
+            string? name,
             string? brand,
             int? categoryId,
             int? subCategoryId,

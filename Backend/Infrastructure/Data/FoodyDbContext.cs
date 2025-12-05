@@ -31,6 +31,7 @@ namespace Infrastructure.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<NutritionValue> NutritionValues { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<ShippingInformation> ShippingInformation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -66,6 +67,12 @@ namespace Infrastructure.Data
                 .HasMany(a => a.ProductAttributes)
                 .WithOne(f => f.Food)
                 .HasForeignKey(f => f.FoodId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Order>()
+                .HasOne(s => s.ShippingInformation)
+                .WithOne(s => s.Order!)
+                .HasForeignKey<ShippingInformation>(s => s.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Order>(e =>
@@ -141,6 +148,34 @@ namespace Infrastructure.Data
             builder.Entity<RefreshToken>()
                 .Property(r => r.ExpiryDate)
                 .IsRequired();
+
+            builder.Entity<ShippingInformation>(entity =>
+            {
+                entity.Property(e => e.Email)
+                      .IsRequired()
+                      .HasMaxLength(256);
+                entity.Property(e => e.FirstName)
+                      .IsRequired()
+                      .HasMaxLength(100);
+                entity.Property(e => e.LastName)
+                      .IsRequired()
+                      .HasMaxLength(100);
+                entity.Property(e => e.Adress)
+                      .IsRequired()
+                      .HasMaxLength(200);
+                entity.Property(e => e.City)
+                      .IsRequired()
+                      .HasMaxLength(100);
+                entity.Property(e => e.PostalCode)
+                      .IsRequired()
+                      .HasMaxLength(10);
+                entity.Property(e => e.PhoneNumber)
+                      .IsRequired()
+                      .HasMaxLength(20);
+                entity.Property(e => e.State)
+                        .IsRequired()
+                        .HasMaxLength(50);
+            });
 
         }
     }
