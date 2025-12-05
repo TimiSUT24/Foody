@@ -5,21 +5,27 @@ import CartPage from './Pages/CartPage'
 import DetailsPage from './Pages/ProductDetailsPage'
 import LoginPage from './Pages/LoginPage'
 import RegisterPage from './Pages/RegisterPage'
+import CompletePage from './Pages/CompletePage'
 import './App.css'
-
 
 function App() {
 
   return (
     <>
     <NavBar></NavBar>
-      <Routes>
+    
+        <Routes> 
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/cart" element={<CartPage />}></Route>
         <Route path="/product/:id" element={<DetailsPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
-      </Routes>
+        <Route path="/order-complete" element={<CompletePage />}></Route>
+      </Routes>  
+
+
+
+        
     </>
   )
 }

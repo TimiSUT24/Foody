@@ -46,11 +46,7 @@ namespace Api.Controllers.Klarna
             var order = await _orderService.GetByIdAsync(orderId,ct);
             if (order == null)
                 return NotFound();
-
-            // Optionally, check the Klarna order status via API if needed
-            // var klarnaOrder = await _klarnaService.GetOrder(orderId);
-
-            // Return a simple confirmation page or JSON
+          
             return Ok(new
             {
                 message = "Payment complete or in progress",
@@ -65,18 +61,5 @@ namespace Api.Controllers.Klarna
             return Content("Your terms and conditions go here", "text/html");
         }
 
-        public async Task<JsonElement> GetPaymentStatusAsync(string paymentContextId)
-        {
-             var client = _httpClient;
-            client.BaseAddress = new Uri("https://api.checkout.com/");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "klarna_test_api_aCliVEIlSVBxclM1Z2xVMDYzaVooQnlwQWxadzhxKCQsYmIxZWE1NmQtNWU5OC00YTY3LWFmZTctOTZmMTQ3YjZlMGIxLDEsbEhLdkdQNEtVUHdER2ltcUtqdDBWRUVueWxqcFVQL3c2dmZlejY2VmFqcz0");
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            var response = await client.GetAsync($"payment-contexts/{paymentContextId}");
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<JsonElement>(json);
-        }
     }
 }

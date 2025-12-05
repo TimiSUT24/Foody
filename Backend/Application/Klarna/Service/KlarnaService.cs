@@ -1,4 +1,5 @@
-﻿using Application.Klarna.Interfaces;
+﻿using Application.Klarna.Dto.Request;
+using Application.Klarna.Interfaces;
 using Domain.Models;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
@@ -14,8 +15,7 @@ public class KlarnaService : IKlarnaService
         _config = config;
     }
 
-    // Create a Klarna Payments session (latest method for payment only)
-    public async Task<string> CreatePaymentSession(Order order)
+    public async Task<KlarnaSessionResponse> CreatePaymentSession(Order order)
     {
         var client = new RestClient($"{_config["Klarna:ApiUrl"]}/payments/v1/sessions");
         var request = new RestRequest();
@@ -59,7 +59,7 @@ public class KlarnaService : IKlarnaService
             order_lines = orderLines,
             merchant_urls = new
             {
-                confirmation = _config["Klarna:Merchant:ConfirmationUrl"],
+                confirmation = $"{_config["Klarna:Merchant:ConfirmationUrl"]}/{order.Id}",
                 push = $"{_config["Klarna:Merchant:PushUrl"]}/{order.Id}",
                 terms = _config["Klarna:Merchant:TermsUrl"]
             }
@@ -72,10 +72,15 @@ public class KlarnaService : IKlarnaService
             throw new Exception($"Klarna error: {response.Content}");
 
         var json = JsonDocument.Parse(response.Content);
-        string clientToken = json.RootElement.GetProperty("client_token").GetString();
-        var sessionId = json.RootElement.GetProperty("session_id").GetString();
 
-        // Return client token for frontend Klarna Payments widget
-        return JsonSerializer.Serialize(new { clientToken,sessionId});
+        var dto = new KlarnaSessionResponse
+        {
+            ClientToken = json.RootElement.GetProperty("client_token").GetString()!,
+            SessionId = json.RootElement.GetProperty("session_id").GetString()!,
+            PaymentMethodCategories = json.RootElement.GetProperty("payment_method_categories"),
+            Payload = klarnaRequest
+        };
+        return dto;
+
     }
 }

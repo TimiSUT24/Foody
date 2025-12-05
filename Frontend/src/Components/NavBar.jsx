@@ -27,7 +27,8 @@ export default function NavBar (){
       "/login": "login-body",
       "/register": "register-body",
       "/profile": "profile-body",
-      "/admin": "admin-body"
+      "/admin": "admin-body",
+      "/order-complete": "orderComplete-body"
     };
 
     // Default class

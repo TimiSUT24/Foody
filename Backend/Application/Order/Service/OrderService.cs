@@ -152,7 +152,7 @@ namespace Application.Order.Service
             };
 
             _uow.Orders.Update(order);
-            await _uow.SaveChangesAsync();
+            await _uow.SaveChangesAsync(ct);
         }
 
     }

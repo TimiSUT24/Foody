@@ -9,6 +9,6 @@ namespace Application.Klarna.Interfaces
 {
     public interface IKlarnaService
     {
-        Task<string> CreatePaymentSession(Domain.Models.Order order);
+        Task<KlarnaSessionResponse> CreatePaymentSession(Domain.Models.Order order);
     }
 }

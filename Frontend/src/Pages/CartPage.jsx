@@ -1,16 +1,24 @@
 import {useCart} from "../Context/CartContext"
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import api from "../Api/api"
-import KlarnaExpress from "../Components/KlarnaCheckout"
+import { createPaymentIntent } from "../Services/StripeService"
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements } from "@stripe/react-stripe-js"
+import CheckoutForm from "../Components/CheckoutForm"
 import "../CSS/CartPage.css"
+
+const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLISH_KEY)
 
 export default function CartPage(){
     const {cart, addToCart, removeFromCart, totalPrice} = useCart();
     const [error, setError] = useState({})
-    //const [klarnaSnippet, setKlarnaSnippet] = useState(null);
-    //const [klarnaToken, setKlarnaToken] = useState(null);
-       const [clientToken, setClientToken] = useState(null);
-              const [sessionId, setSessionId] = useState(null);
+    const [clientSecret, setClientSecret] = useState(null);
+
+     const appearance = {
+    theme: 'stripe',
+  };
+  // Enable the skeleton loader UI for optimal loading.
+  const loader = 'auto';
     
     const [shipping, setShipping] = useState({
         firstName:"",
@@ -53,19 +61,25 @@ export default function CartPage(){
         }
 
          try {
-        // 3. Call backend endpoint to create order + Klarna session
-        const response = await api.post("/api/Order/create", body);
+        const { clientSecret } = await createPaymentIntent(
+        cart.map(i => ({
+          price: i.price,
+          quantity: i.qty,
+          name: i.name
+        }))
+      );
 
-        const token = response.data.clientToken; // Backend should return { clientToken: "..." }
-        const session = response.data.sessionId;
-        setSessionId(session);
-            setClientToken(token);
+      setClientSecret(clientSecret);
+
+       // const response = await api.post("/api/Order/create", body);
 
     } catch(err) {
         console.error(err);
         alert("Klarna betalning misslyckades");
     }
     }
+
+
 
     return(
         <div className="cart-page">
@@ -178,26 +192,12 @@ export default function CartPage(){
             </div>
 
        <div id="payment">
-  {clientToken && cart.length > 0 && (
-    <KlarnaExpress
-      client_token={clientToken}
-      orderPayload={{
-        session_id: sessionId,
-        purchase_country: "SE",
-        purchase_currency: "SEK",
-        locale: "sv-SE",
-        order_amount: Math.round(totalPrice * 100),
-        order_lines: cart.map(item => ({
-          type: "physical",
-          name: item.name,
-          quantity: item.qty,
-          unit_price: Math.round(item.price * 100),
-          total_amount: Math.round(item.price * 100 * item.qty),
-          total_tax_amount: Math.round(item.price * 100 * item.qty * 0.25),
-        })),
-      }}
-    />
-  )}
+        {clientSecret && (
+            <Elements stripe={stripePromise} options={{clientSecret, appearance, loader}}>
+                <CheckoutForm></CheckoutForm>
+
+            </Elements>
+        )}
 </div>
 
         </div>

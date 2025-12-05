@@ -2,6 +2,7 @@
 using Application.Order.Dto.Request;
 using Application.Order.Interfaces;
 using Domain.Interfaces;
+using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -39,13 +40,11 @@ namespace Api.Controllers.Order
             var orderID = await _orderService.CreateAsync(UserId, request, ct);
             var order = await _orderService.GetByIdAsync(orderID,ct);
             var klarnaSession = await _klarnaSevice.CreatePaymentSession(order);
-            var klarnaResponse = JsonSerializer.Deserialize<JsonElement>(klarnaSession);
 
             return Ok(new
             {
-                orderId = orderID, // your internal order ID
-                clientToken = klarnaResponse.GetProperty("clientToken").GetString(),
-                sessionId = klarnaResponse.GetProperty("sessionId"),
+                orderId = orderID,
+                klarnaSession
             });
         }
 
