@@ -206,15 +206,16 @@ export default function CartPage(){
                 
             )}
             </div>
-
-       <div id="payment">
-        <h2 style={{textAlign:"left"}}>Betalning</h2>
+      
             {clientSecret && (
+                <div id="payment">
+                <h2 style={{textAlign:"left"}}>Betalning</h2>
                  <Elements stripe={stripePromise} options={{clientSecret, appearance, loader}}>
                   <CheckoutForm></CheckoutForm>
                 </Elements>
+                </div>
             )}      
-        </div>
+        
 
         </div>
     )
