@@ -20,12 +20,14 @@ app.post("/create-payment-intent", async (req, res) => {
 
     if (!cartItems || !cartItems.length) return res.status(400).json({ error: "Cart is empty" });
 
-    const amount = cartItems.reduce((sum, item) => sum + item.price * 100 * item.qty, 0);
+    const calculateAmount = cartItems.reduce((sum, item) => sum + item.price * 100 * item.qty, 0);
+    let calculateMoms = calculateAmount * 1.12
+    const amount = calculateMoms.toFixed();
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: "sek",
-      automatic_payment_methods: [{ enabled: true }],
+      automatic_payment_methods: { enabled: true },
     });
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret });

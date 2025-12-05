@@ -1,5 +1,4 @@
-﻿using Application.Klarna.Interfaces;
-using Application.Order.Dto.Request;
+﻿using Application.Order.Dto.Request;
 using Application.Order.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
@@ -15,13 +14,11 @@ namespace Api.Controllers.Order
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IKlarnaService _klarnaSevice;
         private readonly IConfiguration _config;
 
-        public OrderController (IOrderService orderService, IKlarnaService klarnaService,IConfiguration config)
+        public OrderController (IOrderService orderService,IConfiguration config)
         {
-            _orderService = orderService;
-            _klarnaSevice = klarnaService;                    
+            _orderService = orderService;              
             _config = config;
         }
 
@@ -38,13 +35,9 @@ namespace Api.Controllers.Order
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto request, CancellationToken ct)
         {
             var orderID = await _orderService.CreateAsync(UserId, request, ct);
-            var order = await _orderService.GetByIdAsync(orderID,ct);
-            var klarnaSession = await _klarnaSevice.CreatePaymentSession(order);
-
             return Ok(new
             {
-                orderId = orderID,
-                klarnaSession
+                orderId = orderID
             });
         }
 
@@ -85,6 +78,14 @@ namespace Api.Controllers.Order
         public async Task<IActionResult> CancelMyOrder(Guid orderId, CancellationToken ct)
         {
             var result = await _orderService.CancelMyOrder(UserId, orderId, ct);
+            return Ok(result);
+        }
+
+        [HttpPost("CalculateTax")]
+        [ProducesResponseType(statusCode: 200)]
+        public async Task<IActionResult> CalculateTax([FromBody] CartItemsDto cartItems, CancellationToken ct)
+        {
+            var result = await _orderService.CalculateTax(cartItems, ct);
             return Ok(result);
         }
 

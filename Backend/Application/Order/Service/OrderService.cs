@@ -27,6 +27,7 @@ namespace Application.Order.Service
         public async Task<Guid> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
         {
             decimal totalPrice = 0;
+            
             var orderItems = new List<OrderItem>();
 
             foreach (var item in request.Items)
@@ -74,14 +75,15 @@ namespace Application.Order.Service
             return order.Id;
         }
 
-        public async Task<Domain.Models.Order> GetByIdAsync(Guid id, CancellationToken ct)
+        public async Task<OrderResponse> GetByIdAsync(Guid id, CancellationToken ct)
         {
             var order = await _uow.Orders.GetOrder(id, ct);
             if(order == null)
             {
                 throw new KeyNotFoundException($"No Order found");
             }
-            return order;
+            var mapping = _mapper.Map<OrderResponse>(order);
+            return mapping;
         }
 
         public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, CancellationToken ct)
@@ -136,24 +138,33 @@ namespace Application.Order.Service
 
         }
 
-        public async Task UpdateStatusAsync(Guid orderId, string status, CancellationToken ct)
+        public async Task<CartTotals> CalculateTax(CartItemsDto cartItems, CancellationToken ct)
         {
-            var order = await _uow.Orders.GetByIdAsync(orderId, ct);
-            if (order == null)
-                throw new Exception("Order not found");
+            decimal subTotal = 0;
+            decimal momsTotal = 0;
+            decimal momsRate = 0.12M;
 
-            // Map Klarna status to your enum
-            order.OrderStatus = status switch
+            foreach(var item in cartItems.Items)
             {
-                "checkout_incomplete" => Domain.Enum.OrderStatus.Pending,
-                "checkout_complete" => Domain.Enum.OrderStatus.Shipped,
-                "canceled" => Domain.Enum.OrderStatus.Cancelled,
-                _ => order.OrderStatus
-            };
+                var product = await _uow.Products.GetByIdAsync(item.Id, ct);
 
-            _uow.Orders.Update(order);
-            await _uow.SaveChangesAsync(ct);
+                var itemSubTotal = product.Price * item.Qty;
+                var lineMoms = itemSubTotal * momsRate;
+
+                subTotal += itemSubTotal;
+                momsTotal += lineMoms;
+
+            }
+
+            return new CartTotals
+            {
+                SubTotal = subTotal,
+                Moms = momsTotal,
+                Total = subTotal + momsTotal,
+            };
         }
+
+      
 
     }
 }

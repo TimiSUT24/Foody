@@ -1,5 +1,5 @@
 import {useCart} from "../Context/CartContext"
-import {useState, useEffect} from "react"
+import {useState,useEffect} from "react"
 import api from "../Api/api"
 import { createPaymentIntent } from "../Services/StripeService"
 import { loadStripe } from "@stripe/stripe-js"
@@ -7,18 +7,34 @@ import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Components/CheckoutForm"
 import "../CSS/CartPage.css"
 
-const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLISH_KEY)
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
 
 export default function CartPage(){
     const {cart, addToCart, removeFromCart, totalPrice} = useCart();
     const [error, setError] = useState({})
     const [clientSecret, setClientSecret] = useState(null);
+    const [totals, setTotal] = useState({
+        subTotal: 0,
+        moms: 0,
+        total:0
+    })
 
      const appearance = {
     theme: 'stripe',
   };
   // Enable the skeleton loader UI for optimal loading.
   const loader = 'auto';
+
+  useEffect(() => {
+    const fetchTotal = async () => {
+        const response = await api.post("/api/Order/CalculateTax", {items: cart})
+        setTotal(response.data)
+
+    };
+    fetchTotal();
+   
+
+  },[cart])
     
     const [shipping, setShipping] = useState({
         firstName:"",
@@ -61,12 +77,12 @@ export default function CartPage(){
         }
 
          try {
-        const { clientSecret } = await createPaymentIntent(
+        const {clientSecret} = await createPaymentIntent(
         cart.map(i => ({
           price: i.price,
-          quantity: i.qty,
+          qty: i.qty,
           name: i.name
-        }))
+        }))       
       );
 
       setClientSecret(clientSecret);
@@ -166,7 +182,7 @@ export default function CartPage(){
                     
                     <div className="checkout-price">
                     <span >Subtotal:</span>
-                    <span >{totalPrice} kr</span>
+                    <span >{totalPrice.toFixed(2)} kr</span>
                     </div>
 
                     
@@ -177,13 +193,13 @@ export default function CartPage(){
 
                     <div className="checkout-price">
                     <span>Moms:</span>
-                    <span>10 kr</span>
+                    <span>{totals.moms.toFixed(2)} kr</span>
                     </div>
                 </div>
 
                 <div className="custom-hr"></div>
                 
-                <h2>Totalt: {totalPrice.toFixed(2)} kr</h2>
+                <h2>Totalt: {totals.total.toFixed(2)} kr</h2>
 
                 <button className="checkout-btn" onClick={placeOrder}>Lägg Order</button>
                 </>
@@ -192,13 +208,13 @@ export default function CartPage(){
             </div>
 
        <div id="payment">
-        {clientSecret && (
-            <Elements stripe={stripePromise} options={{clientSecret, appearance, loader}}>
-                <CheckoutForm></CheckoutForm>
-
-            </Elements>
-        )}
-</div>
+        <h2 style={{textAlign:"left"}}>Betalning</h2>
+            {clientSecret && (
+                 <Elements stripe={stripePromise} options={{clientSecret, appearance, loader}}>
+                  <CheckoutForm></CheckoutForm>
+                </Elements>
+            )}      
+        </div>
 
         </div>
     )

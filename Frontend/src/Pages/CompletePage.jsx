@@ -6,7 +6,7 @@ import {
 import { loadStripe } from "@stripe/stripe-js"
 import '../CSS/CompletePage.css'
 
-const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLISH_KEY)
+const stripePromise =loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
 
 const SuccessIcon =
   <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">

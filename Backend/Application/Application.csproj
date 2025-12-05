@@ -30,9 +30,6 @@
   <ItemGroup>
     <Folder Include="Category\Dto\Request\" />
     <Folder Include="Category\Validator\" />
-    <Folder Include="Klarna\Dto\Response\" />
-    <Folder Include="Klarna\Mapper\" />
-    <Folder Include="Klarna\Validator\" />
     <Folder Include="OrderItem\Dto\Request\" />
     <Folder Include="OrderItem\Dto\Response\" />
     <Folder Include="OrderItem\Interfaces\" />

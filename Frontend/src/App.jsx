@@ -8,12 +8,13 @@ import RegisterPage from './Pages/RegisterPage'
 import CompletePage from './Pages/CompletePage'
 import './App.css'
 
+
 function App() {
+
 
   return (
     <>
     <NavBar></NavBar>
-    
         <Routes> 
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/cart" element={<CartPage />}></Route>

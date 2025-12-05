@@ -23,7 +23,7 @@ export default function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />
-      <button disabled={!stripe} style={{marginTop:"20px"}}>
+      <button id="pay-button" disabled={!stripe} style={{marginTop:"20px"}}>
         Betala nu
       </button>
     </form>
