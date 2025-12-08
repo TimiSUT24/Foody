@@ -6,6 +6,7 @@ import DetailsPage from './Pages/ProductDetailsPage'
 import LoginPage from './Pages/LoginPage'
 import RegisterPage from './Pages/RegisterPage'
 import CompletePage from './Pages/CompletePage'
+import UserPage from './Pages/User/UserPage'
 import './App.css'
 
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/order-complete" element={<CompletePage />}></Route>
+        <Route path="/user-page" element={<UserPage />}></Route>
       </Routes>  
 
 
