@@ -1,0 +1,43 @@
+.order-card{
+    background-color: whitesmoke;
+    width:1000px;
+    text-align: left;
+    padding:10px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.order-container{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    gap:15px;
+    padding-left: 10px;
+}
+
+#order-img-container{
+    padding:10px;
+    background-color: rgb(215, 158, 88);
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.order-first{
+    display:flex;
+    flex-direction: column;
+}
+
+.order-second{
+    display:flex;
+    flex-direction: column;
+}
+
+.order-container-outer{
+    padding-left:10px;
+}

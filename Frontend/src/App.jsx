@@ -7,6 +7,7 @@ import LoginPage from './Pages/LoginPage'
 import RegisterPage from './Pages/RegisterPage'
 import CompletePage from './Pages/CompletePage'
 import UserPage from './Pages/User/UserPage'
+import UserProfilePage from './Pages/User/UserProfilePage'
 import './App.css'
 
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/order-complete" element={<CompletePage />}></Route>
         <Route path="/user-page" element={<UserPage />}></Route>
+        <Route path="/user-profile-page" element={<UserProfilePage />}></Route>
       </Routes>  
 
 

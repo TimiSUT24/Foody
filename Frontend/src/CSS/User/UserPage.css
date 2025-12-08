@@ -22,7 +22,7 @@
   z-index: 200;
 }
 
-#user-header p,h1{
+#user-header .user-header-h1, .user-header-p{
     color:white;
 }
 
@@ -87,7 +87,7 @@
   cursor: pointer;
 }
 
-.user-page footer {
+#user-footer{
   position: relative;
   width: 100vw;
   height: 80px;
