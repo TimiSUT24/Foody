@@ -2,12 +2,19 @@
     background-color: whitesmoke;
     width:1000px;
     text-align: left;
-    padding:10px;
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: 4px solid transparent;
+}
+
+.order-card:hover{
+    border:1px solid gray;
+    border-bottom: 4px solid gray;
 }
 
 .order-container{
@@ -27,6 +34,7 @@
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
 }
+
 
 .order-first{
     display:flex;

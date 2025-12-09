@@ -1,0 +1,125 @@
+
+
+.order-details-content{
+    width:1000px;
+    height:fit-content;
+    background-color: white;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border:1px solid gray;
+}
+
+.back-btn{
+    display: flex;
+    width:fit-content;
+    height:30px;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border:none;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.back-btn:hover{
+    background-color: rgb(255, 178, 55);
+    opacity: 80%;
+}
+
+.header-details{
+    display:flex;
+    justify-content: space-between;
+    padding:20px;
+}
+
+.header-text{
+    text-align: left;
+}
+
+.details-status{
+    height:30px;
+    width:fit-content;
+    padding-left: 5px;
+    padding-right: 5px;
+    align-content: center;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.shipping-icons{
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom:1px solid gray;
+}
+
+.details-items{
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+    padding:20px;
+    border-bottom: 1px solid gray;
+}
+
+.details-item{
+    text-align: left;
+    display:flex;
+    padding:8px;
+    align-items: center;
+    border-radius: 10px;
+    background-color: lightgray;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.details-prices{
+    display:flex;
+    flex-direction: column;
+    padding:20px;
+    border-bottom: 1px solid gray;
+}
+
+.details-price{
+    display: flex;
+    justify-content: space-between;
+    padding:5px
+}
+
+.details-total{
+    display:flex;
+    padding:20px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid gray;
+}
+
+.details-extra{
+    padding:20px;
+}
+
+.details-extra-content{
+    display:flex;
+
+}
+
+#details-extra-img{
+    background-color: orange;
+    height:fit-content;
+    padding:5px;
+    margin-right:8px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}

@@ -1,7 +1,7 @@
 import "../CSS/User/OrderCard.css"
 
 
-export default function OrderCard({order, onClick}){
+export default function OrderCard({order,onClick}){
     const statusMap = {
     Pending: { label: "Väntar", color: " rgb(255, 193, 7)", backgroundColor:"rgba(255, 193, 7, 0.1)", borderColor:"border-color: rgba(255, 193, 7, 0.3)"},
     Processing: { label: "Behandlas", color: "rgb(13, 202, 240)", backgroundColor:"rgba(13, 202, 240, 0.1)", borderColor:"rgba(13, 202, 240, 0.3)" },
@@ -21,16 +21,10 @@ export default function OrderCard({order, onClick}){
 
   return (
             <>
-        <div className="order-card">
-
-           
-
-            <div className="order-container">
-                
-
-               
+        <div className="order-card" onClick={onClick}>        
+            <div className="order-container">               
                 <div id="order-img-container">
-                    <img src="/IMG/icons8-shopping-bag-50.png" style={{width:35,height:35}}/>
+                    <img id="shopping-img" src="/IMG/icons8-shopping-bag-50.png" style={{width:35,height:35}}/>
                 </div>
                 
                 <div style={{display:"flex",flexDirection:"row",gap:700, alignItems:"center"}}>
@@ -54,6 +48,7 @@ export default function OrderCard({order, onClick}){
                     <p style={{color:"black",fontWeight:"bold"}}>{order.totalPrice.toFixed(2)} kr</p>
                     </div>
                 </div>     
+                
          
             </div>
 

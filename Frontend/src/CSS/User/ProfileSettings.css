@@ -1,0 +1,96 @@
+.profile-setting-container{
+    display:flex;
+    flex-direction: column;
+    gap:50px;
+}
+
+.personal-info{
+    background-color: whitesmoke;
+    width:1000px;
+    height:fit-content;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    align-content: center;
+    border:1px solid gray
+}
+
+.personal-form{
+    display:flex;
+    flex-direction: column;
+    padding:20px;
+    gap:40px;
+}
+
+.personal-form input{
+    padding-left:10px;
+}
+
+.personal-names{
+    display:flex;
+    justify-content: space-between;
+}
+
+.personal-save-btn{
+    background-color: orange;
+    width:200px;
+    height:40px;
+    border:none;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    color:white;
+    cursor: pointer;
+}
+
+.personal-save-btn:hover{
+    opacity: 90%;
+}
+
+/* PASSWORD FORM */
+.change-password{
+    background-color: whitesmoke;
+    width:1000px;
+    height:fit-content;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    align-content: center;
+    border:1px solid gray
+}
+
+.password-form{
+     display:flex;
+    flex-direction: column;
+    padding:20px;
+    gap:40px;
+}
+
+.password-form input{
+    padding-left:10px;
+}
+
+.change-pass{
+    background-color: orange;
+    width:200px;
+    height:40px;
+    border:none;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    color:white;
+    cursor: pointer;
+
+}
+
+.change-pass:hover{
+    opacity: 90%;
+}
