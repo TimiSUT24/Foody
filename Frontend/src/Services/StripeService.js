@@ -1,8 +1,9 @@
 import { stripeApi } from "../Api/stripeApi";
 
-export const createPaymentIntent = async (cartItems) => {
+export const createPaymentIntent = async (cartItems,shipping) => {
   const response = await stripeApi.post("/create-payment-intent", {
-    cartItems
+    cartItems,
+    shipping
   });
 
   return response.data;

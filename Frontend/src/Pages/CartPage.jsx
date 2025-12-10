@@ -67,14 +67,6 @@ export default function CartPage(){
             if(Object.keys(newErrors).length > 0){
                 return;
             }
-    
-        const body = {
-            items: cart.map(item => ({
-                foodId: item.id,
-                quantity: item.qty
-            })),
-            shippingInformation: { ...shipping },
-        }
 
          try {
         const {clientSecret} = await createPaymentIntent(
@@ -82,12 +74,11 @@ export default function CartPage(){
           price: i.price,
           qty: i.qty,
           name: i.name
-        }))       
+        })),
+        shipping      
       );
 
       setClientSecret(clientSecret);
-
-       // const response = await api.post("/api/Order/create", body);
 
     } catch(err) {
         console.error(err);
@@ -190,7 +181,7 @@ export default function CartPage(){
                     
                     <div className="checkout-price">
                     <span >Subtotal:</span>
-                    <span >{totalPrice.toFixed(2)} kr</span>
+                    <span >{totalPrice} kr</span>
                     </div>
 
                     
@@ -201,13 +192,13 @@ export default function CartPage(){
 
                     <div className="checkout-price">
                     <span>Moms:</span>
-                    <span>{totals.moms.toFixed(2)} kr</span>
+                    <span>{totals.moms} kr</span>
                     </div>
                 </div>
 
                 <div className="custom-hr"></div>
                 
-                <h2>Totalt: {totals.total.toFixed(2)} kr</h2>
+                <h2>Totalt: {totals.total} kr</h2>
 
                 <button className="checkout-btn" onClick={placeOrder}>Lägg Order</button>
                 </>

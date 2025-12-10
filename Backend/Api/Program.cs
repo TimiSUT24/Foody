@@ -29,7 +29,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Stripe;
 using System.Threading.Tasks;
+using ProductService = Application.Product.Service.ProductService;
 
 namespace Api
 {
@@ -75,6 +77,9 @@ namespace Api
                 });
             });
             builder.Services.AddAuthorization();
+
+            //Stripe 
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
             //Services 
             builder.Services.AddScoped<IProductService, ProductService>();

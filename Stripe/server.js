@@ -16,7 +16,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 app.post("/create-payment-intent", async (req, res) => {
   try {
-    const { cartItems } = req.body; // frontend must send { cart: [...] }
+    const { cartItems,shipping} = req.body; // frontend must send { cart: [...] }
 
     if (!cartItems || !cartItems.length) return res.status(400).json({ error: "Cart is empty" });
 
@@ -27,10 +27,28 @@ app.post("/create-payment-intent", async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: "sek",
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: [
+        "card",
+        "klarna"
+      ],
+      shipping: {
+        name: shipping.firstName,
+        phone: shipping.phoneNumber,
+        address: {
+          line1: shipping.adress,
+          city: shipping.city,
+          country: "Sweden",
+          state: shipping.state,
+          postal_code: shipping.postalCode
+        }
+      },
+      metadata:{
+        email:shipping.email,
+        lastname: shipping.lastName
+      }
     });
 
-    res.status(200).json({ clientSecret: paymentIntent.client_secret });
+    res.status(200).json({ clientSecret: paymentIntent.client_secret, body: paymentIntent });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

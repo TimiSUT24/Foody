@@ -4,6 +4,7 @@ using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -26,6 +27,7 @@ namespace Api.Controllers.Order
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)
                 ? id
                 : throw new UnauthorizedAccessException("Ingen inloggad användare.");
+
 
         [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
@@ -87,6 +89,22 @@ namespace Api.Controllers.Order
         {
             var result = await _orderService.CalculateTax(cartItems, ct);
             return Ok(result);
+        }
+
+        [HttpPost("retrieve-payment-intent")]
+        public async Task<IActionResult> RetrievePaymentIntent([FromBody] RetrievePaymentIntentRequest request)
+        {
+            if (string.IsNullOrEmpty(request.ClientSecret))
+                return BadRequest("ClientSecret is required.");
+
+            var service = new PaymentIntentService();
+
+            // Extract the PaymentIntent ID from the client secret
+            var paymentIntentId = request.ClientSecret.Split("_secret")[0];
+
+            var paymentIntent = await service.GetAsync(paymentIntentId);
+
+            return Ok(paymentIntent); // full PaymentIntent including metadata and shipping
         }
 
     }

@@ -25,10 +25,20 @@ namespace Application.Order.Service
         }
 
         public async Task<Guid> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
-        {
-            decimal totalPrice = 0;
+        {       
             
             var orderItems = new List<OrderItem>();
+
+
+            var cartItems = new CartItemsDto
+            {
+                Items = request.Items.Select(i => new CartItemDto
+                {
+                    Id = i.FoodId,
+                    Qty = i.Quantity
+                }).ToList()
+            };
+            var totals = await CalculateTax(cartItems, ct);
 
             foreach (var item in request.Items)
             {
@@ -42,8 +52,6 @@ namespace Application.Order.Service
                     Quantity = item.Quantity,
                     UnitPrice = product.Price,
                 };
-
-                totalPrice += item.Quantity * product.Price;
                 product.Stock -= item.Quantity;
                 orderItems.Add(orderItem);
             }
@@ -51,7 +59,9 @@ namespace Application.Order.Service
             var order = new Domain.Models.Order
             {
                 UserId = userId,
-                TotalPrice = totalPrice,
+                TotalPrice = totals.Total,
+                Moms = totals.Moms,
+                SubTotal = totals.SubTotal,
                 OrderStatus = Domain.Enum.OrderStatus.Pending,
                 OrderDate = DateTime.UtcNow,
                 OrderItems = orderItems,
@@ -143,6 +153,7 @@ namespace Application.Order.Service
             decimal subTotal = 0;
             decimal momsTotal = 0;
             decimal momsRate = 0.12M;
+            decimal total = 0;
 
             foreach(var item in cartItems.Items)
             {
@@ -153,14 +164,15 @@ namespace Application.Order.Service
 
                 subTotal += itemSubTotal;
                 momsTotal += lineMoms;
+                total = subTotal + momsTotal;
 
             }
 
             return new CartTotals
             {
-                SubTotal = subTotal,
-                Moms = momsTotal,
-                Total = subTotal + momsTotal,
+                SubTotal = decimal.Round(subTotal,2,MidpointRounding.AwayFromZero),
+                Moms = decimal.Round(momsTotal, 2, MidpointRounding.AwayFromZero),
+                Total = decimal.Round(total,2,MidpointRounding.AwayFromZero),
             };
         }
 
