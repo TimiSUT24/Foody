@@ -28,12 +28,19 @@ namespace Application.Order.Mapper
             CreateMap<Domain.Models.Order, UserOrderResponse>()
              .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
              .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(o => o.OrderStatus.ToString()))
-             .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(o => o.OrderItems));
+             .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(o => o.PaymentStatus.ToString()))
+             .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(o => o.OrderItems))
+             .ForMember(dest => dest.ShippingItems, opt => opt.MapFrom(o => o.ShippingInformation));
 
 
             CreateMap<Domain.Models.OrderItem, UserOrderItemsResponse>()
             .ForMember(dest => dest.FoodName, opt => opt.MapFrom(src => src.Food.Name))
             .ForSourceMember(src => src.Order, opt => opt.DoNotValidate());
+
+
+            CreateMap<Domain.Models.ShippingInformation, UserOrderShippingResponse>();
+
+
         }
     }
 }

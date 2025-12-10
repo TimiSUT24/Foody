@@ -17,12 +17,13 @@ namespace Infrastructure.Migrations
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<string>(
                 name: "PaymentStatus",
                 table: "Orders",
-                type: "integer",
+                type: "character varying(50)",
+                maxLength: 50,
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: "");
 
             migrationBuilder.AddColumn<decimal>(
                 name: "ShippingTax",
