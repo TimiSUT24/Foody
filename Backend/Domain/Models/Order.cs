@@ -13,7 +13,11 @@ namespace Domain.Models
         public Guid UserId { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
         public decimal TotalPrice { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Moms { get; set; }
+        public decimal ShippingTax { get; set; } 
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
+        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Unpaid;
 
         public User? User { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
