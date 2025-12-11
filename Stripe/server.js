@@ -14,6 +14,7 @@ app.use(express.json());
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+//Create Payment
 app.post("/create-payment-intent", async (req, res) => {
   try {
     const { cartItems,shipping} = req.body; // frontend must send { cart: [...] }
@@ -31,6 +32,7 @@ app.post("/create-payment-intent", async (req, res) => {
         "card",
         "klarna"
       ],
+      capture_method: "manual",
       shipping: {
         name: shipping.firstName,
         phone: shipping.phoneNumber,
@@ -44,13 +46,39 @@ app.post("/create-payment-intent", async (req, res) => {
       },
       metadata:{
         email:shipping.email,
-        lastname: shipping.lastName
+        lastname: shipping.lastNames
       }
     });
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret, body: paymentIntent });
   } catch (err) {
     console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//Capture Payment
+app.post("/capture-payment-intent", async (req, res) => {
+  try {
+    const { paymentIntentId } = req.body;
+
+    const intent = await stripe.paymentIntents.capture(paymentIntentId);
+
+    res.status(200).json(intent);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//Cancel Payment
+app.post("/cancel-payment-intent", async (req, res) => {
+  try {
+    const { paymentIntentId } = req.body;
+
+    const canceled = await stripe.paymentIntents.cancel(paymentIntentId);
+
+    res.status(200).json(canceled);
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });

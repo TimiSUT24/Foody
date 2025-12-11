@@ -4,6 +4,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js"
 import api from "../Api/api";
+import { stripeApi } from "../Api/stripeApi";
 import {useCart} from "../Context/CartContext"
 import '../CSS/CompletePage.css'
 
@@ -50,7 +51,7 @@ const STATUS_CONTENT_MAP = {
 };
 
 function CompletePageContent() {
-  const [status, setStatus] = useState("default");
+  const [status, setStatus] = useState("processing");
   const [intentId, setIntentId] = useState(null);
   const {cart} = useCart();
   const [clientSecret, setClientSecret] = useState(null)
@@ -75,8 +76,8 @@ function CompletePageContent() {
       setStatus(paymentIntent.status)
       setIntentId(paymentIntent.id);
 
-    if (paymentIntent.status === "succeeded") {
-      await api.post("/api/Order/create", {
+    if (paymentIntent.status === "requires_capture") {
+      const create = await api.post("/api/Order/create", {
         items: cart.map(x => ({ foodId: x.id, quantity: x.qty })),
         shippingInformation: {
           firstName: paymentIntent.shipping.name,
@@ -89,19 +90,38 @@ function CompletePageContent() {
           postalCode: paymentIntent.shipping.address.postal_code
         }
       });
+        if(create.status === 200){
+          const {data: capture} = await stripeApi.post("/capture-payment-intent", {
+            paymentIntentId: paymentIntent.id
+          });
+          setStatus(capture.status)
+          if(capture.status === "succeeded"){
+            localStorage.removeItem("cart")
+          }
+        } 
+          else {
+          const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
+            paymentIntentId: paymentIntent.id
+          });
+          setStatus(cancel.status)
+        }
     }
   };
-
+ 
   confirmOrder();
 }, [clientSecret, cart]);
 
 
   return (
     <div id="payment-status">
-      <div id="status-icon" style={{backgroundColor: STATUS_CONTENT_MAP[status].iconColor}}>
-        {STATUS_CONTENT_MAP[status].icon}
-      </div>
-      <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
+      {status && STATUS_CONTENT_MAP[status] && (
+  <>
+    <div id="status-icon" style={{backgroundColor: STATUS_CONTENT_MAP[status].iconColor}}>
+      {STATUS_CONTENT_MAP[status].icon}
+    </div>
+    <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
+  </>
+)}
       {intentId && <div id="details-table">
         <table id="completePage-table">
           <tbody>
