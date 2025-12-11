@@ -8,6 +8,7 @@ namespace Domain.Enum
 {
     public enum PaymentStatus
     {
+        Unknown,
         Unpaid,
         Paid,
         Refunded,

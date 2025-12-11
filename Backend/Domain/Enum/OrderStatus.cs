@@ -8,6 +8,7 @@ namespace Domain.Enum
 {
     public enum OrderStatus
     {
+        Unknown,
         Pending,
         Processing,
         Shipped,

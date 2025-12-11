@@ -96,13 +96,18 @@ function CompletePageContent() {
           });
           setStatus(capture.status)
           if(capture.status === "succeeded"){
+              await api.patch("/api/Order/update-status", {
+              id: create.data.orderId,
+              orderStatus: "Processing",
+              paymentStatus: capture.status
+            })
             localStorage.removeItem("cart")
           }
         } 
-          else {
+          else{
           const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
             paymentIntentId: paymentIntent.id
-          });
+          });       
           setStatus(cancel.status)
         }
     }

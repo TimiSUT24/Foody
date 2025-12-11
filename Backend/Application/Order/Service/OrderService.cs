@@ -29,7 +29,6 @@ namespace Application.Order.Service
             
             var orderItems = new List<OrderItem>();
 
-
             var cartItems = new CartItemsDto
             {
                 Items = request.Items.Select(i => new CartItemDto
@@ -44,7 +43,8 @@ namespace Application.Order.Service
             {
                 var product = await _uow.Products.GetByIdAsync<int>(item.FoodId, ct);
                 if (product == null) throw new KeyNotFoundException("Cannot find product");
-                if (product.Stock.Equals(0)) throw new ArgumentException("Product sold out");
+                if (product.Stock <= 0) throw new ArgumentException("Product sold out");
+                if (item.Quantity > product.Stock) throw new InvalidOperationException("Quantity exceeds product stock");
 
                 var orderItem = new OrderItem
                 {
@@ -118,6 +118,41 @@ namespace Application.Order.Service
             var response = _mapper.Map<UserOrderResponse>(userOrder);
 
             return response;
+        }
+
+        public async Task<bool> UpdateOrderStatus(UpdateOrderStatus request, CancellationToken ct) 
+        {
+            var order = await _uow.Orders.GetByIdAsync<Guid>(request.Id, ct);
+            if (order == null)
+            {
+                throw new KeyNotFoundException("order not found");
+            }
+            if (!string.IsNullOrEmpty(request.OrderStatus))
+            {
+                if (Enum.TryParse<Domain.Enum.OrderStatus>(request.OrderStatus, true, out var os))
+                    order.OrderStatus = os;
+            }
+            if (!string.IsNullOrEmpty(request.PaymentStatus))
+            {
+                if (request.PaymentStatus.Equals("succeeded", StringComparison.OrdinalIgnoreCase))
+                {
+                    order.PaymentStatus = Domain.Enum.PaymentStatus.Paid;
+                }
+                else
+                {
+                    order.PaymentStatus = Domain.Enum.PaymentStatus.Failed;
+                }
+                   
+            }
+
+            await _uow.SaveChangesAsync(ct);
+
+            var updatedOrder = _uow.Orders.GetByIdAsync<Guid>(request.Id, ct);
+            if(updatedOrder.Result.OrderStatus.ToString() == request.OrderStatus || updatedOrder.Result.PaymentStatus.ToString() == request.PaymentStatus)
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> CancelMyOrder(Guid userId, Guid orderId, CancellationToken ct)
