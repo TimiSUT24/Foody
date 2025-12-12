@@ -3,7 +3,7 @@
 }
 
 .user-body{
-    background-color: whitesmoke;
+    background-color: rgb(228, 230, 237);
 }
 
 .user-page {
@@ -91,6 +91,6 @@
   position: relative;
   width: 100vw;
   height: 80px;
-  background-color: lightgray;
+  background-color: rgb(210, 212, 213);
   align-content: center;
 }

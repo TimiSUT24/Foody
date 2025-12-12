@@ -1,5 +1,5 @@
 .order-card{
-    background-color: whitesmoke;
+    background-color: white;
     width:1000px;
     text-align: left;
     border-radius: 10px;
@@ -34,7 +34,14 @@
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
 }
-
+.order-num{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width:100%;
+    padding-right:10px;
+}
 
 .order-first{
     display:flex;

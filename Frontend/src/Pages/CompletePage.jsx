@@ -6,6 +6,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import api from "../Api/api";
 import { stripeApi } from "../Api/stripeApi";
 import {useCart} from "../Context/CartContext"
+import { useNavigate } from "react-router-dom";
 import '../CSS/CompletePage.css'
 
 const stripePromise =loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
@@ -55,6 +56,7 @@ function CompletePageContent() {
   const [intentId, setIntentId] = useState(null);
   const {cart} = useCart();
   const [clientSecret, setClientSecret] = useState(null)
+  const navigate = useNavigate();
 
   useEffect(() => {
   
@@ -77,7 +79,8 @@ function CompletePageContent() {
       setIntentId(paymentIntent.id);
 
     if (paymentIntent.status === "requires_capture") {
-      const create = await api.post("/api/Order/create", {
+      try{
+        const create = await api.post("/api/Order/create", {
         items: cart.map(x => ({ foodId: x.id, quantity: x.qty })),
         shippingInformation: {
           firstName: paymentIntent.shipping.name,
@@ -90,6 +93,7 @@ function CompletePageContent() {
           postalCode: paymentIntent.shipping.address.postal_code
         }
       });
+      console.log(create)
         if(create.status === 200){
           const {data: capture} = await stripeApi.post("/capture-payment-intent", {
             paymentIntentId: paymentIntent.id
@@ -102,14 +106,28 @@ function CompletePageContent() {
               paymentStatus: capture.status
             })
             localStorage.removeItem("cart")
+            setTimeout(() =>{
+                  navigate("/thank-you-page")
+            }, 3000)
           }
-        } 
-          else{
-          const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
+        }
+
+        if(create.status != 200){
+            const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
             paymentIntentId: paymentIntent.id
           });       
           setStatus(cancel.status)
+
         }
+
+      }catch(err){
+        console.error("Order failed cancel payment", err)
+        const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
+            paymentIntentId: paymentIntent.id
+          });       
+          setStatus(cancel.status)
+      }
+      
     }
   };
  

@@ -25,8 +25,15 @@ namespace Application.Order.Service
         }
 
         public async Task<Guid> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
-        {       
-            
+        {
+            var products = await _uow.Products.GetAllAsync(ct);
+            foreach(var item in request.Items)
+            {
+                if (!products.Any(s => s.Id == item.FoodId))
+                {
+                    throw new KeyNotFoundException("Invalid id");
+                }
+            }
             var orderItems = new List<OrderItem>();
 
             var cartItems = new CartItemsDto
@@ -189,9 +196,16 @@ namespace Application.Order.Service
             decimal momsTotal = 0;
             decimal momsRate = 0.12M;
             decimal total = 0;
-
-            foreach(var item in cartItems.Items)
+            var products = await _uow.Products.GetAllAsync(ct);
+            foreach (var item in cartItems.Items)
             {
+
+                if (!products.Any(s => s.Id == item.Id))
+                {
+                    throw new KeyNotFoundException("Invalid id");
+                }
+                
+                
                 var product = await _uow.Products.GetByIdAsync(item.Id, ct);
 
                 var itemSubTotal = product.Price * item.Qty;

@@ -8,6 +8,7 @@ import RegisterPage from './Pages/RegisterPage'
 import CompletePage from './Pages/CompletePage'
 import UserPage from './Pages/User/UserPage'
 import UserProfilePage from './Pages/User/UserProfilePage'
+import OrderThankYouPage from './Pages/OrderThankYouPage'
 import './App.css'
 
 
@@ -26,6 +27,8 @@ function App() {
         <Route path="/order-complete" element={<CompletePage />}></Route>
         <Route path="/user-page" element={<UserPage />}></Route>
         <Route path="/user-profile-page" element={<UserProfilePage />}></Route>
+        <Route path="/thank-you-page" element={<OrderThankYouPage />}></Route>
+        
       </Routes>  
 
 

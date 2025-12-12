@@ -46,7 +46,7 @@ app.post("/create-payment-intent", async (req, res) => {
       },
       metadata:{
         email:shipping.email,
-        lastname: shipping.lastNames
+        lastname: shipping.lastName
       }
     });
 

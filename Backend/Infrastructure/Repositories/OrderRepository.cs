@@ -22,6 +22,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Orders
                 .AsNoTracking()
+                .Include(o => o.ShippingInformation)
                 .Include(o => o.OrderItems)
                     .ThenInclude(f => f.Food)
                     .Include(u => u.User)
@@ -34,7 +35,8 @@ namespace Infrastructure.Repositories
         {
             var query = await _context.Orders
                 .AsNoTracking()
-                .Include(o => o.OrderItems)
+                .Include(o => o.ShippingInformation)
+                .Include(o => o.OrderItems)         
                     .ThenInclude(o => o.Food)
                     .Include(u => u.User)
                     .OrderDescending()

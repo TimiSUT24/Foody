@@ -83,6 +83,8 @@ export default function NavBar (){
         <NavLink to="/register">Registrera</NavLink>
         <NavLink to="/cart">Varukorg {totalPrice.toFixed(2)} kr {totalItems !== 0 && totalItems}</NavLink>
         <NavLink to="/user-page">Mina sidor</NavLink>
+        <NavLink to="/thank-you-page">thankyou</NavLink>
+        
       </> 
     );
   };

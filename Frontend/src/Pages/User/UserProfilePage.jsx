@@ -24,7 +24,6 @@ export default function UserProfilePage(){
             setActiveTab(location.state.tab);
         }
     }, [location.state])
-console.log(activeTab)
 
     return(
         <div className="user-profile">

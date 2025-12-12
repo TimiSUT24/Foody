@@ -5,7 +5,7 @@
 }
 
 .personal-info{
-    background-color: whitesmoke;
+    background-color: white;
     width:1000px;
     height:fit-content;
     border-radius: 10px;
@@ -53,7 +53,7 @@
 
 /* PASSWORD FORM */
 .change-password{
-    background-color: whitesmoke;
+    background-color: white;
     width:1000px;
     height:fit-content;
     border-radius: 10px;

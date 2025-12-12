@@ -27,7 +27,7 @@ export default function OrderCard({order,onClick}){
                     <img id="shopping-img" src="/IMG/icons8-shopping-bag-50.png" style={{width:35,height:35}}/>
                 </div>
                 
-                <div style={{display:"flex",flexDirection:"row",gap:700, alignItems:"center"}}>
+                <div className="order-num">
                     <div className="order-first">
                     <p className="" style={{fontWeight:"bold"}}>Order #{order.id.slice(0, 8)}</p>
                     <p className="">{date}</p>

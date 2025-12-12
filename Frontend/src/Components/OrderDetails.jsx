@@ -61,35 +61,43 @@ export default function OrderDetails({ order, onBack }) {
             </div>
 
             <div className="shipping-icons">
-                <div>
-                <img src="/IMG/icons8-shopping-bag-50.png" alt=""/>
+                <div id="shipping-container">
+                    <div className="shipping-icon">
+                        <img  id="shipping-img" src="/IMG/icons8-delivery-time-50.png" alt=""/>
+                    </div>               
                 <p>Väntar</p>
                 </div>
 
-                <div>
-                <img src="/IMG/icons8-shopping-bag-50.png" alt=""/>
+                <div id="shipping-container">
+                <div className="shipping-icon">
+                        <img id="shipping-img" src="/IMG/icons8-box-64.png" alt=""/>
+                    </div>   
                 <p>Beställning</p>
                 </div>
 
-                <div>
-                <img src="/IMG/icons8-shopping-bag-50.png" alt=""/>
+                <div id="shipping-container">
+                <div className="shipping-icon">
+                        <img  id="shipping-img" src="/IMG/icons8-delivery-50.png" alt=""/>
+                    </div>   
                 <p>Skickas</p>
                 </div>
 
-                <div>
-                <img src="/IMG/icons8-shopping-bag-50.png" alt=""/>
+                <div id="shipping-container">
+                <div className="shipping-icon">
+                        <img  id="shipping-img" src="/IMG/icons8-delivered-48.png" alt=""/>
+                    </div>   
                 <p>Levererad</p>
                 </div>
                 
             </div>
-           
+           <div id="br-div"></div>
             {/* Items */}
             <div className="details-items">
                 <h3 style={{textAlign:"left"}}>Produkter</h3>
                 {order.orderItems.map((item, index) => (
                     <div key={index} className="details-item">
-                        <div style={{backgroundColor:"orange",padding:5,marginRight:8,borderRadius:10}}>
-                            <img src="/IMG/icons8-shopping-bag-50.png" style={{width:40,height:40}} />
+                        <div style={{backgroundColor:"#efbe9bff",padding:5,marginRight:8,borderRadius:10}}>
+                            <img src="/IMG/icons8-box-64.png" id="details-img"/>
                         </div>
                         
                        <div style={{display:"flex", alignItems:"center",width:"920px",justifyContent:"space-between"}}>
@@ -108,11 +116,13 @@ export default function OrderDetails({ order, onBack }) {
                 ))}
             </div>
 
+              <div id="br-div"></div>
+
              <div className="details-prices">
                     
                     <div className="details-price">
-                    <span >Subtotal:</span>
-                    <span > kr</span>
+                    <span >Delsumma:</span>
+                    <span >{order.subTotal} kr</span>
                     </div>
 
                     
@@ -123,42 +133,43 @@ export default function OrderDetails({ order, onBack }) {
 
                     <div className="details-price">
                     <span>Moms:</span>
-                    <span> kr</span>
+                    <span>{order.moms} kr</span>
                     </div>
                 </div>
+                <div id="br-div"></div>
 
             {/* Total */}
             <div className="details-total">
                 <p style={{fontWeight:"bold",fontSize:"20px"}}>Totalt:</p>
-                <p style={{fontWeight:"bold"}} className="total-price">{order.totalPrice.toFixed(2)} kr</p>
+                <p style={{fontWeight:"bold",fontSize:"18px"}} className="total-price">{order.totalPrice.toFixed(2)} kr</p>
             </div>
+
+            <div id="br-div"></div>
 
             <div className="details-extra">
 
                 <div className="details-extra-content">
                    <div id="details-extra-img">
-                          <img src="/IMG/icons8-shopping-bag-50.png" alt="" style={{width:40,height:40}} />
+                          <img id="details-extra-image" src="/IMG/icons8-location-50.png" alt=""/>
                     </div>
                   
                     <div className="details-p">
-                    <p style={{fontSize:"18px"}}>Leveransadress</p>
-                    <p>s</p>
-                    <p>s</p>
-                    <p>s</p>
+                    <p style={{fontSize:"18px",color:"black"}}>Leveransadress</p>
+                    <p>{order.shippingItems.adress}</p>
+                    <p>{order.shippingItems.postalCode} {order.shippingItems.city}</p>
+                    <p>{order.shippingItems.state}</p>
                     </div>   
 
                 </div>
 
                 <div className="details-extra-content">
                     <div id="details-extra-img">
-                          <img src="/IMG/icons8-shopping-bag-50.png" alt="" style={{width:40,height:40}} />
+                          <img id="details-extra-image" src="/IMG/icons8-magnetic-card-50.png" alt="" />
                     </div>
                   
                     <div className="details-p">
-                    <p style={{fontSize:"18px"}}>Betalningsmetod</p>
-                    <p>s</p>
-                    <p>s</p>
-                    <p>s</p>
+                    <p style={{fontSize:"18px",color:"black"}}>Betalningsmetod</p>
+                    <p>{order.paymentStatus}</p>
                     </div>                 
 
                 </div>
