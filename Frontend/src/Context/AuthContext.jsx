@@ -1,5 +1,23 @@
 import {createContext, useContext, useState, useEffect} from 'react'
+import { jwtDecode } from 'jwt-decode';
 import {AuthService} from "../Services/AuthService"
+
+const decodeUser = (token) => {
+  try {
+    const decoded = jwtDecode(token);
+    return {
+      id: decoded.sub || decoded.id,
+      email:
+        decoded.email ||
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+      username:
+        decoded.username ||
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+    };
+  } catch {
+    return null;
+  }
+};
 
 const AuthContext = createContext();
 
@@ -8,7 +26,8 @@ export function AuthProvider({children}){
         return localStorage.getItem("accessToken") || null
     });
 
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() =>
+    accessToken ? decodeUser(accessToken) : null)
 
     useEffect(() => {
         if(accessToken){

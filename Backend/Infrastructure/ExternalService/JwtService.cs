@@ -28,7 +28,6 @@ namespace Infrastructure.ExternalService
                 new Claim(JwtRegisteredClaimNames.Jti, jwtId),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
 
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!)
             };
