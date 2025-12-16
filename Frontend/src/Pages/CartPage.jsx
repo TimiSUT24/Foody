@@ -5,6 +5,7 @@ import { createPaymentIntent } from "../Services/StripeService"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Components/CheckoutForm"
+import { getDeliveryOptions } from "../Services/PostnordService"
 import "../CSS/CartPage.css"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
@@ -13,6 +14,12 @@ export default function CartPage(){
     const {cart, addToCart, removeFromCart, totalPrice} = useCart();
     const [error, setError] = useState({})
     const [clientSecret, setClientSecret] = useState(null);
+
+    //postnord
+    const [deliver, setDeliver] = useState(false);
+    const [postnordOptions, setPostnordOptions] = useState(null);
+    const [selectedOption, setSelectedOption] = useState(null);
+    //
     const [totals, setTotal] = useState({
         subTotal: 0,
         moms: 0,
@@ -44,9 +51,19 @@ export default function CartPage(){
         city:"",
         state:"",
         postalCode:"",
-        phoneNumber:""
-
+        phoneNumber:"",
+        deliveryOptionId:"",
+        serviceCode:""
     });
+
+    const handleDeliverySelect = (option) => {
+        setSelectedOption(option);
+        setShipping(prev => ({
+            ...prev,
+            deliveryOptionId: option.deliveryOptionId,
+            serviceCode: option.serviceCode
+        }))
+    }
 
      const handleChange = (e) => {
         setShipping({...shipping, [e.target.name]: e.target.value})
@@ -68,6 +85,11 @@ export default function CartPage(){
                 return;
             }
 
+            if(!selectedOption){
+                alert("Choose delivery option")
+                return;
+            }
+
          try {
         const {clientSecret} = await createPaymentIntent(
         cart.map(i => ({
@@ -86,7 +108,34 @@ export default function CartPage(){
     }
     }
 
+    const delivery = async () => {
+        try{
+            const required = ["firstName","lastName","email","adress","city","state","postalCode","phoneNumber"];
+        const newErrors = {};
 
+        required.forEach(field => {
+            if(!shipping[field] || shipping[field].trim() === ""){
+                newErrors[field] = "This field is required";
+            }
+                });
+            setError(newErrors);
+
+            if(Object.keys(newErrors).length > 0){
+                return;
+            }
+
+            const options = await getDeliveryOptions({
+            postCode: shipping.postalCode
+        })
+        if(options.status = 200){
+            setPostnordOptions(options)
+            setDeliver(true);
+        }
+
+        }catch(err){
+            console.error(err);
+        }
+    }
 
     return(
         <div className="cart-page">
@@ -146,7 +195,7 @@ export default function CartPage(){
                         <input className="postal-input" type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{width:"350px",paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
-                
+                 <button className="checkout-btn" onClick={delivery}>Fortsätt</button>
             </div>
 
             <div id="cart-container">
@@ -205,6 +254,37 @@ export default function CartPage(){
                 
             )}
             </div>
+
+            {deliver && (
+                <div id="payment">
+                    <h2 style={{ textAlign: "left" }}>Välj leverans</h2>
+                    {postnordOptions.length === 0 ? (
+                    <p>Inga hemleveransalternativ tillgängliga.</p>
+                    ) : (
+                    postnordOptions.map((warehouse, wIndex) => (
+                        <div key={wIndex} className="warehouse-options">
+                        <h3>Från: {warehouse.warehouse.address.city}</h3>
+                        {warehouse.deliveryOptions.map((option, oIndex) => (
+                            <div key={oIndex} className="delivery-option">
+                            <input
+                                type="radio"
+                                name="deliveryOption"
+                                value={option.defaultOption.bookingInstructions.deliveryOptionId}
+                                onChange={() =>
+                                handleDeliverySelect(option.defaultOption.bookingInstructions)
+                                }
+                            />
+                            <label>
+                                {option.defaultOption.descriptiveTexts.checkout.title} -{" "}
+                                {option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}
+                            </label>
+                            </div>
+                        ))}
+                        </div>
+                    ))
+                    )}
+                </div>
+            )}
       
             {clientSecret && (
                 <div id="payment">

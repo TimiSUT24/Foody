@@ -36,11 +36,9 @@ namespace Api.Controllers.Order
         [ProducesResponseType(statusCode:401)]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto request, CancellationToken ct)
         {
-            var orderID = await _orderService.CreateAsync(UserId, request, ct);
-            return Ok(new
-            {
-                orderId = orderID
-            });
+            var order = await _orderService.CreateAsync(UserId, request, ct);
+            return Ok(order);
+            
         }
 
         [HttpGet("{id:Guid}")]

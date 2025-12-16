@@ -19,6 +19,10 @@ namespace Domain.Models
         public string PostalCode { get; set; } = string.Empty;
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
+        public string? ShipmentId {  get; set; } = string.Empty;
+        public string? TrackingId {  get; set; } = string.Empty;
+        public string? TrackingUrl { get; set; } = string.Empty;
+        public string? Carrier {  get; set; } = string.Empty;
         public Guid OrderId { get; set; }
         public Order? Order { get; set; }
     }

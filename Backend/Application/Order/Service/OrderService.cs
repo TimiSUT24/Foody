@@ -24,7 +24,24 @@ namespace Application.Order.Service
             _mapper = mapper;
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
+        private decimal ConvertToKg(decimal? value, string? unit)
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value), "Weight value is required");
+
+            if (string.IsNullOrWhiteSpace(unit))
+                throw new ArgumentNullException(nameof(unit), "Weight unit is required");
+
+            return unit.ToLower() switch
+            {
+                "kg" => value.Value,
+                "g" => value.Value / 1000m,
+                "l" => value.Value, // 1 liter ≈ 1 kg
+                _ => throw new ArgumentException($"Unsupported weight unit: {unit}")
+            };
+        }
+
+        public async Task<CreatedOrderResponse> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
         {
             var products = await _uow.Products.GetAllAsync(ct);
             foreach(var item in request.Items)
@@ -45,6 +62,7 @@ namespace Application.Order.Service
                 }).ToList()
             };
             var totals = await CalculateTax(cartItems, ct);
+            decimal? totalWeightKg = 0m;
 
             foreach (var item in request.Items)
             {
@@ -52,6 +70,9 @@ namespace Application.Order.Service
                 if (product == null) throw new KeyNotFoundException("Cannot find product");
                 if (product.Stock <= 0) throw new ArgumentException("Product sold out");
                 if (item.Quantity > product.Stock) throw new InvalidOperationException("Quantity exceeds product stock");
+
+                var unitToKg = ConvertToKg(product.WeightValue, product.WeightUnit);
+                totalWeightKg += unitToKg * item.Quantity;
 
                 var orderItem = new OrderItem
                 {
@@ -89,7 +110,11 @@ namespace Application.Order.Service
             await _uow.Orders.AddAsync(order, ct);
             await _uow.SaveChangesAsync(ct);
 
-            return order.Id;
+            return new CreatedOrderResponse
+            {
+                OrderId = order.Id,
+                TotalWeightKg = totalWeightKg
+            };
         }
 
         public async Task<OrderResponse> GetByIdAsync(Guid id, CancellationToken ct)

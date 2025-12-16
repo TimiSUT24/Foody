@@ -5,6 +5,7 @@ import {
 import { loadStripe } from "@stripe/stripe-js"
 import api from "../Api/api";
 import { stripeApi } from "../Api/stripeApi";
+import { postnordApi } from "../Api/postnordApi";
 import {useCart} from "../Context/CartContext"
 import { useNavigate } from "react-router-dom";
 import '../CSS/CompletePage.css'
@@ -105,7 +106,18 @@ function CompletePageContent() {
               orderStatus: "Processing",
               paymentStatus: capture.status
             })
+            postnordApi.post("/api/shipping/booking",{
+              shipping:{
+                deliveryOptionId: paymentIntent.metadata.deliveryOptionId,
+                serviceCode: paymentIntent.metadata.serviceCode,
+                shipping: paymentIntent.shipping
+              },
+              orderId: create.data.orderId,
+              totalWeight: create.data.totalWeightKg
+            })
+            //update shippingInformation with shipmentId and tracking url/id 
             localStorage.removeItem("cart")
+            
             setTimeout(() =>{
                   navigate("/thank-you-page")
             }, 3000)

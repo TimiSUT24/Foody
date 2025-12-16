@@ -16,6 +16,7 @@ namespace Domain.Models
         public decimal SubTotal { get; set; }
         public decimal Moms { get; set; }
         public decimal ShippingTax { get; set; } 
+        public decimal TotalWeight { get; set; }
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
         public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Unpaid;
 
