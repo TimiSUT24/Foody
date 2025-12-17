@@ -11,6 +11,7 @@ namespace Application.Order.Dto.Response
         public decimal Moms { get; init; }
         public decimal SubTotal { get; init; }
         public decimal Total { get; init; }
+        public decimal ShippingTax { get; init; }
 
     }
 }

@@ -49,7 +49,7 @@ namespace Infrastructure.Repositories
         public async Task<Order> GetOrder(Guid id, CancellationToken ct)
         {
             var query = await _context.Orders
-                .AsNoTracking()
+                .Include(o => o.ShippingInformation)
                 .Include(o => o.OrderItems)
                 .ThenInclude(f => f.Food)
                 .FirstOrDefaultAsync(i => i.Id == id, ct);

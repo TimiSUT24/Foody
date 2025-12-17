@@ -94,19 +94,15 @@ function CompletePageContent() {
           postalCode: paymentIntent.shipping.address.postal_code
         }
       });
-      console.log(create)
+
         if(create.status === 200){
           const {data: capture} = await stripeApi.post("/capture-payment-intent", {
             paymentIntentId: paymentIntent.id
           });
           setStatus(capture.status)
           if(capture.status === "succeeded"){
-              await api.patch("/api/Order/update-status", {
-              id: create.data.orderId,
-              orderStatus: "Processing",
-              paymentStatus: capture.status
-            })
-            postnordApi.post("/api/shipping/booking",{
+              
+              const postnordResponse = await postnordApi.post("/api/shipping/booking",{
               shipping:{
                 deliveryOptionId: paymentIntent.metadata.deliveryOptionId,
                 serviceCode: paymentIntent.metadata.serviceCode,
@@ -115,7 +111,22 @@ function CompletePageContent() {
               orderId: create.data.orderId,
               totalWeight: create.data.totalWeightKg
             })
-            //update shippingInformation with shipmentId and tracking url/id 
+
+            const idInfo = postnordResponse.data.idInformation?.[0]
+            const trackingId = idInfo?.ids?.[0]?.value ?? null;
+            const trackingUrl = idInfo?.urls?.find(u => u.type === "TRACKING")?.url ?? null;
+             await api.patch("/api/Order/update-order", {
+              id: create.data.orderId,
+              orderStatus: "Processing",
+              paymentStatus: capture.status,
+              shippingInformation: {
+                shipmentId: postnordResponse.data.bookingId,
+                trackingId: trackingId,
+                trackingUrl: trackingUrl,
+                carrier: "Postnord"
+              }
+            })
+            
             localStorage.removeItem("cart")
             
             setTimeout(() =>{
@@ -123,7 +134,7 @@ function CompletePageContent() {
             }, 3000)
           }
         }
-
+        
         if(create.status != 200){
             const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
             paymentIntentId: paymentIntent.id

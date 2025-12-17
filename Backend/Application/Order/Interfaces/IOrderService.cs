@@ -16,7 +16,7 @@ namespace Application.Order.Interfaces
         Task<UserOrderResponse> GetUserOrder(Guid userId, Guid orderId, CancellationToken ct);
         Task<bool> CancelMyOrder(Guid userId, Guid orderId, CancellationToken ct);
         Task<CartTotals> CalculateTax(CartItemsDto cartItems, CancellationToken ct);
-        Task<bool> UpdateOrderStatus(UpdateOrderStatus request, CancellationToken ct);
+        Task<bool> UpdateOrder(UpdateOrder request, CancellationToken ct);
 
 
     }

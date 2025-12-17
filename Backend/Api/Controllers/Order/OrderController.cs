@@ -71,12 +71,12 @@ namespace Api.Controllers.Order
             return Ok(result);
         }
 
-        [HttpPatch("update-status")]
+        [HttpPatch("update-order")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
-        public async Task<IActionResult> UpdateOrderStatus(UpdateOrderStatus request, CancellationToken ct)
+        public async Task<IActionResult> UpdateOrder(UpdateOrder request, CancellationToken ct)
         {
-            var result = await _orderService.UpdateOrderStatus(request, ct);
+            var result = await _orderService.UpdateOrder(request, ct);
             return Ok(result);
         }
         

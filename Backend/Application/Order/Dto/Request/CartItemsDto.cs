@@ -9,5 +9,6 @@ namespace Application.Order.Dto.Request
     public record CartItemsDto
     {
         public List<CartItemDto> Items { get; set; } = new List<CartItemDto>();
+        public string? ServiceCode { get; set; } = string.Empty;
     }
 }

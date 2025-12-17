@@ -4,7 +4,9 @@ using Application.Order.Interfaces;
 using AutoMapper;
 using Domain.Interfaces;
 using Domain.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,6 +81,7 @@ namespace Application.Order.Service
                     FoodId = item.FoodId,
                     Quantity = item.Quantity,
                     UnitPrice = product.Price,
+                    WeightValue = (decimal)product.WeightValue
                 };
                 product.Stock -= item.Quantity;
                 orderItems.Add(orderItem);
@@ -91,6 +94,8 @@ namespace Application.Order.Service
                 Moms = totals.Moms,
                 SubTotal = totals.SubTotal,
                 OrderStatus = Domain.Enum.OrderStatus.Pending,
+                TotalWeight = (decimal)totalWeightKg,
+                ShippingTax = totals.ShippingTax,
                 OrderDate = DateTime.UtcNow,
                 OrderItems = orderItems,
                 ShippingInformation = new Domain.Models.ShippingInformation
@@ -152,39 +157,64 @@ namespace Application.Order.Service
             return response;
         }
 
-        public async Task<bool> UpdateOrderStatus(UpdateOrderStatus request, CancellationToken ct) 
+        public async Task<bool> UpdateOrder(UpdateOrder request, CancellationToken ct) 
         {
-            var order = await _uow.Orders.GetByIdAsync<Guid>(request.Id, ct);
+            var order = await _uow.Orders.GetOrder(request.Id, ct);
             if (order == null)
             {
                 throw new KeyNotFoundException("order not found");
             }
+            bool updated = false;
+
             if (!string.IsNullOrEmpty(request.OrderStatus))
             {
                 if (Enum.TryParse<Domain.Enum.OrderStatus>(request.OrderStatus, true, out var os))
+                {
                     order.OrderStatus = os;
+                    updated = true;
+                }
+                
             }
             if (!string.IsNullOrEmpty(request.PaymentStatus))
             {
                 if (request.PaymentStatus.Equals("succeeded", StringComparison.OrdinalIgnoreCase))
                 {
                     order.PaymentStatus = Domain.Enum.PaymentStatus.Paid;
+                    updated = true;
                 }
                 else
                 {
                     order.PaymentStatus = Domain.Enum.PaymentStatus.Failed;
+                    updated = true;
                 }
                    
             }
 
+            if (request.ShippingInformation != null)
+            {
+                var s = order.ShippingInformation;
+
+                s.ShipmentId = request.ShippingInformation.ShipmentId ?? s.ShipmentId;
+                s.TrackingId = request.ShippingInformation.TrackingId ?? s.TrackingId;
+                s.TrackingUrl = request.ShippingInformation.TrackingUrl ?? s.TrackingUrl;
+                s.Carrier = request.ShippingInformation.Carrier ?? s.Carrier;
+
+                s.FirstName = request.ShippingInformation.FirstName ?? s.FirstName;
+                s.LastName = request.ShippingInformation.LastName ?? s.LastName;
+                s.Email = request.ShippingInformation.Email ?? s.Email;
+                s.PhoneNumber = request.ShippingInformation.PhoneNumber ?? s.PhoneNumber;
+                s.Adress = request.ShippingInformation.Adress ?? s.Adress;
+                s.City = request.ShippingInformation.City ?? s.City;
+                s.State = request.ShippingInformation.State ?? s.State;
+                s.PostalCode = request.ShippingInformation.PostalCode ?? s.PostalCode;
+
+            }
+
+            if (!updated) { return false; }
+
             await _uow.SaveChangesAsync(ct);
 
-            var updatedOrder = _uow.Orders.GetByIdAsync<Guid>(request.Id, ct);
-            if(updatedOrder.Result.OrderStatus.ToString() == request.OrderStatus || updatedOrder.Result.PaymentStatus.ToString() == request.PaymentStatus)
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
 
         public async Task<bool> CancelMyOrder(Guid userId, Guid orderId, CancellationToken ct)
@@ -217,10 +247,11 @@ namespace Application.Order.Service
 
         public async Task<CartTotals> CalculateTax(CartItemsDto cartItems, CancellationToken ct)
         {
-            decimal subTotal = 0;
-            decimal momsTotal = 0;
+            decimal subTotal = 0M;
+            decimal momsTotal = 0M;
             decimal momsRate = 0.12M;
-            decimal total = 0;
+            decimal shippingTax = 0M;
+            decimal total = 0M;
             var products = await _uow.Products.GetAllAsync(ct);
             foreach (var item in cartItems.Items)
             {
@@ -235,10 +266,16 @@ namespace Application.Order.Service
 
                 var itemSubTotal = product.Price * item.Qty;
                 var lineMoms = itemSubTotal * momsRate;
+                shippingTax = GetShippingTax(cartItems.ServiceCode);
 
                 subTotal += itemSubTotal;
                 momsTotal += lineMoms;
-                total = subTotal + momsTotal;
+                total = subTotal + momsTotal + shippingTax;
+
+                if(total >= 300M)
+                {
+                    shippingTax = 0M;
+                }
 
             }
 
@@ -247,10 +284,19 @@ namespace Application.Order.Service
                 SubTotal = decimal.Round(subTotal,2,MidpointRounding.AwayFromZero),
                 Moms = decimal.Round(momsTotal, 2, MidpointRounding.AwayFromZero),
                 Total = decimal.Round(total,2,MidpointRounding.AwayFromZero),
+                ShippingTax = shippingTax,
             };
         }
 
-      
+
+        private decimal GetShippingTax(string? serviceCode)
+        {
+            return serviceCode switch
+            {
+                "17" => 39M,
+                "" => 0M
+            };
+        }
 
     }
 }

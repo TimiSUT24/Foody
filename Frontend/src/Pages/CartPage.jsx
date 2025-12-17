@@ -11,7 +11,7 @@ import "../CSS/CartPage.css"
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
 
 export default function CartPage(){
-    const {cart, addToCart, removeFromCart, totalPrice} = useCart();
+    const {cart, addToCart, removeFromCart} = useCart();
     const [error, setError] = useState({})
     const [clientSecret, setClientSecret] = useState(null);
 
@@ -23,7 +23,8 @@ export default function CartPage(){
     const [totals, setTotal] = useState({
         subTotal: 0,
         moms: 0,
-        total:0
+        total:0,
+        shippingTax: 0,
     })
 
      const appearance = {
@@ -34,7 +35,7 @@ export default function CartPage(){
 
   useEffect(() => {
     const fetchTotal = async () => {
-        const response = await api.post("/api/Order/CalculateTax", {items: cart})
+        const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
         setTotal(response.data)
 
     };
@@ -43,6 +44,7 @@ export default function CartPage(){
 
   },[cart])
     
+  //Shipping logic
     const [shipping, setShipping] = useState({
         firstName:"",
         lastName:"",
@@ -65,11 +67,22 @@ export default function CartPage(){
         }))
     }
 
+    useEffect(() => {
+        if(!shipping.serviceCode) return;
+
+        const recalcTotals = async () => {
+            const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
+            setTotal(response.data);
+        }
+        recalcTotals();
+    },[shipping.serviceCode])
+
      const handleChange = (e) => {
         setShipping({...shipping, [e.target.name]: e.target.value})
         setError(error => ({...error, [e.target.name]: ""}));
     }
 
+    //Place Order
     const placeOrder = async () => {
         const required = ["firstName","lastName","email","adress","city","state","postalCode","phoneNumber"];
         const newErrors = {};
@@ -123,7 +136,7 @@ export default function CartPage(){
             if(Object.keys(newErrors).length > 0){
                 return;
             }
-
+            
             const options = await getDeliveryOptions({
             postCode: shipping.postalCode
         })
@@ -230,13 +243,13 @@ export default function CartPage(){
                     
                     <div className="checkout-price">
                     <span >Subtotal:</span>
-                    <span >{totalPrice} kr</span>
+                    <span >{totals.subTotal} kr</span>
                     </div>
 
                     
                     <div className="checkout-price">
                     <span>Frakt:</span>
-                    <span>10 kr</span>
+                    <span>{totals.shippingTax} kr</span>
                     </div>
 
                     <div className="checkout-price">
@@ -249,7 +262,9 @@ export default function CartPage(){
                 
                 <h2>Totalt: {totals.total} kr</h2>
 
-                <button className="checkout-btn" onClick={placeOrder}>Lägg Order</button>
+                {selectedOption && (
+                    <button className="checkout-btn" onClick={placeOrder}>Lägg Order</button>
+                )}
                 </>
                 
             )}
@@ -275,8 +290,15 @@ export default function CartPage(){
                                 }
                             />
                             <label>
+                                Postnord{" "}
+                            </label>
+                            <label>
                                 {option.defaultOption.descriptiveTexts.checkout.title} -{" "}
                                 {option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}
+                             
+                            </label>
+                            <label>
+                                {" "}39 kr
                             </label>
                             </div>
                         ))}
