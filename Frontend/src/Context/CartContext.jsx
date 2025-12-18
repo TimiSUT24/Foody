@@ -13,6 +13,7 @@ export function CartProvider({children}){
         localStorage.setItem("cart", JSON.stringify(cart));
     },[cart])
 
+    //Add to cart
     const addToCart = (product) => {
 
            if(!product || typeof product !== "object"){
@@ -30,6 +31,7 @@ export function CartProvider({children}){
         });
     };
 
+    //remove from cart
     const removeFromCart = (id) => {
         setCart(prev => {
             const item = prev.find(p => p.id === id);
@@ -43,6 +45,12 @@ export function CartProvider({children}){
         })
     }
 
+    //clear the whole cart
+    const clearCart = () => {
+        setCart([])
+        localStorage.removeItem("cart");
+    }
+
     const totalItems = cart.reduce((sum,item) => sum + item.qty, 0);
     const totalPrice = cart.reduce((sum,item) => sum + item.price * item.qty, 0);
 
@@ -51,6 +59,7 @@ export function CartProvider({children}){
             cart,
             addToCart,
             removeFromCart,
+            clearCart,
             totalItems,
             totalPrice
         }}>

@@ -55,7 +55,7 @@ const STATUS_CONTENT_MAP = {
 function CompletePageContent() {
   const [status, setStatus] = useState("processing");
   const [intentId, setIntentId] = useState(null);
-  const {cart} = useCart();
+  const {cart,clearCart} = useCart();
   const [clientSecret, setClientSecret] = useState(null)
   const navigate = useNavigate();
 
@@ -113,6 +113,7 @@ function CompletePageContent() {
               totalWeight: create.data.totalWeightKg
             })
 
+            //update order in backend when response from shipping is successful
             const idInfo = postnordResponse.data.idInformation?.[0]
             const trackingId = idInfo?.ids?.[0]?.value ?? null;
             const trackingUrl = idInfo?.urls?.find(u => u.type === "TRACKING")?.url ?? null;
@@ -127,9 +128,8 @@ function CompletePageContent() {
                 carrier: "Postnord"
               }
             })
-            
-            localStorage.removeItem("cart")
-            
+            clearCart();
+                      
             setTimeout(() =>{
                   navigate("/thank-you-page")
             }, 3000)

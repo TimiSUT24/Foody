@@ -17,7 +17,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 //Create Payment
 app.post("/create-payment-intent", async (req, res) => { //add shipping tax to order 
   try {
-    const { cartItems,shipping,shippingTax} = req.body; // frontend must send { cart: [...] }
+    const { cartItems,shipping,shippingTax,userId} = req.body; // frontend must send { cart: [...] }
 
     if (!cartItems || !cartItems.length) return res.status(400).json({ error: "Cart is empty" });
 
@@ -51,7 +51,8 @@ app.post("/create-payment-intent", async (req, res) => { //add shipping tax to o
         lastname: shipping.lastName,
         deliveryOptionId: shipping.deliveryOptionId,
         serviceCode: shipping.serviceCode,
-        shippingTax: shippingTax
+        shippingTax: shippingTax,
+        userId: userId
       }
     });
 

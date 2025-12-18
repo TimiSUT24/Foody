@@ -101,6 +101,7 @@ namespace Api
             builder.Services.AddScoped<INutritionValueRepository, NutritionValueRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>

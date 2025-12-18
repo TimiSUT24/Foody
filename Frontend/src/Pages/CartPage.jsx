@@ -6,6 +6,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Components/CheckoutForm"
 import { getDeliveryOptions } from "../Services/PostnordService"
+import { useAuth } from "../Context/AuthContext"
 import "../CSS/CartPage.css"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
@@ -14,12 +15,13 @@ export default function CartPage(){
     const {cart, addToCart, removeFromCart} = useCart();
     const [error, setError] = useState({})
     const [clientSecret, setClientSecret] = useState(null);
-
+    const [userId, setUserId] = useState(null)
+    const {user} = useAuth();
     //postnord
     const [deliver, setDeliver] = useState(false);
     const [postnordOptions, setPostnordOptions] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
-    //
+    //Taxes
     const [totals, setTotal] = useState({
         subTotal: 0,
         moms: 0,
@@ -38,7 +40,7 @@ export default function CartPage(){
     const fetchTotal = async () => {
         const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
         setTotal(response.data)
-
+        setUserId(user.id)
     };
     fetchTotal();
    
@@ -113,7 +115,8 @@ export default function CartPage(){
           name: i.name
         })),
         shipping,
-        shippingTax
+        shippingTax,
+        userId
       );
 
       setClientSecret(clientSecret);

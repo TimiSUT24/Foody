@@ -13,5 +13,6 @@ namespace Domain.Interfaces
         INutritionValueRepository NutritionValues { get; } 
         IOrderRepository Orders { get; }
         ICategoryRepository Category { get; }
+        IUserRepository User { get; }
     }
 }

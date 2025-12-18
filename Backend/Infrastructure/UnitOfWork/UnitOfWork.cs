@@ -16,18 +16,21 @@ namespace Infrastructure.UnitOfWork
         public INutritionValueRepository NutritionValues { get; }
         public IOrderRepository Orders { get; }
         public ICategoryRepository Category { get; }
+        public IUserRepository User { get; }
 
         public UnitOfWork(FoodyDbContext context, 
                         IProductRepository products,
                         INutritionValueRepository nutritionValues,
                         IOrderRepository orders,
-                        ICategoryRepository category)
+                        ICategoryRepository category,
+                        IUserRepository user)
         {
             _context = context;
             Products = products;
             NutritionValues = nutritionValues;
             Orders = orders;
             Category = category;
+            User = user;
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken ct = default)
