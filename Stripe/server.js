@@ -17,12 +17,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 //Create Payment
 app.post("/create-payment-intent", async (req, res) => { //add shipping tax to order 
   try {
-    const { cartItems,shipping} = req.body; // frontend must send { cart: [...] }
+    const { cartItems,shipping,shippingTax} = req.body; // frontend must send { cart: [...] }
 
     if (!cartItems || !cartItems.length) return res.status(400).json({ error: "Cart is empty" });
 
     const calculateAmount = cartItems.reduce((sum, item) => sum + item.price * 100 * item.qty, 0);
-    let calculateMoms = calculateAmount * 1.12
+    let calcShippingTax = Math.round(shippingTax * 100)
+    let subTotal = calculateAmount + calcShippingTax
+    let calculateMoms = subTotal * 1.12 
     const amount = calculateMoms.toFixed();
 
     const paymentIntent = await stripe.paymentIntents.create({
@@ -48,7 +50,8 @@ app.post("/create-payment-intent", async (req, res) => { //add shipping tax to o
         email:shipping.email,
         lastname: shipping.lastName,
         deliveryOptionId: shipping.deliveryOptionId,
-        serviceCode: shipping.serviceCode
+        serviceCode: shipping.serviceCode,
+        shippingTax: shippingTax
       }
     });
 

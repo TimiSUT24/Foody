@@ -61,7 +61,8 @@ namespace Application.Order.Service
                 {
                     Id = i.FoodId,
                     Qty = i.Quantity
-                }).ToList()
+                }).ToList(),
+                ServiceCode = request.ServiceCode,
             };
             var totals = await CalculateTax(cartItems, ct);
             decimal? totalWeightKg = 0m;
@@ -260,24 +261,20 @@ namespace Application.Order.Service
                 {
                     throw new KeyNotFoundException("Invalid id");
                 }
-                
-                
+
                 var product = await _uow.Products.GetByIdAsync(item.Id, ct);
 
-                var itemSubTotal = product.Price * item.Qty;
-                var lineMoms = itemSubTotal * momsRate;
-                shippingTax = GetShippingTax(cartItems.ServiceCode);
-
-                subTotal += itemSubTotal;
-                momsTotal += lineMoms;
-                total = subTotal + momsTotal + shippingTax;
-
-                if(total >= 300M)
-                {
-                    shippingTax = 0M;
-                }
-
+                subTotal = product.Price * item.Qty;                
+          
             }
+
+            shippingTax = GetShippingTax(cartItems.ServiceCode);
+            if (subTotal >= 300M)
+            {
+                shippingTax = 0M;
+            }
+            momsTotal = (subTotal + shippingTax) * momsRate;
+            total = subTotal + momsTotal + shippingTax;
 
             return new CartTotals
             {

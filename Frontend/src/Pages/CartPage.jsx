@@ -26,6 +26,7 @@ export default function CartPage(){
         total:0,
         shippingTax: 0,
     })
+    const [shippingTax, setShippingTax] = useState(0);
 
      const appearance = {
     theme: 'stripe',
@@ -73,6 +74,7 @@ export default function CartPage(){
         const recalcTotals = async () => {
             const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
             setTotal(response.data);
+            setShippingTax(response.data.shippingTax)
         }
         recalcTotals();
     },[shipping.serviceCode])
@@ -110,7 +112,8 @@ export default function CartPage(){
           qty: i.qty,
           name: i.name
         })),
-        shipping      
+        shipping,
+        shippingTax
       );
 
       setClientSecret(clientSecret);

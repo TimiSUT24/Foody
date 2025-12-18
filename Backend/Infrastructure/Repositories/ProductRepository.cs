@@ -67,7 +67,8 @@ namespace Infrastructure.Repositories
                 string lowerName = name.ToLower();
                 query = query.Where(s => s.Name.ToLower().Contains(lowerName));
             }
-             
+
+            query = query.Where(s => s.Stock > 0);
 
             if (!string.IsNullOrWhiteSpace(brand))
                 query = query.Where(p => p.Brand == brand);

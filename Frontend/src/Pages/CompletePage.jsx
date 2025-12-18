@@ -92,7 +92,8 @@ function CompletePageContent() {
           city: paymentIntent.shipping.address.city,
           state: paymentIntent.shipping.address.state,
           postalCode: paymentIntent.shipping.address.postal_code
-        }
+        },
+        serviceCode: paymentIntent.metadata.serviceCode
       });
 
         if(create.status === 200){
