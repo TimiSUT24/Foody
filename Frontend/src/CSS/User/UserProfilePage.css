@@ -24,9 +24,19 @@
     -o-border-radius: 10px;
 }
 
+.orders-btn{
+    min-width:170px;
+}
+
 .tabs button:focus{
     background-color: orange;
     color:white;
+}
+
+.tab-logout{
+    display:flex;
+    justify-content: space-between;
+    width:100%;
 }
 
 .user-content{

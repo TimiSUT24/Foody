@@ -1,9 +1,10 @@
-import { useLocation } from "react-router-dom"
+import { useLocation,useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { OrderService } from "../../Services/OrderService";
 import OrderCard from "../../Components/OrderCard";
 import ProfileSettings from "../../Components/ProfileSettings";
 import OrderDetails from "../../Components/OrderDetails";
+import { useAuth } from "../../Context/AuthContext";
 import "../../CSS/User/UserProfilePage.css"
 
 
@@ -12,11 +13,18 @@ export default function UserProfilePage(){
     const [activeTab, setActiveTab] = useState("orders");
     const [order, setOrder] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const {logout} = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         OrderService.myOrders().then(setOrder)
     }, [])
 
+    //Logout
+    const handleLogout = async () => {
+        await logout();
+        navigate("/")
+    } 
 
     //Tabs
     useEffect (() => {
@@ -29,8 +37,11 @@ export default function UserProfilePage(){
         <div className="user-profile">
 
             <div className="tabs">
-                <button className="orders-btn" onClick={() => setActiveTab("orders")}>Mina beställningar</button>
+                <button className="orders-btn" onClick={() => setActiveTab("orders")}>Mina beställningar</button>               
+                <div className="tab-logout">
                 <button className="settings-btn" onClick={() => setActiveTab("settings")}>Inställningar</button>
+                <button className="logout-btn" onClick={() => handleLogout()}>Logga ut</button>
+                </div>
             </div>
 
             <div className="user-content">

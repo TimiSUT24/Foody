@@ -92,6 +92,7 @@ namespace Api
             builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddSingleton<IEmailService, EmailService>();
 
 
             //Unit Of Work + Repositories

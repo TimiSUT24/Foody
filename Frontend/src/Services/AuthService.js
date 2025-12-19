@@ -13,13 +13,23 @@ export const AuthService = {
     },
 
       refresh: async (body) => {
-        const response = await api.post("", {body});
+        const response = await api.put("/api/Auth/refreshToken", body);
+        return response.data;
+    },
+
+      logout: async () => {
+        const response = await api.post("/api/Auth/logout");
         return response;
     },
 
-      logout: async (body) => {
-        const response = await api.post("", {body});
-        return response;
+    changePassword: async (body) => {
+      const response = await api.put("/api/Auth/change-password", body);
+      return response.data;
+    },
+    
+    updateProfile: async (body) => {
+      const response = await api.patch("/api/Auth/update-profile", body);
+      return response.data;
     }
 
 

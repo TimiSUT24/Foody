@@ -1,8 +1,10 @@
 import { useState } from "react"
+import { useAuth } from "../Context/AuthContext";
 import "../CSS/User/ProfileSettings.css"
 
     
 export default function ProfileSettings(){
+    const {updateProfile,changePassword} = useAuth();
     const [personal, setPersonal] = useState({
         firstName:"",
         lastName:"",
@@ -25,6 +27,26 @@ export default function ProfileSettings(){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const body = {
+            firstName: personal.firstName,
+            lastName: personal.lastName,
+            email: personal.email,
+            phoneNumber: personal.phoneNumber
+        }
+
+        await updateProfile(body)
+    }
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+
+        const body = {
+            currentPassword: password.currentPass,
+            newPassword: password.newPass
+        }
+
+        await changePassword(body);
     }
 
     return(
@@ -33,7 +55,7 @@ export default function ProfileSettings(){
             <div className="personal-info">
                 <h2 style={{textAlign:"left",marginLeft:20,marginBottom:0}}>Personlig information</h2>
                 <p style={{textAlign:"left", marginLeft:20}}>Uppdatera dina personuppgifter och kontaktinformation</p>
-                <form className="personal-form" >
+                <form className="personal-form" onSubmit={handleSubmit} >
                     <div className="personal-names">
 
                         <div style={{display:"flex",flexDirection:"column", gap:5}}>
@@ -66,7 +88,7 @@ export default function ProfileSettings(){
             <div className="change-password">
                 <h2 style={{textAlign:"left",marginLeft:20,marginBottom:0}}>Ändra lösenord</h2>
                 <p style={{textAlign:"left", marginLeft:20}}>Uppdatera ditt lösenord för att hålla ditt konto säkert</p>
-                <form className="password-form">
+                <form className="password-form" onSubmit={handlePasswordSubmit}>
                     <div  style={{display:"flex", flexDirection:"column",gap:5}}>
                         <p style={{textAlign:"left",margin:0}}>Nurvarande lösenord</p>
                         <input type="password" name="currentPass" value={password.currentPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>

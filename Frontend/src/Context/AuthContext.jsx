@@ -30,12 +30,38 @@ export function AuthProvider({children}){
     accessToken ? decodeUser(accessToken) : null)
 
     useEffect(() => {
+  setUser(accessToken ? decodeUser(accessToken) : null);
+}, [accessToken]);
+
+    useEffect(() => {
         if(accessToken){
             localStorage.setItem("accessToken", accessToken);
         }else{
             localStorage.removeItem("accessToken");
         }
     }, [accessToken])
+
+    //set new accessToken when updating
+    const updateProfile = async (data) => {
+        const response = await AuthService.updateProfile(data);
+
+        if(response.accessToken){
+            setAccessToken(response.accessToken);
+            setUser(decodeUser(response.accessToken));
+        }
+        return response
+    }
+
+     const changePassword = async (data) => {
+        const response = await AuthService.changePassword(data);
+
+        if(response.accessToken){
+            setAccessToken(response.accessToken);
+            setUser(decodeUser(response.accessToken));
+        }
+        return response
+    }
+
 
     const login = async (email, password) => {
         const data = await AuthService.login(email,password);
@@ -67,7 +93,9 @@ export function AuthProvider({children}){
             user,
             login,
             logout,
-            refreshAccessToken
+            refreshAccessToken,
+            updateProfile,
+            changePassword
         }}>
             {children}
         </AuthContext.Provider>

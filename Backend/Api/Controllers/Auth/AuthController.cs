@@ -27,7 +27,7 @@ namespace Api.Controllers.Auth
             Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
+                Secure = true,//if frontend not https is false 
                 SameSite = SameSiteMode.None,
                 Expires = DateTimeOffset.UtcNow.AddDays(14), // matcha Jwt:RefreshDays
                 Path = "/"
@@ -41,6 +41,7 @@ namespace Api.Controllers.Auth
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(14),
                 Path = "/"
             });
         }
@@ -79,6 +80,7 @@ namespace Api.Controllers.Auth
         public async Task<IActionResult> UpdateProfile(UpdateProfileDto request, CancellationToken ct)
         {
             var result = await _authService.UpdateProfileAsync(UserId, request, ct);
+            ClearRefreshCookie();
             SetRefreshCookie(result.RefreshToken);
             return Ok(result);
         }
@@ -90,11 +92,12 @@ namespace Api.Controllers.Auth
         public async Task<IActionResult> ChangePassword(ChangePasswordDto request, CancellationToken ct)
         {
             var result = await _authService.ChangePassword(UserId, request, ct);
+            ClearRefreshCookie();
             SetRefreshCookie(result.RefreshToken);
             return Ok(result);
         }
 
-        [HttpPut("logout")]
+        [HttpPost("logout")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 401)]
         [ProducesResponseType(statusCode: 400)]
@@ -107,13 +110,16 @@ namespace Api.Controllers.Auth
 
         [HttpPut("refreshToken")]
         [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 401)]
+        [ProducesResponseType(statusCode: 403)]     
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenDto request, CancellationToken ct)
         {            
-                var tokens = await _jwtService.RefreshTokensAsync(request.RefreshToken, ct);
+                var (AccessToken, RefreshToken) = await _jwtService.RefreshTokensAsync(request.RefreshToken, ct);
+                ClearRefreshCookie();
+                SetRefreshCookie(RefreshToken);
                 return Ok(new
                 {
-                    accessToken = tokens.AccessToken,
-                    refreshToken = tokens.RefreshToken
+                    accessToken = AccessToken,
                 });                  
         }
     }
