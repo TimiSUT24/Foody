@@ -96,6 +96,7 @@ function CompletePageContent() {
         serviceCode: paymentIntent.metadata.serviceCode
       });
 
+        //if order in backend success call stripe capture api and shipping api 
         if(create.status === 200){
           const {data: capture} = await stripeApi.post("/capture-payment-intent", {
             paymentIntentId: paymentIntent.id

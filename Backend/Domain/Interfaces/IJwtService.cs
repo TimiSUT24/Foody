@@ -12,5 +12,8 @@ namespace Domain.Interfaces
         string GenerateToken(User user, IList<string> roles);
         Task RevokeAllAsync(User user, CancellationToken ct);
         Task<(string AccessToken, string RefreshToken)> RefreshTokensAsync(string refreshTokenValue, CancellationToken ct);
+        Task<(string AccessToken, string RefreshToken)> ReissueTokensAsync(User user, CancellationToken ct);
+        string Sha256(string input);
+        string GenerateSecureToken();
     }
 }

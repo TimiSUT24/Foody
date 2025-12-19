@@ -3,6 +3,8 @@ using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
 using Infrastructure.UnitOfWork;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +13,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,12 +23,13 @@ namespace Infrastructure.ExternalService
     {
         private readonly IConfiguration _configuration;
         private readonly FoodyDbContext _context;
-        private readonly IAuthService _authService;
-        public JwtService(IConfiguration configuration, FoodyDbContext context, IAuthService authService)
+        private readonly Microsoft.AspNetCore.Identity.UserManager<User> _userManager;
+
+        public JwtService(IConfiguration configuration, FoodyDbContext context,Microsoft.AspNetCore.Identity.UserManager<User> userManager)
         {
             _configuration = configuration;
             _context = context;
-            _authService = authService;
+            _userManager = userManager;
         }
         public string GenerateToken(User user, IList<string> roles)
         {
@@ -74,10 +78,11 @@ namespace Infrastructure.ExternalService
 
         public async Task<(string AccessToken, string RefreshToken)> RefreshTokensAsync(string refreshTokenValue, CancellationToken ct)
         {
+            var hashed = Sha256(refreshTokenValue);
             // 1. Lookup the token in DB
             var refreshToken = await _context.RefreshTokens
                 .Include(t => t.User)
-                .FirstOrDefaultAsync(t => t.Token == refreshTokenValue, ct);
+                .FirstOrDefaultAsync(t => t.Token == hashed, ct);
 
             if (refreshToken == null)
                 throw new SecurityTokenException("Refresh token not found");
@@ -87,14 +92,49 @@ namespace Infrastructure.ExternalService
             // 2. Validate the token
             if (refreshToken.IsRevoked || refreshToken.ExpiryDate < DateTime.UtcNow)
             {
-                // Optional: revoke all tokens for this user
-                await RevokeAllAsync(user, ct);
-
                 throw new SecurityTokenException("Refresh token invalid or expired");
             }
 
             // 3. Issue new tokens
-            return await _authService.ReissueTokensAsync(user, ct);
+            return await ReissueTokensAsync(refreshToken.User, ct);
+        }
+
+        public string GenerateSecureToken()
+        {
+            var randomNumber = new byte[64];
+            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        public string Sha256(string input)
+        {
+            using var sha = SHA256.Create();
+            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
+            return Convert.ToHexString(bytes);
+        }
+
+        public async Task<(string AccessToken, string RefreshToken)> ReissueTokensAsync(User user, CancellationToken ct)
+        {
+            await RevokeAllAsync(user, ct);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var accessToken = GenerateToken(user, roles);
+            var refreshToken = GenerateSecureToken();
+
+            user.RefreshTokens.Add(new RefreshToken
+            {
+                Token = Sha256(refreshToken),
+                JwtId = Sha256(accessToken),
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
+                CreatedAtUtc = DateTime.UtcNow
+            });
+
+            await _userManager.UpdateAsync(user);
+
+            return (accessToken, refreshToken);
         }
     }
 }

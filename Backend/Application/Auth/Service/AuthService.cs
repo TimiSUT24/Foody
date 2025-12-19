@@ -67,8 +67,8 @@ namespace Application.Auth.Service
 
             var role = await _userManager.GetRolesAsync(user);
             var token = _jwtService.GenerateToken(user, role);
-            var refreshToken = GenerateSecureToken();
-            var refreshTokenHash = Sha256(refreshToken);
+            var refreshToken = _jwtService.GenerateSecureToken();
+            var refreshTokenHash = _jwtService.Sha256(refreshToken);
             user.RefreshTokens.Add(new RefreshToken
             {
                 Token = refreshTokenHash,
@@ -118,7 +118,7 @@ namespace Application.Auth.Service
              await _userManager.UpdateAsync(userExist);
             var updatedUser = await _userManager.FindByIdAsync(userId.ToString());
 
-            var (accessToken, refreshToken) = await ReissueTokensAsync(updatedUser,ct);
+            var (accessToken, refreshToken) = await _jwtService.ReissueTokensAsync(updatedUser,ct);
             return new UpdateProfileResponse
             {
                 AccessToken =  accessToken,
@@ -144,7 +144,7 @@ namespace Application.Auth.Service
             var update = await _userManager.UpdateAsync(user);
             var updatedUser = await _userManager.FindByIdAsync(userId.ToString());
             
-                var (accessToken, refreshToken) = await ReissueTokensAsync(updatedUser, ct);
+                var (accessToken, refreshToken) = await _jwtService.ReissueTokensAsync(updatedUser, ct);
                 return new UpdateProfileResponse
                 {
                     AccessToken = accessToken,
@@ -161,45 +161,6 @@ namespace Application.Auth.Service
             }
             await _jwtService.RevokeAllAsync(user, ct);
         }
-
-        //Helper methods 
-        private static string GenerateSecureToken()
-        {
-            var randomNumber = new byte[64];
-            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
-        }
-
-        private static string Sha256(string input)
-        {
-            using var sha = SHA256.Create();
-            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return Convert.ToHexString(bytes);
-        }
-
-        public async Task<(string AccessToken, string RefreshToken)> ReissueTokensAsync(User user, CancellationToken ct)
-        {
-            await _jwtService.RevokeAllAsync(user, ct);
-            
-            var roles = await _userManager.GetRolesAsync(user);
-            var accessToken = _jwtService.GenerateToken(user, roles);
-            var refreshToken = GenerateSecureToken();
-            var refreshTokenHash = Sha256(refreshToken);
-
-            user.RefreshTokens.Add(new RefreshToken
-            {
-                Token = refreshTokenHash,
-                JwtId = accessToken,
-                ExpiryDate = DateTime.UtcNow.AddDays(7),
-                CreatedAtUtc = DateTime.UtcNow
-            });
-
-            await _userManager.UpdateAsync(user);
-
-            return (accessToken, refreshToken);
-        }
+       
     }
 }

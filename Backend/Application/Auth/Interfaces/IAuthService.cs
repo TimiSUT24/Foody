@@ -16,6 +16,5 @@ namespace Application.Auth.Interfaces
         Task<UpdateProfileResponse> UpdateProfileAsync(Guid userId, UpdateProfileDto request, CancellationToken ct);
         Task<UpdateProfileResponse> ChangePassword(Guid userId, ChangePasswordDto request,CancellationToken ct);
         Task Logout(Guid userId, CancellationToken ct);
-        Task<(string AccessToken, string RefreshToken)> ReissueTokensAsync(User user, CancellationToken ct);
     }
 }
