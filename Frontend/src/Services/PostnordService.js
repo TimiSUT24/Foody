@@ -1,7 +1,7 @@
-import { postnordApi } from "../Api/postnordApi";
+import api from "../Api/api";
 
 export const getDeliveryOptions = async (recipient) => {
-    const response = await postnordApi.post("/api/shipping/postnord/options", {
+    const response = await api.post("/api/Postnord/options", {
         recipient
     })
     return response.data;

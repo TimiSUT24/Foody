@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Elements
-} from "@stripe/react-stripe-js";
+import {Elements} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js"
 import api from "../Api/api";
 import { stripeApi } from "../Api/stripeApi";
@@ -104,11 +102,13 @@ function CompletePageContent() {
           setStatus(capture.status)
           if(capture.status === "succeeded"){
               
-              const postnordResponse = await postnordApi.post("/api/shipping/booking",{
+              const postnordResponse = await api.post("/api/Postnord/booking",{
               shipping:{
                 deliveryOptionId: paymentIntent.metadata.deliveryOptionId,
                 serviceCode: paymentIntent.metadata.serviceCode,
-                shipping: paymentIntent.shipping
+                shipping: paymentIntent.shipping,
+                lastname: paymentIntent.metadata.lastname,
+                email: paymentIntent.metadata.email
               },
               orderId: create.data.orderId,
               totalWeight: create.data.totalWeightKg

@@ -12,6 +12,9 @@ using Application.NutritionValue.Service;
 using Application.Order.Interfaces;
 using Application.Order.Mapper;
 using Application.Order.Service;
+using Application.Postnord.Interfaces;
+using Application.Postnord.Mapper;
+using Application.Postnord.Service;
 using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
@@ -93,6 +96,7 @@ namespace Api
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEmailService, EmailService>();
+            builder.Services.AddHttpClient<IPostnordService, PostnordService>();
 
 
             //Unit Of Work + Repositories
@@ -113,7 +117,8 @@ namespace Api
             typeof(AuthProfile),
             typeof(NutritionValueProfile),
             typeof(OrderProfile),
-            typeof(CategoryProfile));
+            typeof(CategoryProfile),
+            typeof(PostnordProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);
