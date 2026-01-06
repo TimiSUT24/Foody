@@ -1,7 +1,7 @@
-import { stripeApi } from "../Api/stripeApi";
+import api from "../Api/api";
 
 export const createPaymentIntent = async (cartItems,shipping,shippingTax,userId) => {
-  const response = await stripeApi.post("/create-payment-intent", {
+  const response = await api.post("/api/Stripe/create-payment-intent", {
     cartItems,
     shipping,
     shippingTax,

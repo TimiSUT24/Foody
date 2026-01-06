@@ -96,7 +96,7 @@ function CompletePageContent() {
 
         //if order in backend success call stripe capture api and shipping api 
         if(create.status === 200){
-          const {data: capture} = await stripeApi.post("/capture-payment-intent", {
+          const {data: capture} = await api.post("/api/Stripe/capture-payment-intent", {
             paymentIntentId: paymentIntent.id
           });
           setStatus(capture.status)
@@ -138,7 +138,7 @@ function CompletePageContent() {
         }
         
         if(create.status != 200){
-            const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
+            const {data: cancel} = await api.post("/api/Stripe/cancel-payment-intent", {
             paymentIntentId: paymentIntent.id
           });       
           setStatus(cancel.status)
@@ -147,7 +147,7 @@ function CompletePageContent() {
 
       }catch(err){
         console.error("Order failed cancel payment", err)
-        const {data: cancel} = await stripeApi.post("/cancel-payment-intent", {
+        const {data: cancel} = await api.post("/api/Stripe/cancel-payment-intent", {
             paymentIntentId: paymentIntent.id
           });       
           setStatus(cancel.status)

@@ -19,6 +19,8 @@ using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
 using Application.Product.Validator;
+using Application.StripeChargeShippingOptions.Interfaces;
+using Application.StripeChargeShippingOptions.Service;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
@@ -97,6 +99,7 @@ namespace Api
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEmailService, EmailService>();
             builder.Services.AddHttpClient<IPostnordService, PostnordService>();
+            builder.Services.AddSingleton<IStripeService, StripeService>();
 
 
             //Unit Of Work + Repositories
