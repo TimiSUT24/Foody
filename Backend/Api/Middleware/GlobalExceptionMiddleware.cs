@@ -1,5 +1,6 @@
 ﻿using Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text.Json;
 
@@ -72,6 +73,12 @@ namespace Api.Middleware
                 case ConflictException:
                     problem.Title = "Conflict";
                     problem.Status = (int)HttpStatusCode.Conflict;
+                    problem.Detail = ex.Message;
+                    break;
+
+                case SecurityTokenException:
+                    problem.Title = "Token";
+                    problem.Status = (int)HttpStatusCode.Forbidden;
                     problem.Detail = ex.Message;
                     break;
 

@@ -1,0 +1,52 @@
+.user-profile{
+    margin-top:150px;
+    justify-items: center;
+}
+
+
+.tabs{
+    display:flex;
+    align-items: center;
+    justify-content: start;
+    width:1000px;
+    height:100px;
+    gap:20px;
+    border-bottom:1px solid black;
+}
+
+.tabs button{
+    padding:15px;
+    border:none;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.orders-btn{
+    min-width:170px;
+}
+
+.tabs button:focus{
+    background-color: orange;
+    color:white;
+}
+
+.tab-logout{
+    display:flex;
+    justify-content: space-between;
+    width:100%;
+}
+
+.user-content{
+    margin-top:50px;
+}
+
+.order-content{
+ gap:20px;
+ display:flex;
+ flex-direction: column;
+}
+
+

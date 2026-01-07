@@ -11,5 +11,6 @@ namespace Application.Order.Dto.Request
     {
         public required List<CreateOrderItemDto> Items { get; init; }
         public required ShippingInformation ShippingInformation { get; init; }
+        public string? ServiceCode { get; set; } = string.Empty;
     }
 }

@@ -6,17 +6,20 @@ using Application.Auth.Service;
 using Application.Category.Interfaces;
 using Application.Category.Mapper;
 using Application.Category.Service;
-using Application.Klarna.Interfaces;
 using Application.NutritionValue.Interfaces;
 using Application.NutritionValue.Mapper;
 using Application.NutritionValue.Service;
 using Application.Order.Interfaces;
 using Application.Order.Mapper;
 using Application.Order.Service;
+using Application.Postnord.Interfaces;
+using Application.Postnord.Service;
 using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
 using Application.Product.Validator;
+using Application.StripeChargeShippingOptions.Interfaces;
+using Application.StripeChargeShippingOptions.Service;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
@@ -30,7 +33,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Stripe;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using ProductService = Application.Product.Service.ProductService;
 
 namespace Api
 {
@@ -42,7 +48,10 @@ namespace Api
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(opt =>
+            {
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -77,6 +86,9 @@ namespace Api
             });
             builder.Services.AddAuthorization();
 
+            //Stripe 
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
             //Services 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -84,7 +96,9 @@ namespace Api
             builder.Services.AddScoped<INutritionValueService, NutritionValueService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
-            builder.Services.AddScoped<IKlarnaService, KlarnaService>();
+            builder.Services.AddSingleton<IEmailService, EmailService>();
+            builder.Services.AddHttpClient<IPostnordService, PostnordService>();
+            builder.Services.AddSingleton<IStripeService, StripeService>();
 
 
             //Unit Of Work + Repositories
@@ -94,6 +108,7 @@ namespace Api
             builder.Services.AddScoped<INutritionValueRepository, NutritionValueRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>

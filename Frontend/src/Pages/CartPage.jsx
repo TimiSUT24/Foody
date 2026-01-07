@@ -1,25 +1,53 @@
 import {useCart} from "../Context/CartContext"
-import {useState, useEffect} from "react"
+import {useState,useEffect} from "react"
 import api from "../Api/api"
 import { createPaymentIntent } from "../Services/StripeService"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Components/CheckoutForm"
+import { getDeliveryOptions } from "../Services/PostnordService"
+import { useAuth } from "../Context/AuthContext"
 import "../CSS/CartPage.css"
 
-const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLISH_KEY)
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
 
 export default function CartPage(){
-    const {cart, addToCart, removeFromCart, totalPrice} = useCart();
+    const {cart, addToCart, removeFromCart} = useCart();
     const [error, setError] = useState({})
     const [clientSecret, setClientSecret] = useState(null);
+    const [userId, setUserId] = useState(null)
+    const {user} = useAuth();
+    //postnord
+    const [deliver, setDeliver] = useState(false);
+    const [postnordOptions, setPostnordOptions] = useState(null);
+    const [selectedOption, setSelectedOption] = useState(null);
+    //Taxes
+    const [totals, setTotal] = useState({
+        subTotal: 0,
+        moms: 0,
+        total:0,
+        shippingTax: 0,
+    })
+    const [shippingTax, setShippingTax] = useState(0);
 
      const appearance = {
     theme: 'stripe',
   };
   // Enable the skeleton loader UI for optimal loading.
   const loader = 'auto';
+
+  useEffect(() => {
+    const fetchTotal = async () => {
+        const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
+        setTotal(response.data)
+        setUserId(user.id)
+    };
+    fetchTotal();
+   
+
+  },[cart])
     
+  //Shipping logic
     const [shipping, setShipping] = useState({
         firstName:"",
         lastName:"",
@@ -28,15 +56,37 @@ export default function CartPage(){
         city:"",
         state:"",
         postalCode:"",
-        phoneNumber:""
-
+        phoneNumber:"",
+        deliveryOptionId:"",
+        serviceCode:""
     });
+
+    const handleDeliverySelect = (option) => {
+        setSelectedOption(option);
+        setShipping(prev => ({
+            ...prev,
+            deliveryOptionId: option.deliveryOptionId,
+            serviceCode: option.serviceCode
+        }))
+    }
+
+    useEffect(() => {
+        if(!shipping.serviceCode) return;
+
+        const recalcTotals = async () => {
+            const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
+            setTotal(response.data);
+            setShippingTax(response.data.shippingTax)
+        }
+        recalcTotals();
+    },[shipping.serviceCode])
 
      const handleChange = (e) => {
         setShipping({...shipping, [e.target.name]: e.target.value})
         setError(error => ({...error, [e.target.name]: ""}));
     }
 
+    //Place Order
     const placeOrder = async () => {
         const required = ["firstName","lastName","email","adress","city","state","postalCode","phoneNumber"];
         const newErrors = {};
@@ -51,27 +101,25 @@ export default function CartPage(){
             if(Object.keys(newErrors).length > 0){
                 return;
             }
-    
-        const body = {
-            items: cart.map(item => ({
-                foodId: item.id,
-                quantity: item.qty
-            })),
-            shippingInformation: { ...shipping },
-        }
+
+            if(!selectedOption){
+                alert("Choose delivery option")
+                return;
+            }
 
          try {
-        const { clientSecret } = await createPaymentIntent(
+        const {clientSecret} = await createPaymentIntent(
         cart.map(i => ({
           price: i.price,
-          quantity: i.qty,
+          qty: i.qty,
           name: i.name
-        }))
+        })),
+        shipping,
+        shippingTax,
+        userId
       );
 
       setClientSecret(clientSecret);
-
-       // const response = await api.post("/api/Order/create", body);
 
     } catch(err) {
         console.error(err);
@@ -79,7 +127,34 @@ export default function CartPage(){
     }
     }
 
+    const delivery = async () => {
+        try{
+            const required = ["firstName","lastName","email","adress","city","state","postalCode","phoneNumber"];
+        const newErrors = {};
 
+        required.forEach(field => {
+            if(!shipping[field] || shipping[field].trim() === ""){
+                newErrors[field] = "This field is required";
+            }
+                });
+            setError(newErrors);
+
+            if(Object.keys(newErrors).length > 0){
+                return;
+            }
+            
+            const options = await getDeliveryOptions({
+            postCode: shipping.postalCode
+        })
+        if(options.status = 200){
+            setPostnordOptions(options)
+            setDeliver(true);
+        }
+
+        }catch(err){
+            console.error(err);
+        }
+    }
 
     return(
         <div className="cart-page">
@@ -89,10 +164,12 @@ export default function CartPage(){
                 <h2 style={{textAlign:"left"}}>LeveransInformation</h2>
 
                 <div style={{display:"flex", justifyContent:"space-between"}}>
+
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.firstName ? "red" : "",}}>Förnamn *</p>
                         <input type="text" name="firstName" value={shipping.firstName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.firstName ? "2px solid red" : "",}} />
                     </div>
+
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.lastName ? "red" : ""}}>Efternamn *</p>
                         <input type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
@@ -100,21 +177,25 @@ export default function CartPage(){
                 </div>
 
                 <div style={{display:"flex", flexDirection:"column",gap:"20px"}}>
+
                     <div style={{display:"flex", flexDirection:"column", gap:"5px"}}>
                         <p style={{margin:"0",textAlign:"left",color: error.email ? "red" : ""}}>E-post *</p>
                         <input type="email" name="email" value={shipping.email} onChange={handleChange} placeholder="jan@example.com" style={{paddingLeft:"10px",border: error.email ? "2px solid red" : ""}} />
                     </div>
+
                     <div style={{display:"flex", flexDirection:"column",gap:"5px"}}>
                         <p style={{margin:"0",textAlign:"left",color: error.adress ? "red" : ""}}>Gatuadress *</p>
-                <input type="text" name="adress" value={shipping.adress} onChange={handleChange} placeholder="123 Malmgatan" style={{paddingLeft:"10px",border: error.adress ? "2px solid red" : ""}}/>
+                        <input type="text" name="adress" value={shipping.adress} onChange={handleChange} placeholder="123 Malmgatan" style={{paddingLeft:"10px",border: error.adress ? "2px solid red" : ""}}/>
                     </div>              
                 </div>
        
                 <div style={{display:"flex", justifyContent:"space-between"}}>
+
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.state ? "red" : ""}}>Län *</p>
                         <input type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{width:"350px",paddingLeft:"10px",border: error.state ? "2px solid red" : ""}}/>
-                    </div>                 
+                    </div>   
+
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.phoneNumber ? "red" : ""}}>Telefonnummer *</p>
                         <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{width:"350px",paddingLeft:"10px",border: error.phoneNumber ? "2px solid red" : ""}}/>
@@ -122,16 +203,18 @@ export default function CartPage(){
                 </div>
 
                 <div style={{display:"flex", justifyContent:"space-between"}}>
+
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.city ? "red" : ""}}>Ort *</p>
                         <input type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{width:"350px",paddingLeft:"10px",border: error.city ? "2px solid red" : ""}}/>
-                    </div>                 
+                    </div>  
+                                   
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.postalCode ? "red" : ""}}>Postnummer *</p>
                         <input className="postal-input" type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{width:"350px",paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
-                
+                 <button className="checkout-btn" onClick={delivery}>Fortsätt</button>
             </div>
 
             <div id="cart-container">
@@ -166,40 +249,80 @@ export default function CartPage(){
                     
                     <div className="checkout-price">
                     <span >Subtotal:</span>
-                    <span >{totalPrice} kr</span>
+                    <span >{totals.subTotal} kr</span>
                     </div>
 
                     
                     <div className="checkout-price">
                     <span>Frakt:</span>
-                    <span>10 kr</span>
+                    <span>{totals.shippingTax} kr</span>
                     </div>
 
                     <div className="checkout-price">
                     <span>Moms:</span>
-                    <span>10 kr</span>
+                    <span>{totals.moms} kr</span>
                     </div>
                 </div>
 
                 <div className="custom-hr"></div>
                 
-                <h2>Totalt: {totalPrice.toFixed(2)} kr</h2>
+                <h2>Totalt: {totals.total} kr</h2>
 
-                <button className="checkout-btn" onClick={placeOrder}>Lägg Order</button>
+                {selectedOption && (
+                    <button className="checkout-btn" onClick={placeOrder}>Lägg Order</button>
+                )}
                 </>
                 
             )}
             </div>
 
-       <div id="payment">
-        {clientSecret && (
-            <Elements stripe={stripePromise} options={{clientSecret, appearance, loader}}>
-                <CheckoutForm></CheckoutForm>
-
-            </Elements>
-        )}
-</div>
-
+            {deliver && (
+                <div id="payment">
+                    <h2 style={{ textAlign: "left" }}>Välj leverans</h2>
+                    {postnordOptions.length === 0 ? (
+                    <p>Inga hemleveransalternativ tillgängliga.</p>
+                    ) : (
+                    postnordOptions.map((warehouse, wIndex) => (
+                        <div key={wIndex} className="warehouse-options">
+                        <h3>Från: {warehouse.warehouse.address.city}</h3>
+                        {warehouse.deliveryOptions.map((option, oIndex) => (
+                            <div key={oIndex} className="delivery-option">
+                            <input
+                                type="radio"
+                                name="deliveryOption"
+                                value={option.defaultOption.bookingInstructions.deliveryOptionId}
+                                onChange={() =>
+                                handleDeliverySelect(option.defaultOption.bookingInstructions)
+                                }
+                            />
+                            <label>
+                                Postnord{" "}
+                            </label>
+                            <label>
+                                {option.defaultOption.descriptiveTexts.checkout.title} -{" "}
+                                {option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}
+                             
+                            </label>
+                            <label>
+                                {" "}39 kr
+                            </label>
+                            </div>
+                        ))}
+                        </div>
+                    ))
+                    )}
+                </div>
+            )}
+      
+            {clientSecret && (
+                <div id="payment">
+                <h2 style={{textAlign:"left"}}>Betalning</h2>
+                 <Elements stripe={stripePromise} options={{clientSecret, appearance, loader}}>
+                  <CheckoutForm></CheckoutForm>
+                </Elements>
+                </div>
+            )}      
+        
         </div>
     )
 }

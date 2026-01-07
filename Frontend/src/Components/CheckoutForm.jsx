@@ -11,7 +11,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:5173/order-complete",
+        return_url: "https://localhost:5173/order-complete",
       },
     });
 
@@ -23,7 +23,7 @@ export default function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />
-      <button disabled={!stripe} style={{marginTop:"20px"}}>
+      <button id="pay-button" disabled={!stripe} style={{marginTop:"20px"}}>
         Betala nu
       </button>
     </form>

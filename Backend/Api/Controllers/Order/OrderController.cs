@@ -1,10 +1,10 @@
-﻿using Application.Klarna.Interfaces;
-using Application.Order.Dto.Request;
+﻿using Application.Order.Dto.Request;
 using Application.Order.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -15,13 +15,11 @@ namespace Api.Controllers.Order
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IKlarnaService _klarnaSevice;
         private readonly IConfiguration _config;
 
-        public OrderController (IOrderService orderService, IKlarnaService klarnaService,IConfiguration config)
+        public OrderController (IOrderService orderService,IConfiguration config)
         {
-            _orderService = orderService;
-            _klarnaSevice = klarnaService;                    
+            _orderService = orderService;              
             _config = config;
         }
 
@@ -30,6 +28,7 @@ namespace Api.Controllers.Order
                 ? id
                 : throw new UnauthorizedAccessException("Ingen inloggad användare.");
 
+
         [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:404)]
@@ -37,15 +36,9 @@ namespace Api.Controllers.Order
         [ProducesResponseType(statusCode:401)]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto request, CancellationToken ct)
         {
-            var orderID = await _orderService.CreateAsync(UserId, request, ct);
-            var order = await _orderService.GetByIdAsync(orderID,ct);
-            var klarnaSession = await _klarnaSevice.CreatePaymentSession(order);
-
-            return Ok(new
-            {
-                orderId = orderID,
-                klarnaSession
-            });
+            var order = await _orderService.CreateAsync(UserId, request, ct);
+            return Ok(order);
+            
         }
 
         [HttpGet("{id:Guid}")]
@@ -78,6 +71,16 @@ namespace Api.Controllers.Order
             return Ok(result);
         }
 
+        [HttpPatch("update-order")]
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
+        public async Task<IActionResult> UpdateOrder(UpdateOrder request, CancellationToken ct)
+        {
+            var result = await _orderService.UpdateOrder(request, ct);
+            return Ok(result);
+        }
+        
+
         [HttpPut("Cancel{orderId:guid}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -86,6 +89,30 @@ namespace Api.Controllers.Order
         {
             var result = await _orderService.CancelMyOrder(UserId, orderId, ct);
             return Ok(result);
+        }
+
+        [HttpPost("CalculateTax")]
+        [ProducesResponseType(statusCode: 200)]
+        public async Task<IActionResult> CalculateTax([FromBody] CartItemsDto cartItems, CancellationToken ct)
+        {
+            var result = await _orderService.CalculateTax(cartItems, ct);
+            return Ok(result);
+        }
+
+        [HttpPost("retrieve-payment-intent")]
+        public async Task<IActionResult> RetrievePaymentIntent([FromBody] RetrievePaymentIntentRequest request)
+        {
+            if (string.IsNullOrEmpty(request.ClientSecret))
+                return BadRequest("ClientSecret is required.");
+
+            var service = new PaymentIntentService();
+
+            // Extract the PaymentIntent ID from the client secret
+            var paymentIntentId = request.ClientSecret.Split("_secret")[0];
+
+            var paymentIntent = await service.GetAsync(paymentIntentId);
+
+            return Ok(paymentIntent); // full PaymentIntent including metadata and shipping
         }
 
     }

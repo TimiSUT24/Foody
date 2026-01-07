@@ -1,0 +1,23 @@
+.thank-you-page{
+    margin-top:200px;
+    display:flex;
+    flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
+.thank-btn{
+    width:500px;
+    height:100px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    background-color: aliceblue;
+    font-size: 35px;
+}
+
+.thank-btn:hover{
+    opacity: 80%;
+}

@@ -75,10 +75,22 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<decimal>("Moms")
+                        .HasColumnType("numeric");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("OrderStatus")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
@@ -88,7 +100,16 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("bytea");
 
+                    b.Property<decimal>("ShippingTax")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalWeight")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -134,6 +155,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("WeightValue")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -307,6 +331,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<string>("Carrier")
+                        .HasColumnType("text");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -348,10 +375,19 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("bytea");
 
+                    b.Property<string>("ShipmentId")
+                        .HasColumnType("text");
+
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TrackingId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TrackingUrl")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");

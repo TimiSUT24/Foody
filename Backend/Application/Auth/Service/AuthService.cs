@@ -7,6 +7,8 @@ using AutoMapper;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,8 +67,8 @@ namespace Application.Auth.Service
 
             var role = await _userManager.GetRolesAsync(user);
             var token = _jwtService.GenerateToken(user, role);
-            var refreshToken = GenerateSecureToken();
-            var refreshTokenHash = Sha256(refreshToken);
+            var refreshToken = _jwtService.GenerateSecureToken();
+            var refreshTokenHash = _jwtService.Sha256(refreshToken);
             user.RefreshTokens.Add(new RefreshToken
             {
                 Token = refreshTokenHash,
@@ -83,21 +85,82 @@ namespace Application.Auth.Service
             return response;
         }
 
-        private static string GenerateSecureToken()
+        public async Task<UpdateProfileResponse> UpdateProfileAsync(Guid userId, UpdateProfileDto request, CancellationToken ct)
         {
-            var randomNumber = new byte[64];
-            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+            var userExist = await _userManager.FindByIdAsync(userId.ToString());
+            if(userExist == null)
             {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
+                throw new InvalidOperationException("User not found");
             }
+
+                if (!string.IsNullOrEmpty(request.FirstName))
+                {
+                    userExist.FirstName = request.FirstName;
+                }
+
+                if (!string.IsNullOrEmpty(request.LastName))
+                {
+                    userExist.LastName = request.LastName;
+                }
+
+                if(!string.IsNullOrEmpty(request.Email) && !string.Equals(userExist.Email, request.Email, StringComparison.OrdinalIgnoreCase))
+                {                                  
+                    userExist.Email = request.Email;
+                    userExist.UserName = request.Email;
+                }
+
+                if(!string.IsNullOrEmpty(request.PhoneNumber) && !string.Equals(userExist.PhoneNumber, request.PhoneNumber, StringComparison.OrdinalIgnoreCase))
+                {
+                    userExist.PhoneNumber = request.PhoneNumber;
+                }
+
+
+             await _userManager.UpdateAsync(userExist);
+            var updatedUser = await _userManager.FindByIdAsync(userId.ToString());
+
+            var (accessToken, refreshToken) = await _jwtService.ReissueTokensAsync(updatedUser,ct);
+            return new UpdateProfileResponse
+            {
+                AccessToken =  accessToken,
+                RefreshToken = refreshToken
+            };
+
         }
 
-        private static string Sha256(string input)
+        public async Task<UpdateProfileResponse> ChangePassword(Guid userId, ChangePasswordDto request, CancellationToken ct)
         {
-            using var sha = SHA256.Create();
-            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return Convert.ToHexString(bytes);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }       
+
+            var newPassword = await _userManager.ChangePasswordAsync(user,request.CurrentPassword,request.NewPassword);
+            if(!newPassword.Succeeded)
+            {
+                throw new ArgumentException("Failed to change password");
+            }
+
+            var update = await _userManager.UpdateAsync(user);
+            var updatedUser = await _userManager.FindByIdAsync(userId.ToString());
+            
+                var (accessToken, refreshToken) = await _jwtService.ReissueTokensAsync(updatedUser, ct);
+                return new UpdateProfileResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };        
         }
+
+        public async Task Logout(Guid userId, CancellationToken ct)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if(user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            await _jwtService.RevokeAllAsync(user, ct);
+        }
+       
     }
 }

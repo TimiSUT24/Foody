@@ -86,6 +86,10 @@ namespace Infrastructure.Data
                 e.Property(o => o.OrderStatus)
                 .HasConversion<string>()
                 .HasMaxLength(50);
+
+                e.Property(o => o.PaymentStatus)
+               .HasConversion<string>()
+               .HasMaxLength(50);
             });                
 
             builder.Entity<OrderItem>()

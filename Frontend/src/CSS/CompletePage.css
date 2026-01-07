@@ -1,6 +1,6 @@
 
 
-form {
+#payment-form{
   width: 30vw;
   min-width: 500px;
   align-self: center;
@@ -26,7 +26,7 @@ form {
 }
 
 /* Buttons and links */
-button {
+#pay-button{
   background: #0055DE;
   font-family: Arial, sans-serif;
   color: #ffffff;
@@ -42,11 +42,11 @@ button {
   width: 100%;
 }
 
-button:hover {
+#pay-button:hover {
   filter: contrast(115%);
 }
 
-button:disabled {
+#pay-button:disabled {
   opacity: 0.5;
   cursor: default;
 }
@@ -106,9 +106,11 @@ button:disabled {
 
 /* Payment status page */
 #payment-status {
+  margin-top:140px;
   display: flex;
   justify-content: center;
   align-items: center;
+  justify-self: center;
   flex-direction: column;
   row-gap: 30px;
   width: 30vw;
@@ -121,7 +123,6 @@ button:disabled {
   padding: 40px;
   opacity: 0;
   animation: fadeInAnimation 1s ease forwards;
-  margin-top: auto;
   margin-bottom: auto;
 }
 
@@ -134,42 +135,21 @@ button:disabled {
   border-radius: 50%;
 }
 
-h2 {
+#payment-status h2 {
   margin: 0;
   color: #30313D;
   text-align: center;
 }
 
-a {
+#payment-status a {
   text-decoration: none;
   font-size: 16px;
   font-weight: 600;
   font-family: Arial, sans-serif;
   display: block;
 }
-a:hover {
+#payment-status:hover {
   filter: contrast(120%);
-}
-
-#details-table {
-  overflow-x: auto;
-  width: 100%;
-}
-
-table {
-  width: 100%;
-  font-size: 14px;
-  border-collapse: collapse;
-}
-table tbody tr:first-child td {
-  border-top: 1px solid #E6E6E6; /* Top border */
-  padding-top: 10px;
-}
-table tbody tr:last-child td {
-  border-bottom: 1px solid #E6E6E6; /* Bottom border */
-}
-td {
-  padding-bottom: 10px;
 }
 
 .TableContent {

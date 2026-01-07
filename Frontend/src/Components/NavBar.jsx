@@ -28,7 +28,8 @@ export default function NavBar (){
       "/register": "register-body",
       "/profile": "profile-body",
       "/admin": "admin-body",
-      "/order-complete": "orderComplete-body"
+      "/order-complete": "orderComplete-body",
+      "/user-page": "user-body"
     };
 
     // Default class
@@ -81,6 +82,9 @@ export default function NavBar (){
         <NavLink to="/login">Logga in</NavLink>
         <NavLink to="/register">Registrera</NavLink>
         <NavLink to="/cart">Varukorg {totalPrice.toFixed(2)} kr {totalItems !== 0 && totalItems}</NavLink>
+        <NavLink to="/user-page">Mina sidor</NavLink>
+        <NavLink to="/thank-you-page">thankyou</NavLink>
+        
       </> 
     );
   };

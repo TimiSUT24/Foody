@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import {
-  useStripe,
-  Elements
-} from "@stripe/react-stripe-js";
+import {Elements} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js"
+import api from "../Api/api";
+import { stripeApi } from "../Api/stripeApi";
+import { postnordApi } from "../Api/postnordApi";
+import {useCart} from "../Context/CartContext"
+import { useNavigate } from "react-router-dom";
 import '../CSS/CompletePage.css'
 
-const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLISH_KEY)
+const stripePromise =loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
 
 const SuccessIcon =
   <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,42 +51,128 @@ const STATUS_CONTENT_MAP = {
 };
 
 function CompletePageContent() {
-  const stripe = useStripe();
-
-  const [status, setStatus] = useState("default");
+  const [status, setStatus] = useState("processing");
   const [intentId, setIntentId] = useState(null);
+  const {cart,clearCart} = useCart();
+  const [clientSecret, setClientSecret] = useState(null)
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!stripe) {
-      return;
-    }
-
+  
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );
 
-    if (!clientSecret) {
-      return;
-    }
+    if (clientSecret) {
+    setClientSecret(clientSecret);
+  }
+  }, []);
 
-    stripe.retrievePaymentIntent(clientSecret).then(({paymentIntent}) => {
-      if (!paymentIntent) {
-        return;
-      }
+     useEffect(() => {
+  const confirmOrder = async () => {
+    if(!clientSecret)return
 
-      setStatus(paymentIntent.status);
+    // Send clientSecret to backend, which can call Stripe's API with secret key
+    const { data: paymentIntent } = await api.post("/api/Order/retrieve-payment-intent", { clientSecret });
+      setStatus(paymentIntent.status)
       setIntentId(paymentIntent.id);
-    });
-  }, [stripe]);
+
+    if (paymentIntent.status === "requires_capture") {
+      try{
+        const create = await api.post("/api/Order/create", {
+        items: cart.map(x => ({ foodId: x.id, quantity: x.qty })),
+        shippingInformation: {
+          firstName: paymentIntent.shipping.name,
+          lastName: paymentIntent.metadata.lastname,
+          email: paymentIntent.metadata.email,
+          phoneNumber: paymentIntent.shipping.phone,
+          adress: paymentIntent.shipping.address.line1,
+          city: paymentIntent.shipping.address.city,
+          state: paymentIntent.shipping.address.state,
+          postalCode: paymentIntent.shipping.address.postal_code
+        },
+        serviceCode: paymentIntent.metadata.serviceCode
+      });
+
+        //if order in backend success call stripe capture api and shipping api 
+        if(create.status === 200){
+          const {data: capture} = await api.post("/api/Stripe/capture-payment-intent", {
+            paymentIntentId: paymentIntent.id
+          });
+          setStatus(capture.status)
+          if(capture.status === "succeeded"){
+              
+              const postnordResponse = await api.post("/api/Postnord/booking",{
+              shipping:{
+                deliveryOptionId: paymentIntent.metadata.deliveryOptionId,
+                serviceCode: paymentIntent.metadata.serviceCode,
+                shipping: paymentIntent.shipping,
+                lastname: paymentIntent.metadata.lastname,
+                email: paymentIntent.metadata.email
+              },
+              orderId: create.data.orderId,
+              totalWeight: create.data.totalWeightKg
+            })
+
+            //update order in backend when response from shipping is successful
+            const idInfo = postnordResponse.data.idInformation?.[0]
+            const trackingId = idInfo?.ids?.[0]?.value ?? null;
+            const trackingUrl = idInfo?.urls?.find(u => u.type === "TRACKING")?.url ?? null;
+             await api.patch("/api/Order/update-order", {
+              id: create.data.orderId,
+              orderStatus: "Processing",
+              paymentStatus: capture.status,
+              paymentMethod: capture.paymentMethod,
+              shippingInformation: {
+                shipmentId: postnordResponse.data.bookingId,
+                trackingId: trackingId,
+                trackingUrl: trackingUrl,
+                carrier: "Postnord"
+              }
+            })
+            clearCart();
+                      
+            setTimeout(() =>{
+                  navigate("/thank-you-page")
+            }, 3000)
+          }
+        }
+        
+        if(create.status != 200){
+            const {data: cancel} = await api.post("/api/Stripe/cancel-payment-intent", {
+            paymentIntentId: paymentIntent.id
+          });       
+          setStatus(cancel.status)
+
+        }
+
+      }catch(err){
+        console.error("Order failed cancel payment", err)
+        const {data: cancel} = await api.post("/api/Stripe/cancel-payment-intent", {
+            paymentIntentId: paymentIntent.id
+          });       
+          setStatus(cancel.status)
+      }
+      
+    }
+  };
+ 
+  confirmOrder();
+}, [clientSecret, cart]);
+
 
   return (
     <div id="payment-status">
-      <div id="status-icon" style={{backgroundColor: STATUS_CONTENT_MAP[status].iconColor}}>
-        {STATUS_CONTENT_MAP[status].icon}
-      </div>
-      <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
+      {status && STATUS_CONTENT_MAP[status] && (
+  <>
+    <div id="status-icon" style={{backgroundColor: STATUS_CONTENT_MAP[status].iconColor}}>
+      {STATUS_CONTENT_MAP[status].icon}
+    </div>
+    <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
+  </>
+)}
       {intentId && <div id="details-table">
-        <table>
+        <table id="completePage-table">
           <tbody>
             <tr>
               <td className="TableLabel">id</td>
