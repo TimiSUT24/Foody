@@ -128,7 +128,7 @@ export default function OrderDetails({ order, onBack }) {
                     
                     <div className="details-price">
                     <span>Frakt:</span>
-                    <span>10 kr</span>
+                    <span>{order.shippingTax} kr</span>
                     </div>
 
                     <div className="details-price">
@@ -169,7 +169,7 @@ export default function OrderDetails({ order, onBack }) {
                   
                     <div className="details-p">
                     <p style={{fontSize:"18px",color:"black"}}>Betalningsmetod</p>
-                    <p>{order.paymentStatus}</p>
+                    <p>{order.paymentMethod}</p>
                     </div>                 
 
                 </div>

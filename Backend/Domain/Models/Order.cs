@@ -17,6 +17,7 @@ namespace Domain.Models
         public decimal Moms { get; set; }
         public decimal ShippingTax { get; set; } 
         public decimal TotalWeight { get; set; }
+        public string PaymentMethod { get; set; } = string.Empty;
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
         public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Unpaid;
 

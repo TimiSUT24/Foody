@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Application.StripeChargeShippingOptions;
 using Application.StripeChargeShippingOptions.Interfaces;
 using Stripe;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Application.Stripe.Dto;
 
 namespace Application.StripeChargeShippingOptions.Service
 {
@@ -64,10 +66,39 @@ namespace Application.StripeChargeShippingOptions.Service
             return paymentIntent.ClientSecret!;
         }
 
-        public async Task<PaymentIntent> CapturePaymentIntentAsync(string paymentIntentId)
+        public async Task<CapturePaymentResultResponse> CapturePaymentIntentAsync(string paymentIntentId)
         {
             var service = new PaymentIntentService(_client);
-            return await service.CaptureAsync(paymentIntentId);
+
+            var intent = await service.CaptureAsync(paymentIntentId);
+
+            var confirmedIntent = await service.GetAsync(
+                intent.Id,
+                new PaymentIntentGetOptions
+                {
+                    Expand = new()
+                    {
+                        "latest_charge",
+                        "latest_charge.payment_method_details"
+                    }
+                });
+
+            var charge = confirmedIntent.LatestCharge as Charge;
+
+            var paymentMethod =
+                charge?.PaymentMethodDetails?.Klarna != null ? "klarna" :
+                charge?.PaymentMethodDetails?.Card != null ? "card" :
+                "unknown";
+
+            return new CapturePaymentResultResponse
+            {
+                PaymentIntentId = confirmedIntent.Id,
+                ChargeId = charge.Id,
+                Status = confirmedIntent.Status,
+                PaymentMethod = paymentMethod,
+                Amount = charge.Amount,
+                Currency = charge.Currency
+            };        
         }
 
         public async Task<PaymentIntent> CancelPaymentIntentAsync(string paymentIntentId)

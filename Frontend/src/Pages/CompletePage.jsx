@@ -122,6 +122,7 @@ function CompletePageContent() {
               id: create.data.orderId,
               orderStatus: "Processing",
               paymentStatus: capture.status,
+              paymentMethod: capture.paymentMethod,
               shippingInformation: {
                 shipmentId: postnordResponse.data.bookingId,
                 trackingId: trackingId,

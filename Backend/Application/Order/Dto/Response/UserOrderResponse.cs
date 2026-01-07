@@ -17,6 +17,7 @@ namespace Application.Order.Dto.Response
         public decimal ShippingTax { get; init; } 
         public string OrderStatus { get; init; } = string.Empty;
         public string PaymentStatus { get; init; } = string.Empty;
+        public string PaymentMethod { get; init; } = string.Empty;
         public List<UserOrderItemsResponse> OrderItems { get; init; } = new();
         public UserOrderShippingResponse ShippingItems { get; init; } = new();
     }

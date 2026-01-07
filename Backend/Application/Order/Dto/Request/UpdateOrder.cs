@@ -12,6 +12,7 @@ namespace Application.Order.Dto.Request
         public Guid Id { get; set; }
         public string? OrderStatus { get; set; } = string.Empty;
         public string? PaymentStatus { get; set; } = string.Empty;
+        public string? PaymentMethod {  get; set; } = string.Empty;
         public ShippingPatchDto? ShippingInformation { get; set; }
     }
 }

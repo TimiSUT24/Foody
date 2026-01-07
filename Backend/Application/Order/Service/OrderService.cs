@@ -195,6 +195,12 @@ namespace Application.Order.Service
                    
             }
 
+            if (!string.IsNullOrEmpty(request.PaymentMethod))
+            {
+                order.PaymentMethod = request.PaymentMethod;
+                updated = true;
+            }
+
             if (request.ShippingInformation != null)
             {
                 var s = order.ShippingInformation;
