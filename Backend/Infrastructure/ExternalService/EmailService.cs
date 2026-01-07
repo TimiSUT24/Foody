@@ -28,7 +28,7 @@ namespace Infrastructure.ExternalService
             var subject = $"Order Confirmation #{order.Id}";
             var to = new EmailAddress(toEmail);
             var htmlContent = $@"
-            <h2>Thank you for your order!</h2>
+            <h2>Tack för din order!</h2>
             <p>Order ID: {order.Id}</p>
             <p>Total: {order.TotalPrice:C}</p>
             <h3>Items:</h3>

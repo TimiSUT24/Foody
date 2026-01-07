@@ -19,11 +19,13 @@ namespace Application.Order.Service
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
 
-        public OrderService(IUnitOfWork uow, IMapper mapper)
+        public OrderService(IUnitOfWork uow, IMapper mapper, IEmailService emailService)
         {
             _uow = uow;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         private decimal ConvertToKg(decimal? value, string? unit)
@@ -115,6 +117,8 @@ namespace Application.Order.Service
          
             await _uow.Orders.AddAsync(order, ct);
             await _uow.SaveChangesAsync(ct);
+
+            await _emailService.SendOrderConfirmationEmail(order.ShippingInformation.Email, order);
 
             return new CreatedOrderResponse
             {
@@ -264,7 +268,7 @@ namespace Application.Order.Service
 
                 var product = await _uow.Products.GetByIdAsync(item.Id, ct);
 
-                subTotal = product.Price * item.Qty;                
+                subTotal += product.Price * item.Qty;                
           
             }
 

@@ -13,7 +13,6 @@ using Application.Order.Interfaces;
 using Application.Order.Mapper;
 using Application.Order.Service;
 using Application.Postnord.Interfaces;
-using Application.Postnord.Mapper;
 using Application.Postnord.Service;
 using Application.Product.Interfaces;
 using Application.Product.Mapper;
@@ -120,8 +119,7 @@ namespace Api
             typeof(AuthProfile),
             typeof(NutritionValueProfile),
             typeof(OrderProfile),
-            typeof(CategoryProfile),
-            typeof(PostnordProfile));
+            typeof(CategoryProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);
