@@ -365,3 +365,7 @@ FodyWeavers.xsd
 /Backend/Api/Properties/launchSettings.json
 /Backend/Api/appsettings.Development.json
 /Stripe/.env
+/Frontend/localhost-key.pem
+/Frontend/localhost.pem
+/Frontend/localhost-key.pem
+/Frontend/localhost.pem
