@@ -17,7 +17,6 @@
     width:fit-content;
     height:30px;
     align-items: center;
-    justify-content: center;
     background-color: transparent;
     border:none;
     border-radius: 10px;
@@ -27,6 +26,7 @@
     -o-border-radius: 10px;
     margin-bottom:10px;
     font-size: 17px;
+    gap:10px;
 }
 
 .back-btn:hover{
@@ -78,9 +78,7 @@
 }
 
 #shipping-img{
-    width:30px;
-    filter: invert(100%) sepia(91%) saturate(0%) hue-rotate(-200deg) brightness(100%) contrast(100%);
-    -webkit-filter: invert(100%) sepia(91%) saturate(0%) hue-rotate(-200deg) brightness(100%) contrast(100%);
+    color:white;
 }
 
 #shipping-container{

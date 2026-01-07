@@ -14,8 +14,7 @@ export default function ProfileSettings(){
 
     const [password, setPassword] = useState({
         currentPass:"",
-        newPass:"",
-        confirmPass:""
+        newPass:""
     })
      const handleChangePassword = (e) => {
         setPassword({...password, [e.target.name]: e.target.value})
@@ -97,12 +96,7 @@ export default function ProfileSettings(){
                     <div style={{display:"flex", flexDirection:"column",gap:5}}>
                         <p style={{textAlign:"left",margin:0}}>Nytt lösenord</p>
                         <input type="password" name="newPass" value={password.newPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
-                    </div>
-
-                    <div style={{display:"flex", flexDirection:"column",gap:5}}>
-                        <p style={{textAlign:"left",margin:0}}>Bekräfta lösenord</p>
-                        <input type="password" name="confirmPass" value={password.confirmPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
-                    </div>                   
+                    </div>            
 
                     <button className="change-pass">Ändra lösenord</button>
                 </form>

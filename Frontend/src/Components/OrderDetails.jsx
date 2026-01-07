@@ -1,4 +1,12 @@
 import "../CSS/User/OrderDetails.css"
+import { PiPackage } from "react-icons/pi";
+import { MdOutlineLocalShipping } from "react-icons/md";
+import { RxCounterClockwiseClock } from "react-icons/rx";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { HiOutlineLocationMarker } from "react-icons/hi";
+import { CiCreditCard1 } from "react-icons/ci";
+import { MdArrowBack } from "react-icons/md";
+
 
 export default function OrderDetails({ order, onBack }) {
     const statusMap = {
@@ -39,7 +47,7 @@ export default function OrderDetails({ order, onBack }) {
         <div className="order-details">
 
             {/* Back button */}
-            <button className="back-btn" onClick={onBack}>⬅ Tillbaka till beställningar</button>
+            <button className="back-btn" onClick={onBack}><icon><MdArrowBack/></icon><p>Tillbaka till beställningar</p></button>
 
             <div className="order-details-content">
                 {/* Header */}
@@ -63,28 +71,28 @@ export default function OrderDetails({ order, onBack }) {
             <div className="shipping-icons">
                 <div id="shipping-container">
                     <div className="shipping-icon">
-                        <img  id="shipping-img" src="/IMG/icons8-delivery-time-50.png" alt=""/>
+                        <icon id="shipping-img" style={{width:30,height:30}}><RxCounterClockwiseClock style={{width:30,height:30}}/></icon>
                     </div>               
                 <p>Väntar</p>
                 </div>
 
                 <div id="shipping-container">
                 <div className="shipping-icon">
-                        <img id="shipping-img" src="/IMG/icons8-box-64.png" alt=""/>
+                        <icon id="shipping-img" style={{width:30,height:30}}><PiPackage style={{width:30,height:30}}/></icon>
                     </div>   
-                <p>Beställning</p>
+                <p>Behandlas</p>
                 </div>
 
                 <div id="shipping-container">
                 <div className="shipping-icon">
-                        <img  id="shipping-img" src="/IMG/icons8-delivery-50.png" alt=""/>
+                        <icon id="shipping-img" style={{width:32,height:32}}><MdOutlineLocalShipping style={{width:30,height:30}}/></icon>
                     </div>   
-                <p>Skickas</p>
+                <p>Skickad</p>
                 </div>
 
                 <div id="shipping-container">
                 <div className="shipping-icon">
-                        <img  id="shipping-img" src="/IMG/icons8-delivered-48.png" alt=""/>
+                        <icon id="shipping-img" style={{width:30,height:30}}><IoIosCheckmarkCircleOutline style={{width:30,height:30}}/></icon>
                     </div>   
                 <p>Levererad</p>
                 </div>
@@ -97,7 +105,7 @@ export default function OrderDetails({ order, onBack }) {
                 {order.orderItems.map((item, index) => (
                     <div key={index} className="details-item">
                         <div style={{backgroundColor:"#efbe9bff",padding:5,marginRight:8,borderRadius:10}}>
-                            <img src="/IMG/icons8-box-64.png" id="details-img"/>
+                            <icon><PiPackage style={{width:50,height:50}}/></icon>
                         </div>
                         
                        <div style={{display:"flex", alignItems:"center",width:"920px",justifyContent:"space-between"}}>
@@ -150,7 +158,7 @@ export default function OrderDetails({ order, onBack }) {
 
                 <div className="details-extra-content">
                    <div id="details-extra-img">
-                          <img id="details-extra-image" src="/IMG/icons8-location-50.png" alt=""/>
+                          <icon id="details-extra-image"><HiOutlineLocationMarker style={{width:30,height:30}}/></icon>
                     </div>
                   
                     <div className="details-p">
@@ -164,7 +172,7 @@ export default function OrderDetails({ order, onBack }) {
 
                 <div className="details-extra-content">
                     <div id="details-extra-img">
-                          <img id="details-extra-image" src="/IMG/icons8-magnetic-card-50.png" alt="" />
+                          <icon id="details-extra-image"><CiCreditCard1 style={{width:30,height:30}}/></icon>
                     </div>
                   
                     <div className="details-p">

@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import {Elements} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js"
 import api from "../Api/api";
-import { stripeApi } from "../Api/stripeApi";
-import { postnordApi } from "../Api/postnordApi";
 import {useCart} from "../Context/CartContext"
 import { useNavigate } from "react-router-dom";
 import '../CSS/CompletePage.css'
