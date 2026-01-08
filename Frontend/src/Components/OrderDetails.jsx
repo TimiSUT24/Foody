@@ -14,28 +14,33 @@ export default function OrderDetails({ order, onBack }) {
             label: "Väntar",
             color: "rgb(255, 193, 7)",
             backgroundColor: "rgba(255, 193, 7, 0.1)",
-            borderColor: "rgba(255, 193, 7, 0.3)"
+            borderColor: "rgba(255, 193, 7, 0.3)",
+            icon: <RxCounterClockwiseClock/>
         },
         Processing: {
             label: "Behandlas",
             color: "rgb(13, 202, 240)",
             backgroundColor: "rgba(13, 202, 240, 0.1)",
-            borderColor: "rgba(13, 202, 240, 0.3)"
+            borderColor: "rgba(13, 202, 240, 0.3)",
+            icon: <PiPackage/>
         },
         Shipped: {
             label: "Skickad",
             color: "rgb(13, 110, 253)",
             backgroundColor: "rgba(13, 110, 253, 0.1)",
-            borderColor: "rgba(13, 110, 253, 0.3)"
+            borderColor: "rgba(13, 110, 253, 0.3)",
+            icon: <MdOutlineLocalShipping/>
         },
         Delivered: {
             label: "Levererad",
             color: "rgb(25, 135, 84)",
             backgroundColor: "rgba(25, 135, 84, 0.1)",
-            borderColor: "rgba(25, 135, 84, 0.3)"
+            borderColor: "rgba(25, 135, 84, 0.3)",
+            icon: <IoIosCheckmarkCircleOutline/>
         }
     };
-
+    const currentStatus = order.orderStatus;
+    const activeColor = statusMap[currentStatus]?.color;
     const status = statusMap[order.orderStatus];
     const date = new Date(order.orderDate).toLocaleDateString("sv-SE", {
         year: "numeric",
@@ -47,7 +52,7 @@ export default function OrderDetails({ order, onBack }) {
         <div className="order-details">
 
             {/* Back button */}
-            <button className="back-btn" onClick={onBack}><icon><MdArrowBack/></icon><p>Tillbaka till beställningar</p></button>
+            <button className="back-btn" onClick={onBack}><MdArrowBack/>Tillbaka till beställningar</button>
 
             <div className="order-details-content">
                 {/* Header */}
@@ -64,34 +69,34 @@ export default function OrderDetails({ order, onBack }) {
                         border: `2px solid ${status.borderColor}`
                     }}
                     >
-                    {status.label}
+                    {status.icon}{status.label}
                 </div>
             </div>
 
             <div className="shipping-icons">
                 <div id="shipping-container">
-                    <div className="shipping-icon">
+                    <div className="shipping-icon" style={{backgroundColor: currentStatus === "Pending" ? activeColor : undefined}}>
                         <icon id="shipping-img" style={{width:30,height:30}}><RxCounterClockwiseClock style={{width:30,height:30}}/></icon>
                     </div>               
                 <p>Väntar</p>
                 </div>
 
                 <div id="shipping-container">
-                <div className="shipping-icon">
+                <div className="shipping-icon"  style={{backgroundColor: currentStatus === "Processing" ? activeColor : undefined}}>
                         <icon id="shipping-img" style={{width:30,height:30}}><PiPackage style={{width:30,height:30}}/></icon>
                     </div>   
                 <p>Behandlas</p>
                 </div>
 
                 <div id="shipping-container">
-                <div className="shipping-icon">
+                <div className="shipping-icon"  style={{backgroundColor: currentStatus === "Shipped" ? activeColor : undefined}}>
                         <icon id="shipping-img" style={{width:32,height:32}}><MdOutlineLocalShipping style={{width:30,height:30}}/></icon>
                     </div>   
                 <p>Skickad</p>
                 </div>
 
                 <div id="shipping-container">
-                <div className="shipping-icon">
+                <div className="shipping-icon"  style={{backgroundColor: currentStatus === "Delivered" ? activeColor : undefined}}>
                         <icon id="shipping-img" style={{width:30,height:30}}><IoIosCheckmarkCircleOutline style={{width:30,height:30}}/></icon>
                     </div>   
                 <p>Levererad</p>
@@ -104,8 +109,8 @@ export default function OrderDetails({ order, onBack }) {
                 <h3 style={{textAlign:"left"}}>Produkter</h3>
                 {order.orderItems.map((item, index) => (
                     <div key={index} className="details-item">
-                        <div style={{backgroundColor:"#efbe9bff",padding:5,marginRight:8,borderRadius:10}}>
-                            <icon><PiPackage style={{width:50,height:50}}/></icon>
+                        <div style={{backgroundColor:"hsl(28, 85%, 95%)",padding:5,marginRight:8,borderRadius:10}}>
+                            <icon><PiPackage style={{width:50,height:50,color:"hsl(28, 80%, 40%)"}}/></icon>
                         </div>
                         
                        <div style={{display:"flex", alignItems:"center",width:"920px",justifyContent:"space-between"}}>

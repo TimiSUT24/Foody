@@ -73,7 +73,7 @@ export default function UserProfilePage(){
                 )}
         </>
     )}
-                {!selectedOrder && activeTab === "settings" &&
+                {activeTab === "settings" &&
                 <ProfileSettings />}
             
             </div>

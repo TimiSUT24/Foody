@@ -25,7 +25,7 @@ export default function OrderCard({order,onClick}){
         <div className="order-card" onClick={onClick}>        
             <div className="order-container">               
                 <div id="order-img-container">
-                    <icon id="shopping-img"><PiPackage style={{width:30,height:30}}/></icon>
+                    <icon id="shopping-img"><PiPackage style={{width:30,height:30,color:"hsl(28, 80%, 40%)"}}/></icon>
                 </div>
                 
                 <div className="order-num">

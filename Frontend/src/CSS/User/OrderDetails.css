@@ -15,7 +15,7 @@
 .back-btn{
     display: flex;
     width:fit-content;
-    height:30px;
+    height:35px;
     align-items: center;
     background-color: transparent;
     border:none;
@@ -30,8 +30,8 @@
 }
 
 .back-btn:hover{
-    background-color: rgb(255, 178, 55);
-    opacity: 80%;
+    background-color: rgb(248, 166, 34);
+    opacity: 70%;
 }
 
 .header-details{
@@ -55,6 +55,9 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+    display:flex;
+    align-items: center;
+    gap:5px;
 }
 
 .shipping-icons{
@@ -100,7 +103,7 @@
     padding:8px;
     align-items: center;
     border-radius: 10px;
-    background-color: rgb(223, 225, 230);
+    background-color: rgba(229, 229, 231, 0.425);
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
@@ -110,8 +113,6 @@
 #details-img{
     height:40px;
     width:40px;
-    filter: invert(10%) sepia(95%) saturate(3500%) hue-rotate(-10deg) brightness(96%) contrast(102%);
-    -webkit-filter: invert(10%) sepia(95%) saturate(3500%) hue-rotate(-10deg) brightness(96%) contrast(102%);
 }
 
 .details-prices{
@@ -152,7 +153,7 @@
 }
 
 #details-extra-img{
-        background-color: #efbe9bff;
+        background-color: hsl(28, 85%, 95%);
     height:fit-content;
     padding:5px;
     margin-right:8px;
@@ -166,9 +167,7 @@
 #details-extra-image{
     width:30px;
     height:30px;
-        filter: invert(10%) sepia(95%) saturate(3500%) hue-rotate(-10deg) brightness(96%) contrast(102%);
-    -webkit-filter: invert(10%) sepia(95%) saturate(3500%) hue-rotate(-10deg) brightness(96%) contrast(102%);
-
+    color:hsl(28, 80%, 40%);
 }
 
 #br-div{

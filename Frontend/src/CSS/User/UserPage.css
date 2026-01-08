@@ -20,10 +20,7 @@
   backdrop-filter: blur(8px);
   align-content: center;
   z-index: 200;
-}
-
-#user-header .user-header-h1, .user-header-p{
-    color:white;
+  color:white;
 }
 
 #user-content {
@@ -58,7 +55,7 @@
 }
 
 .order-image {
-  background-color: rgb(224, 212, 190);
+  background-color: hsl(28, 85%, 95%);
   padding: 10px;
   border-radius: 10px;
   -webkit-border-radius: 10px;

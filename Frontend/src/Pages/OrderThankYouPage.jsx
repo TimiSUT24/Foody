@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom"
 import { useAuth } from "../Context/AuthContext";
-import { useState } from "react";
 import "../CSS/ThankYouPage.css"
 
 export default function OrderThankYouPage(){
