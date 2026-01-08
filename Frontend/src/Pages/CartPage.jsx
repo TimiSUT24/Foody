@@ -7,6 +7,8 @@ import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Components/CheckoutForm"
 import { getDeliveryOptions } from "../Services/PostnordService"
 import { useAuth } from "../Context/AuthContext"
+import { CiCirclePlus } from "react-icons/ci";
+import { CiCircleMinus } from "react-icons/ci";
 import "../CSS/CartPage.css"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
@@ -235,9 +237,9 @@ export default function CartPage(){
                         <p style={{fontSize:13}}>{item.price} kr</p>
 
                         <div className="qty-controls">
-                            <button onClick ={() => removeFromCart(item.id)} style={{borderRadius:10,borderStyle:"solid",borderWidth:1,backgroundColor:"lightGray",opacity:"60%"}}>-</button>
+                            <button onClick ={() => removeFromCart(item.id)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCircleMinus className="ciCircleMinus"style={{width:18,height:18}}/></button>
                             <span>{item.qty}</span>
-                            <button onClick ={() => addToCart(item)} style={{borderRadius:10,borderStyle:"solid",borderWidth:1,backgroundColor:"lightGray",opacity:"60%"}}>+</button>                
+                            <button onClick ={() => addToCart(item)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCirclePlus className="ciCirclePlus" style={{width:18,height:18}}/></button>                
                         </div>
                     </div>
                 ))}
@@ -284,7 +286,7 @@ export default function CartPage(){
                     ) : (
                     postnordOptions.map((warehouse, wIndex) => (
                         <div key={wIndex} className="warehouse-options">
-                        <h3>Från: {warehouse.warehouse.address.city}</h3>
+                        <h3 style={{textAlign:"left"}}>{warehouse.warehouse.address.city}</h3>
                         {warehouse.deliveryOptions.map((option, oIndex) => (
                             <div key={oIndex} className="delivery-option">
                             <input
@@ -295,17 +297,21 @@ export default function CartPage(){
                                 handleDeliverySelect(option.defaultOption.bookingInstructions)
                                 }
                             />
-                            <label>
-                                Postnord{" "}
+                            <label className="delivery-option-label">
+                                <img src="./IMG/postnordIcon.jpg" alt="Postnord" style={{width:30,height:30}}/>
+                                <div>
+                                    <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:"5px",margin:0}}>
+                                    <p>Postnord</p>
+                                    {option.defaultOption.descriptiveTexts.checkout.title}
+                                    </div>             
+                                <p style={{justifySelf:"start",marginTop:0,lineHeight:1}}>{option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}</p> 
+                                </div> 
+                                <p style={{width:400}}>{option.defaultOption.descriptiveTexts.checkout.briefDescription}</p>   
+                                <label style={{backgroundColor:"rgba(15, 23, 42, 0.95)",padding:10,borderRadius:10,color:"white"}}>
+                                39 kr
+                            </label>                           
                             </label>
-                            <label>
-                                {option.defaultOption.descriptiveTexts.checkout.title} -{" "}
-                                {option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}
-                             
-                            </label>
-                            <label>
-                                {" "}39 kr
-                            </label>
+                            
                             </div>
                         ))}
                         </div>

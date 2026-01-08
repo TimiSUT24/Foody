@@ -11,7 +11,7 @@
 #shipping-information{  
     grid-area:shipping;
     width:800px;
-    height:480px;
+    height:fit-content;
     background-color: white;
     border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -180,5 +180,31 @@
     background-color: black;
 }
 
+.delivery-option{
+    display:flex;
+    justify-content: start;
+    align-items: center;
+    gap:30px;
+    background-color: rgb(228, 226, 226);
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    padding-left:15px;
+}
+
+.delivery-option-label{
+    display:flex;
+    align-items: center;
+    gap:20px;
+}
+
+.ciCirclePlus:hover{
+    color:green;
+}
+.ciCircleMinus:hover{
+    color:red;
+}
 
 
