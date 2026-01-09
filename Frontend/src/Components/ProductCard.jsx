@@ -1,10 +1,12 @@
 import {useCart} from '../Context/CartContext'
 import {Link} from 'react-router-dom'
+import { CiCirclePlus } from "react-icons/ci";
+import { CiCircleMinus } from "react-icons/ci";
 import "../CSS/ProductCard.css"
 
 export default function ProductCard({product}){
-    const {addToCart} = useCart();
-
+    const {addToCart, removeFromCart, getQty} = useCart();
+    const quantity = getQty(product.id);
     return(
         <div key={product.id} className="product-card">   
                     <Link to={`/product/${product.id}`} className="product-link">         
@@ -18,8 +20,16 @@ export default function ProductCard({product}){
                     <p>{product.weightText} {product.comparePrice}</p>
                               
                     </div>
-                    <p className="product-price">{product.price} {product.currency}</p>     
-                    <button className="product-add" onClick={() => addToCart(product)}>Lägg till</button>
+                    <p className="product-price">{product.price} {product.currency}</p>
+                    {quantity === 0 ? (
+                        <button className="product-add" onClick={() => addToCart(product)}>Lägg till</button>
+                        ) : (
+                            <div style={{display:"flex",gap:10,justifyContent:"center",height:47}}>
+                        <button className="product-minus" onClick={() => removeFromCart(product.id)} style={{width:100}}><CiCircleMinus style={{width:22,height:22}}/></button>
+                        <p>{quantity} st</p>
+                        <button className="product-add" onClick={() => addToCart(product)} style={{width:100}}><CiCirclePlus style={{width:22,height:22}}/></button>
+                    </div>
+                    )}                     
                 </div>  
     )
 }

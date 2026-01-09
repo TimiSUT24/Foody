@@ -2,12 +2,16 @@ import {useState,useEffect} from 'react'
 import {ProductService} from "../Services/ProductService"
 import {useParams} from 'react-router-dom'
 import {useCart} from '../Context/CartContext'
+import { CiCirclePlus } from "react-icons/ci";
+import { CiCircleMinus } from "react-icons/ci";
 import "../CSS/ProductDetails.css"
 
 export default function DetailsPage(){
     const { id } = useParams();
     const [productdetails, setProduct] = useState(null);
-    const {addToCart} = useCart();
+    const {addToCart,removeFromCart, getQty} = useCart();
+    const productId = productdetails?.product?.id;
+    const quantity = productId ? getQty(productId) : 0;
 
     useEffect(() => {
         if(id){
@@ -17,7 +21,7 @@ export default function DetailsPage(){
         }
     }, [id])
 
-    if(!productdetails){
+    if(!productdetails || !productdetails.product){
         return <p>Laddar produkt...</p>
     }
 
@@ -40,8 +44,15 @@ export default function DetailsPage(){
             </div>
             <p id="weightText">{productdetails.product.weightText}</p>  
              <hr style={{width:"100%",borderStyle:"solid",borderColor:"gray",opacity:"15%"}}/>
-            
-            <button id="add-details-button" onClick={() => addToCart(productdetails.product)}>Lägg till</button>
+            {quantity === 0 ? (
+                                    <button id="add-details-button" onClick={() => addToCart(productdetails.product)}>Lägg till</button>
+                                    ) : (
+                                        <div style={{display:"flex",gap:10,justifyContent:"center",height:47}}>
+                                    <button id="minus-details-button" onClick={() => removeFromCart(productdetails.product.id)} style={{width:100}}><CiCircleMinus style={{width:22,height:22}}/></button>
+                                    <p style={{marginTop:20}}>{quantity} st</p>
+                                    <button id="add-details-button" onClick={() => addToCart(productdetails.product)} style={{width:100}}><CiCirclePlus style={{width:22,height:22,color:"white"}}/></button>
+                                </div>
+                                )}
             </div>
 
             <div className="product-extra-info">

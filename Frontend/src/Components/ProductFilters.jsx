@@ -48,7 +48,7 @@ export default function ProductFilters({
             value ={filters.brand} 
             onChange={(e) => updateFilter({brand: e.target.value})}>
 
-                <option value="">Alla</option>
+                <option value="">Alla varumärken</option>
                 {brands.map((brand, index) => (
                     <option key={index} value={brand}>
                         {brand}
