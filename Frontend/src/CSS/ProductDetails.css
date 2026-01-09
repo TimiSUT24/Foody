@@ -15,6 +15,8 @@
     -moz-border-radius: 5px;
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
+    width: 100%;
+    max-width: 100%;
 }
 
 /*Product info */
@@ -22,8 +24,9 @@
     display:flex;
     flex-direction: column;
     align-items:start;
-    width:700px;
     grid-area: info;
+    width: 100%;
+    max-width: 100%;
 }
 
 .product-brand{
@@ -45,6 +48,8 @@
     flex-wrap: wrap;
     gap:10px;
     margin-left:20px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .product-attribute p{
@@ -118,8 +123,9 @@
     display:flex;
     flex-direction: column;
     align-items:start;
-    width:700px;
-    grid-area: extra-info
+    grid-area: extra-info;
+    width: 100%;
+    max-width: 100%;
 }
 
 .product-extra-info p{
@@ -127,12 +133,13 @@
     flex-direction: column;
     padding-left:20px;
     text-align: left;
+    width: 100%;
+    max-width: 100%;
 }
 
 .product-nutrition{
     margin-top:10px;
     background-color: white;
-    width:650px;
     margin-left:20px;
     padding:10px;
     border-radius: 5px;
@@ -140,4 +147,38 @@
     -moz-border-radius: 5px;
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
+    width: 100%;
+    max-width: 100%;
+    text-align: left;
+}
+
+@media (max-width: 1000px) {
+  .product-details {
+    grid-template-areas:
+      "img"
+      "info"
+      "extra-info";
+  }
+
+  .product-info,
+  .product-extra-info,
+  .product-nutrition{
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 730px){
+  .details-img {
+    width:100%;
+    max-width:280px;
+    justify-self: center;
+  }
+
+  .product-nutrition,
+  .product-info,
+  .product-extra-info{
+    width:100vw;
+  }
+
 }

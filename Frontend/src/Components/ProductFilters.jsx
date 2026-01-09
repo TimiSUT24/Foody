@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import {CategoryService} from '../Services/CategoryService'
 import { ProductService } from '../Services/ProductService';
+import { MdKeyboardArrowDown } from "react-icons/md";
 import "../CSS/ProductFilter.css"
 
 export default function ProductFilters({
@@ -57,7 +58,7 @@ export default function ProductFilters({
             </select>
 
             <div className="category-menu">
-                <button className="menu-button">Välj kategori <img src="/IMG/icons8-expand-arrow-50.png" style={{width:20,marginLeft:40}} /></button>
+                <button className="menu-button">Välj kategori <icon><MdKeyboardArrowDown style={{width:20,height:20,paddingLeft:52}}/></icon></button>
                 
 
                 <div className="menu-dropdown">

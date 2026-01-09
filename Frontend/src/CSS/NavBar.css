@@ -37,3 +37,66 @@
 .navbar-logo{
     text-decoration: none;
 }
+
+#navbar-quantity{
+    position:absolute;
+    top:30px;
+    margin-left:110px;
+    width:17px;
+    background-color: orange;
+    -webkit-text-fill-color: white;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.hamburger{
+    display:none;
+}
+
+@media (max-width: 1000px) {
+  .navbar {
+    height: 80px;
+    justify-content: space-between;
+  }
+
+  .navbar-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: rgba(15, 23, 42, 0.98);
+    display: none;
+    z-index: 9998;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  #navbar-quantity{
+    top:200px;
+    left:490px;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    margin-right:40px;
+  }
+
+  .hamburger span {
+    width: 28px;
+    height: 3px;
+    background: whitesmoke;
+    border-radius: 2px;
+  }
+
+}

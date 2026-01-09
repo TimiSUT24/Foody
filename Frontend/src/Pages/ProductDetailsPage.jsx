@@ -58,10 +58,10 @@ export default function DetailsPage(){
             <div className="product-extra-info">
             {/*if empty or null dont show p tags */}
             {productdetails.product.productInformation && <p><strong>ProduktInformation:</strong> {productdetails.product.productInformation}</p>}
-            {productdetails.product.country && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Land:</strong> {productdetails.product.country}</p>}
-            {productdetails.product.usage && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Användning:</strong> {productdetails.product.usage}</p>}
-            {productdetails.product.allergens && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
-            {productdetails.product.storage && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
+            {productdetails.product.country && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Land:</strong> {productdetails.product.country}</p>}
+            {productdetails.product.usage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Användning:</strong> {productdetails.product.usage}</p>}
+            {productdetails.product.allergens && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
+            {productdetails.product.storage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
 
                 {productdetails.nutrition?.length > 0 && (
                     <table className="product-nutrition"> 

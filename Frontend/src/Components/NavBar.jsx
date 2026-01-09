@@ -18,6 +18,10 @@ export default function NavBar (){
     //const isUser = roles.includes("User");
 
     useEffect(() => {
+      setMenuOpen(false);
+    },[location.pathname])
+
+    useEffect(() => {
     // Map paths to body CSS classes
     const bodyClassMap = {
       "/": "home-body",
@@ -81,7 +85,7 @@ export default function NavBar (){
         <NavLink to="/about">Om</NavLink>
         <NavLink to="/login">Logga in</NavLink>
         <NavLink to="/register">Registrera</NavLink>
-        <NavLink to="/cart">Varukorg {totalPrice.toFixed(2)} kr {totalItems !== 0 && totalItems}</NavLink>
+        <NavLink to="/cart">Varukorg {totalPrice.toFixed(2)} kr <p id="navbar-quantity" >{totalItems !== 0 && totalItems}</p></NavLink>   
         <NavLink to="/user-page">Mina sidor</NavLink>
         <NavLink to="/thank-you-page">thankyou</NavLink>
         
@@ -100,6 +104,11 @@ export default function NavBar (){
       <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
         {renderLinks()}
       </div>
+       <div className="hamburger" onClick={toggleMenu}>
+      <span />
+      <span />
+      <span />
+    </div>
     </nav>
     )
 }
