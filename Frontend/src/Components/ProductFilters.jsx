@@ -1,7 +1,8 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, use} from 'react'
 import {CategoryService} from '../Services/CategoryService'
 import { ProductService } from '../Services/ProductService';
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { useLocation } from 'react-router-dom';
 import "../CSS/ProductFilter.css"
 
 export default function ProductFilters({
@@ -11,6 +12,14 @@ export default function ProductFilters({
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [brands, setBrands] = useState([])
+    const [menuOpen, setMenuOpen] = useState(false);
+    const location = useLocation();
+
+    const toggleMenu = () => setMenuOpen(p => !p)
+
+     useEffect(() => {
+      setMenuOpen(false);
+    },[location.pathname])
 
     useEffect(() => {
     const loadCategories = async () => {
@@ -41,14 +50,33 @@ export default function ProductFilters({
     }, [filters.categoryId])
 
     return (
-        <div className ="filter-container">
-           
-            <h3 style={{display:"flex",alignItems:"center",gap:10}}> <img src="/IMG/icons8-sort-50.png" style={{height:40}}></img> Sortera:</h3>
+        <div className={`filter-container ${menuOpen ? "open" : ""}`} >
+            
+            <div id="filter-container-header">
+            <h3  id="filter-container-header-text" style={{display:"flex",alignItems:"center",gap:10}}> <img src="/IMG/icons8-sort-50.png" style={{height:40}}></img> Sortera:</h3>
 
+            <div className="hamburger" onClick={toggleMenu}>
+                <span style={{backgroundColor:"black"}} />
+                <span style={{backgroundColor:"black"}}/>
+                <span style={{backgroundColor:"black"}}/>
+            </div> 
+            </div>
+
+                <div className="search-div" style={{display:"flex", flexDirection:"row",position:"absolute",top:400,backgroundColor:"white",borderRadius:10,paddingLeft:15}}>
+                    <img src="/IMG/icons8-search-48.png" alt="" style={{width:20,placeSelf:"center",paddingRight:5}} />              
+                    <input 
+                        type="text"
+                        placeholder="Sök"
+                        value={filters.name}                       
+                        onChange={(e) => updateFilter({name: e.target.value})}
+                        className="search">
+                    </input>                  
+                </div>       
+            
             <select 
             value ={filters.brand} 
-            onChange={(e) => updateFilter({brand: e.target.value})}>
-
+            onChange={(e) => updateFilter({brand: e.target.value})}
+            className="brand-select">
                 <option value="">Alla varumärken</option>
                 {brands.map((brand, index) => (
                     <option key={index} value={brand}>
@@ -58,7 +86,7 @@ export default function ProductFilters({
             </select>
 
             <div className="category-menu">
-                <button className="menu-button">Välj kategori <icon><MdKeyboardArrowDown style={{width:20,height:20,paddingLeft:52}}/></icon></button>
+                <button id="menu-button">Välj kategori <icon><MdKeyboardArrowDown style={{width:20,height:20,paddingLeft:52}}/></icon></button>
                 
 
                 <div className="menu-dropdown">
@@ -75,7 +103,7 @@ export default function ProductFilters({
 
                     {categories.map(cat => (
                         <div className="menu-item" key={cat.id}>
-                            <span 
+                            <span
                                 onClick={() => 
                                         updateFilter({
                                                     categoryId: cat.id,
@@ -147,20 +175,9 @@ export default function ProductFilters({
                     id="filter-price"
                     min="0"
                 />
-
-            <div style={{display:"flex", flexDirection:"row",position:"absolute",top:400,backgroundColor:"white",borderRadius:10,paddingLeft:15}}>
-                <img src="/IMG/icons8-search-48.png" alt="" style={{width:20,placeSelf:"center",paddingRight:5}} />              
-                 <input 
-                        type="text"
-                        placeholder="Sök"
-                        value={filters.name}                       
-                        onChange={(e) => updateFilter({name: e.target.value})}
-                        className="search">
-                    </input>                  
-            </div>
            
 
-            <button className="reset-filter" onClick = {() =>                
+            <button id="reset-filter" onClick = {() =>                
                 updateFilter({
                 categoryId: null,
                 subCategoryId: null,
@@ -169,7 +186,7 @@ export default function ProductFilters({
                 brand: "",
                 name: ""
             })}>Rensa filter</button>
-
+            
         </div>
     )
 }

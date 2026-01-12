@@ -35,4 +35,9 @@ body{
     outline: none !important;
 }
 
-
+@media (max-width: 1000px) {
+    #food-container-h2{
+        font-size: 20px;
+        line-height: 1;
+    }
+}
