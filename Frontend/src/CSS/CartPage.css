@@ -35,6 +35,10 @@
     border-width: 1px;
 }
 
+.shipping-info-inputs{
+    width:350px;
+}
+
 .postal-input::-webkit-inner-spin-button,
 .postal-input::-webkit-outer-spin-button{
     -webkit-appearance: none;
@@ -206,5 +210,43 @@
 .ciCircleMinus:hover{
     color:red;
 }
+
+@media (max-width: 1450px) {
+  .cart-page {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "h1"
+      "cart"
+      "shipping"
+      "payment";
+    padding: 20px;
+  }
+  
+    #shipping-information,
+  #payment,
+  #cart-container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  #shipping-information input,
+  .shipping-info-inputs{
+    width:100%;
+  }
+  #cart-page-h3{
+    place-self: center;
+  }
+
+  .delivery-option-label{
+    width:90%;
+  }
+
+  #shipping-info-combined{
+    flex-direction: column;
+  }
+
+}
+
 
 

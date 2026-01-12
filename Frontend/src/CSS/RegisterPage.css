@@ -81,7 +81,7 @@
 
     .register-row{
         flex-direction: column;
-        
+        gap:10px;
     }
 
     .register-row input{

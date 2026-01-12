@@ -160,12 +160,12 @@ export default function CartPage(){
 
     return(
         <div className="cart-page">
-            <h1 style={{display:"flex",gridArea:"h1"}}>Varukorg</h1>
+            <h1 id="cart-page-h3"style={{display:"flex",gridArea:"h1"}}>Varukorg</h1>
 
             <div id="shipping-information" style={{display:"flex",flexDirection:"column",gap:"20px",padding:"20px"}}>
                 <h2 style={{textAlign:"left"}}>LeveransInformation</h2>
 
-                <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div id="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.firstName ? "red" : "",}}>Förnamn *</p>
@@ -191,11 +191,11 @@ export default function CartPage(){
                     </div>              
                 </div>
        
-                <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div  id="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.state ? "red" : ""}}>Län *</p>
-                        <input type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{width:"350px",paddingLeft:"10px",border: error.state ? "2px solid red" : ""}}/>
+                        <input className="shipping-info-inputs" type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{paddingLeft:"10px",border: error.state ? "2px solid red" : ""}}/>
                     </div>   
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
@@ -204,11 +204,11 @@ export default function CartPage(){
                     </div>                 
                 </div>
 
-                <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div id="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.city ? "red" : ""}}>Ort *</p>
-                        <input type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{width:"350px",paddingLeft:"10px",border: error.city ? "2px solid red" : ""}}/>
+                        <input className="shipping-info-inputs" type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{paddingLeft:"10px",border: error.city ? "2px solid red" : ""}}/>
                     </div>  
                                    
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
@@ -309,7 +309,7 @@ export default function CartPage(){
                                 <p style={{width:400}}>{option.defaultOption.descriptiveTexts.checkout.briefDescription}</p>   
                                 <label style={{backgroundColor:"rgba(15, 23, 42, 0.95)",padding:10,borderRadius:10,color:"white"}}>
                                 39 kr
-                            </label>                           
+                                </label>                           
                             </label>
                             
                             </div>
