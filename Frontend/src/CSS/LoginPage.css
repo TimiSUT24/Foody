@@ -49,4 +49,16 @@
     cursor: pointer;
 }
 
+@media (max-width: 630px) {
+    .login-page{
+        width:100%;
+        place-items: center;
+        margin-top:100px;
+    }
 
+    .login-page h3{
+       display: flex;
+       justify-content: center;
+       margin-left:0;
+    }
+}

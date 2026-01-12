@@ -50,6 +50,7 @@ export default function LoginPage () {
             value={loginRequest.email} 
             onChange={handleChange}/>
 
+            
             <h3>Lösenord</h3>
             <input 
             type="password"
@@ -57,6 +58,7 @@ export default function LoginPage () {
             placeholder="••••••••"
             value={loginRequest.password} 
             onChange={handleChange}/>
+            
 
             <button type="submit" className="login-button">Logga in</button>
             {error && <p>{error}</p>}

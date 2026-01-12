@@ -52,25 +52,29 @@ export default function RegisterPage(){
             <h1>Skapa ditt konto</h1>
             <form onSubmit={handleSubmit}>
 
-                <div className="fh3">
-                <h3 >Förnamn</h3>
-                <h3 >Efternamn</h3>              
-                </div>
+               
 
                 <div className="register-row">
-                    <input 
-                        type="text"
-                        name="firstName"
-                        placeholder="Jan"
-                        value={formData.firstName}
-                        onChange={handleChange}/>
-
-                    <input 
-                        type="text"
-                        name="lastName"
-                        placeholder="Andersson"
-                        value={formData.lastName} 
-                        onChange={handleChange}/>
+                    <div className="register-row-input">
+                        <h3 >Efternamn</h3>
+                        <input 
+                            type="text"
+                            name="firstName"
+                            placeholder="Jan"
+                            value={formData.firstName}
+                            onChange={handleChange}/>
+                    </div>
+               
+                    <div  className="register-row-input">
+                        <h3 >Förnamn</h3>
+                        <input 
+                            type="text"
+                            name="lastName"
+                            placeholder="Andersson"
+                            value={formData.lastName} 
+                            onChange={handleChange}/>
+                    </div>
+                    
                 </div>
                 
                 <div className="register-column">
