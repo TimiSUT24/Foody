@@ -165,16 +165,16 @@ export default function CartPage(){
             <div id="shipping-information" style={{display:"flex",flexDirection:"column",gap:"20px",padding:"20px"}}>
                 <h2 style={{textAlign:"left"}}>LeveransInformation</h2>
 
-                <div id="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
+                <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.firstName ? "red" : "",}}>Förnamn *</p>
-                        <input type="text" name="firstName" value={shipping.firstName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.firstName ? "2px solid red" : "",}} />
+                        <input className="shipping-info-inputs" type="text" name="firstName" value={shipping.firstName} onChange={handleChange} placeholder="Jan" style={{paddingLeft:"10px",border: error.firstName ? "2px solid red" : "",}} />
                     </div>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.lastName ? "red" : ""}}>Efternamn *</p>
-                        <input type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
+                        <input className="shipping-info-inputs" type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Jan" style={{paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
                     </div>              
                 </div>
 
@@ -191,7 +191,7 @@ export default function CartPage(){
                     </div>              
                 </div>
        
-                <div  id="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
+                <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.state ? "red" : ""}}>Län *</p>
@@ -200,11 +200,11 @@ export default function CartPage(){
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.phoneNumber ? "red" : ""}}>Telefonnummer *</p>
-                        <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{width:"350px",paddingLeft:"10px",border: error.phoneNumber ? "2px solid red" : ""}}/>
+                        <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{paddingLeft:"10px",border: error.phoneNumber ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
 
-                <div id="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
+                <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.city ? "red" : ""}}>Ort *</p>
@@ -213,7 +213,7 @@ export default function CartPage(){
                                    
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
                         <p style={{margin:"0",color: error.postalCode ? "red" : ""}}>Postnummer *</p>
-                        <input className="postal-input" type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{width:"350px",paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
+                        <input className="postal-input"  type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
                  <button className="checkout-btn" onClick={delivery}>Fortsätt</button>
@@ -250,7 +250,7 @@ export default function CartPage(){
                 <div className="checkout-prices">
                     
                     <div className="checkout-price">
-                    <span >Subtotal:</span>
+                    <span>Subtotal:</span>
                     <span >{totals.subTotal} kr</span>
                     </div>
 
@@ -279,7 +279,7 @@ export default function CartPage(){
             </div>
 
             {deliver && (
-                <div id="payment">
+                <div id="delivery">
                     <h2 style={{ textAlign: "left" }}>Välj leverans</h2>
                     {postnordOptions.length === 0 ? (
                     <p>Inga hemleveransalternativ tillgängliga.</p>
@@ -304,9 +304,9 @@ export default function CartPage(){
                                     <p>Postnord</p>
                                     {option.defaultOption.descriptiveTexts.checkout.title}
                                     </div>             
-                                <p style={{justifySelf:"start",marginTop:0,lineHeight:1}}>{option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}</p> 
+                                <p className="delivery-time" style={{justifySelf:"start",marginTop:0,lineHeight:1}}>{option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}</p> 
                                 </div> 
-                                <p style={{width:400}}>{option.defaultOption.descriptiveTexts.checkout.briefDescription}</p>   
+                                <p className="delivery-description">{option.defaultOption.descriptiveTexts.checkout.briefDescription}</p>   
                                 <label style={{backgroundColor:"rgba(15, 23, 42, 0.95)",padding:10,borderRadius:10,color:"white"}}>
                                 39 kr
                                 </label>                           
