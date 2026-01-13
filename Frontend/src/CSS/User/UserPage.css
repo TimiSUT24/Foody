@@ -91,3 +91,19 @@
   background-color: rgb(210, 212, 213);
   align-content: center;
 }
+
+@media (max-width: 860px){
+  #user-order,
+  #user-settings{
+    width:100%;
+    height:260px;
+  }
+}
+
+@media (max-width: 400px){
+  #user-content{
+    margin-top:200px;
+    margin-bottom:150px;
+    flex-direction: column;
+  }
+}
