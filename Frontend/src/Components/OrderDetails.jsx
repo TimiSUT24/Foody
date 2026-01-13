@@ -113,12 +113,12 @@ export default function OrderDetails({ order, onBack }) {
                             <icon><PiPackage style={{width:50,height:50,color:"hsl(28, 80%, 40%)"}}/></icon>
                         </div>
                         
-                       <div style={{display:"flex", alignItems:"center",width:"920px",justifyContent:"space-between"}}>
+                       <div className="details-item-text" style={{display:"flex", alignItems:"center",width:"920px",justifyContent:"space-between"}}>
                             <div>
                                 <p className="item-name">{item.foodName}</p>
                                 <p className="item-qty">Antal: {item.quantity}</p>
                             </div>
-                                <div style={{width:"80px",textAlign:"center"}}>
+                                <div className="item-price-div" style={{width:"80px",textAlign:"center"}}>
                                     <p className="item-price" style={{fontWeight:"bold"}}>
                                     {(item.unitPrice * item.quantity).toFixed(2)} kr
                                 </p>

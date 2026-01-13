@@ -175,3 +175,32 @@
     width:95%;
     justify-self: center;
 }
+
+@media (max-width: 1055px){
+    .order-details-content,
+    .order-details,
+    .shipping-icons,
+    #br-div,
+    .user-content{
+        width:100%;
+    }
+}
+
+@media (max-width:375px){
+    .header-details,
+    .shipping-icons{
+        flex-direction: column;
+    }
+
+    .details-item-text{
+        flex-direction: column;
+    }
+
+    .item-price{
+        text-align: left;
+    }
+
+    .item-price-div{
+        place-self: start;
+    }
+}
