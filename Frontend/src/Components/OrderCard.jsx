@@ -53,7 +53,7 @@ export default function OrderCard({order,onClick}){
          
             </div>
 
-            <div style={{width:970,height:1,backgroundColor:"black",placeSelf:"center"}}>
+            <div style={{width:"98%",height:1,backgroundColor:"black",placeSelf:"center"}}>
                 </div>       
     
                 

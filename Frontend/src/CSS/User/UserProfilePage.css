@@ -72,4 +72,38 @@
  flex-direction: column;
 }
 
+@media (max-width: 1055px){
+    .user-profile,
+    .tabs,
+    .order-content,
+    .order-card,
+    .custom-hr{
+        width:100%;
+    }
+}
+
+@media (max-width: 600px){
+    .tabs,
+    .tab-logout{
+        flex-direction: column;
+        width:100%;
+        border-bottom: none;
+        gap:0;
+    }
+
+    .tabs{
+        padding-bottom:30px;
+    }
+
+    .user-profile{
+        margin-top:80px;
+    }
+
+    .orders-btn{
+        width:100%;
+    }
+
+    
+}
+
 
