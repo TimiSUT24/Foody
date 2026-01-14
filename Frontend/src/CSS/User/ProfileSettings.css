@@ -33,6 +33,10 @@
     justify-content: space-between;
 }
 
+.personal-names-input{
+    width:450px;
+}
+
 .personal-save-btn{
     background-color: orange;
     width:200px;
@@ -93,4 +97,36 @@
 
 .change-pass:hover{
     opacity: 90%;
+}
+
+@media (max-width: 1055px){
+    .personal-info,
+    .change-password{
+        width:100%;
+    }
+
+    .personal-names{
+        flex-direction: column;
+        gap:40px;
+    }
+
+    .personal-names-input,
+    .personal-contact-input{
+        width:98%;
+    }
+}
+
+@media (max-width:600px ){
+    .personal-names-input,
+    .personal-contact-input,
+    .personal-form,
+    .password-form,
+    .password-input{
+        width:90%;
+    }
+    .personal-save-btn,
+    .change-pass{
+        place-self: center;
+    }
+
 }
