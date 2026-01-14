@@ -1,6 +1,7 @@
 import {useState,useEffect} from 'react'
 import {ProductService} from "../Services/ProductService"
-import {useParams} from 'react-router-dom'
+import { CategoryService } from '../Services/CategoryService'
+import {useParams, Link} from 'react-router-dom'
 import {useCart} from '../Context/CartContext'
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
@@ -12,6 +13,9 @@ export default function DetailsPage(){
     const {addToCart,removeFromCart, getQty} = useCart();
     const productId = productdetails?.product?.id;
     const quantity = productId ? getQty(productId) : 0;
+    const [category, setCategory] = useState(null);
+    const [subCategory, setSubCategory] = useState(null);
+    const [subSubCategory, setSubSubCategory] = useState(null);
 
     useEffect(() => {
         if(id){
@@ -21,12 +25,40 @@ export default function DetailsPage(){
         }
     }, [id])
 
+    useEffect(() =>{
+        if(productdetails?.product?.categoryId){
+        CategoryService.getCategoryDetails(productdetails.product.categoryId)
+        
+        .then(setCategory)
+        .catch((err) => console.error(err));
+        }
+
+        if(productdetails?.product?.subCategoryId){
+        CategoryService.getSubCategoryDetails(productdetails.product.subCategoryId)
+        .then(setSubCategory)
+        .catch((err) => console.error(err));
+        }
+
+        if(productdetails?.product?.subSubCategoryId){
+        CategoryService.getSubSubCategoryDetails(productdetails.product.subSubCategoryId)
+        .then(setSubSubCategory)
+        .catch((err) => console.error(err));
+        }
+    },[productdetails?.product?.categoryId,productdetails?.product?.subCategoryId,productdetails?.product?.subSubCategoryId])
+
     if(!productdetails || !productdetails.product){
         return <p>Laddar produkt...</p>
     }
 
     return (
         <div className="product-details">
+            <div className="category-breadcrumb">
+                <nav className="breadcrumbs">
+                    <Link to={`/?categoryId=${category?.id}`}>
+                        {category?.mainCategory}
+                    </Link>
+                </nav>
+            </div>
             <img className="details-img" src={productdetails.product.imageUrl} alt={productdetails.product.name} />
             <div className="product-info">
             {productdetails.product.brand && <p className="product-brand">Märke: {productdetails.product.brand}</p>}

@@ -58,7 +58,7 @@
 .register-button{
     width:76%;
     height:40px;
-    background-color: rgb(29, 95, 251);
+    background-color: rgba(15, 23, 42, 0.95);
     color:white;
     border-style: none;
     border-radius: 10px;

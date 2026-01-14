@@ -162,31 +162,31 @@ export default function CartPage(){
         <div className="cart-page">
             <h1 id="cart-page-h3"style={{display:"flex",gridArea:"h1"}}>Varukorg</h1>
 
-            <div id="shipping-information" style={{display:"flex",flexDirection:"column",gap:"20px",padding:"20px"}}>
+            <div id="shipping-information" style={{display:"flex",flexDirection:"column",gap:"10px",padding:"20px"}}>
                 <h2 style={{textAlign:"left"}}>LeveransInformation</h2>
 
                 <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.firstName ? "red" : "",}}>Förnamn *</p>
+                        <p className="shipping-info-p" style={{margin:"0",color: error.firstName ? "red" : "",}}>Förnamn <p style={{color:"red",margin:0}}>*</p></p>
                         <input className="shipping-info-inputs" type="text" name="firstName" value={shipping.firstName} onChange={handleChange} placeholder="Jan" style={{paddingLeft:"10px",border: error.firstName ? "2px solid red" : "",}} />
                     </div>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.lastName ? "red" : ""}}>Efternamn *</p>
-                        <input className="shipping-info-inputs" type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Jan" style={{paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
+                        <p className="shipping-info-p" style={{margin:"0",color: error.lastName ? "red" : ""}}>Efternamn <p style={{color:"red",margin:0}}>*</p></p>
+                        <input className="shipping-info-inputs" type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Carlsson" style={{paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
                     </div>              
                 </div>
 
                 <div style={{display:"flex", flexDirection:"column",gap:"20px"}}>
 
                     <div style={{display:"flex", flexDirection:"column", gap:"5px"}}>
-                        <p style={{margin:"0",textAlign:"left",color: error.email ? "red" : ""}}>E-post *</p>
+                        <p className="shipping-info-p" style={{margin:"0",textAlign:"left",color: error.email ? "red" : ""}}>E-post <p style={{color:"red",margin:0}}>*</p></p>
                         <input type="email" name="email" value={shipping.email} onChange={handleChange} placeholder="jan@example.com" style={{paddingLeft:"10px",border: error.email ? "2px solid red" : ""}} />
                     </div>
 
                     <div style={{display:"flex", flexDirection:"column",gap:"5px"}}>
-                        <p style={{margin:"0",textAlign:"left",color: error.adress ? "red" : ""}}>Gatuadress *</p>
+                        <p className="shipping-info-p" style={{margin:"0",textAlign:"left",color: error.adress ? "red" : ""}}>Gatuadress <p style={{color:"red",margin:0}}>*</p></p>
                         <input type="text" name="adress" value={shipping.adress} onChange={handleChange} placeholder="123 Malmgatan" style={{paddingLeft:"10px",border: error.adress ? "2px solid red" : ""}}/>
                     </div>              
                 </div>
@@ -194,12 +194,12 @@ export default function CartPage(){
                 <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.state ? "red" : ""}}>Län *</p>
+                        <p className="shipping-info-p" style={{margin:"0",color: error.state ? "red" : ""}}>Län <p style={{color:"red",margin:0}}>*</p></p>
                         <input className="shipping-info-inputs" type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{paddingLeft:"10px",border: error.state ? "2px solid red" : ""}}/>
                     </div>   
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.phoneNumber ? "red" : ""}}>Telefonnummer *</p>
+                        <p className="shipping-info-p" style={{margin:"0",color: error.phoneNumber ? "red" : ""}}>Telefonnummer <p style={{color:"red",margin:0}}>*</p></p>
                         <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{paddingLeft:"10px",border: error.phoneNumber ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
@@ -207,12 +207,12 @@ export default function CartPage(){
                 <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.city ? "red" : ""}}>Ort *</p>
+                        <p className="shipping-info-p"  style={{margin:"0",color: error.city ? "red" : ""}}>Ort <p style={{color:"red",margin:0}}>*</p></p>
                         <input className="shipping-info-inputs" type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{paddingLeft:"10px",border: error.city ? "2px solid red" : ""}}/>
                     </div>  
                                    
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.postalCode ? "red" : ""}}>Postnummer *</p>
+                        <p className="shipping-info-p"  style={{margin:"0",color: error.postalCode ? "red" : ""}}>Postnummer <p style={{color:"red",margin:0}}>*</p></p>
                         <input className="postal-input"  type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>

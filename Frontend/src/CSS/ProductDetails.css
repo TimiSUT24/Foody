@@ -2,10 +2,16 @@
     margin-top:150px;
     display:grid;
     grid-template-areas: 
+    "breadcrumb breadcrumb"
     "img info"
     "img extra-info";
     justify-content: center;
     gap:20px;
+}
+
+.category-breadcrumb{
+    grid-area: breadcrumb;
+    display:flex;
 }
 
 .details-img{
@@ -155,6 +161,7 @@
 @media (max-width: 1000px) {
   .product-details {
     grid-template-areas:
+      "breadcrumb"
       "img"
       "info"
       "extra-info";

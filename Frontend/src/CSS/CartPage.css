@@ -25,7 +25,7 @@
 
 #shipping-information input{
     height:33px;
-    background-color: whitesmoke;
+    background-color: rgba(170, 181, 202, 0.24);
     border-style: solid;
     border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -33,6 +33,11 @@
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
     border-width: 1px;
+}
+
+.shipping-info-p{
+    display:flex;
+    align-items: end;
 }
 
 .shipping-info-inputs{
@@ -182,9 +187,8 @@
     width:300px;
     min-height: 50px;
     height:50px;
-    opacity: 80%;
     font-weight: bold;
-    background-color: green;
+    background-color: rgba(15, 23, 42, 0.95);
     color:white;
     border-style: none;
     border-radius: 10px;
@@ -192,7 +196,7 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-    margin-bottom:20px;
+    margin-top:20px;
     cursor: pointer;
 }
 .checkout-btn:hover{
@@ -244,7 +248,7 @@
       "payment";   
   }
   
-    #shipping-information,
+  #shipping-information,
   #delivery,
   #payment,
   #cart-container {

@@ -3,19 +3,20 @@ import {ProductService} from "../Services/ProductService"
 import {useProductFilters} from "../Hooks/useProductFilters";
 import ProductFilters from "../Components/ProductFilters";
 import ProductCard from "../Components/ProductCard"
+import { useSearchParams } from 'react-router-dom';
 import "../CSS/HomePage.css"
 import "../CSS/ProductCard.css"
 
 export default function HomePage(){
     const [products, setProducts] = useState([]);
-
+    const [searchParams] = useSearchParams();
     
     const {
         filters,
         updateFilter,
     } = useProductFilters();
 
-    useEffect (() => {
+   useEffect (() => {
         ProductService.getProducts(filters).then(setProducts);
     }, [filters])
 
@@ -31,7 +32,7 @@ export default function HomePage(){
             return true; 
         }
     });
-
+    
     return (
         <div className ="home-container">
             <div className="food-container">
