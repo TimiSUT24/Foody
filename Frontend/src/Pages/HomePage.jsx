@@ -16,22 +16,34 @@ export default function HomePage(){
         updateFilter,
     } = useProductFilters();
 
-   useEffect (() => {
-        ProductService.getProducts(filters).then(setProducts);
-    }, [filters])
+    const categoryIdParam = searchParams.get("categoryId");
+    const subCategoryIdParam = searchParams.get("subCategoryId");
+    const subSubCategoryIdParam = searchParams.get("subSubCategoryId");
 
-    //filter products by categoryid
-    const filteredProducts = products.filter(p => {
-        if (filters.subSubCategoryId) {
-            return p.subSubCategoryId === filters.subSubCategoryId;
-        } else if (filters.subCategoryId) {
-            return p.subCategoryId === filters.subCategoryId;
-        } else if (filters.categoryId) {
-            return p.categoryId === filters.categoryId;
-        } else {
-            return true; 
-        }
-    });
+    useEffect(() => {
+    const controller = new AbortController();//cancel async operation thats in progress
+
+    ProductService
+        .getProducts(filters, controller.signal)
+        .then(setProducts)
+        .catch(err => {
+            if (err.name !== "AbortError") {
+                console.error(err);
+            }
+        });
+
+    return () => controller.abort();
+}, [filters]);
+
+useEffect(() => {
+    if (!categoryIdParam) return;
+
+    updateFilter({ categoryId: categoryIdParam ?Number(categoryIdParam) : null,
+        subCategoryId: subCategoryIdParam ? Number(subCategoryIdParam) : null,
+        subSubCategoryId: subSubCategoryIdParam ? Number(subSubCategoryIdParam) : null
+     });
+}, [categoryIdParam,subCategoryIdParam,subSubCategoryIdParam]);
+    
     
     return (
         <div className ="home-container">
@@ -48,7 +60,7 @@ export default function HomePage(){
 
 
             <div className ="product-grid">
-                {filteredProducts.map(p => (                   
+                {products.map(p => (                   
                     <ProductCard key={p.id} product={p}></ProductCard>         
                 ))}
             </div>

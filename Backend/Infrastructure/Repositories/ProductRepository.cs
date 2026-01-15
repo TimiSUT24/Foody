@@ -73,21 +73,14 @@ namespace Infrastructure.Repositories
             if (!string.IsNullOrWhiteSpace(brand))
                 query = query.Where(p => p.Brand == brand);
 
-            // Filter by Category
             if (categoryId.HasValue && categoryId > 0)
-                query = query.Where(p => p.Category.Id == categoryId.Value);
+                query = query.Where(p => p.CategoryId == categoryId.Value);
 
-            // Filter by SubCategory
             if (subCategoryId.HasValue && subCategoryId > 0)
-                query = query.Where(p =>
-                    p.Category.SubCategories.Any(sc => sc.Id == subCategoryId.Value));
+                query = query.Where(p => p.SubCategoryId == subCategoryId.Value);
 
-            // Filter by SubSubCategory
             if (subSubCategoryId.HasValue && subSubCategoryId > 0)
-                query = query.Where(p =>
-                    p.Category.SubCategories
-                        .SelectMany(sc => sc.SubSubCategories)
-                        .Any(ssc => ssc.Id == subSubCategoryId.Value));
+                query = query.Where(p => p.SubSubCategoryId == subSubCategoryId.Value);
 
             // Filter by Price
             if (price.HasValue && price > 0)

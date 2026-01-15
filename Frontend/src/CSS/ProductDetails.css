@@ -12,6 +12,21 @@
 .category-breadcrumb{
     grid-area: breadcrumb;
     display:flex;
+    width:100%;
+}
+
+.breadcrumb{
+    display:flex;
+    align-items: center;
+    gap:5px;
+    -webkit-text-fill-color: black;
+}
+.breadcrumb a{
+    text-decoration: none;
+}
+
+.breadcrumb a:hover{
+    text-decoration: underline;
 }
 
 .details-img{
@@ -186,6 +201,10 @@
   .product-info,
   .product-extra-info{
     width:100vw;
+  }
+
+  .category-breadcrumb{
+    justify-content: center;
   }
 
 }

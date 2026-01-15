@@ -1,10 +1,17 @@
 import api from "../Api/api"
 
 export const ProductService = {
-    async getProducts(filters = {}) {
-        const response = await api.get("/api/Product/filter", {params: filters});
-        return response.data;
-    },
+    async getProducts(filters = {}, signal) {
+    const response = await api.get(
+        "/api/Product/filter",
+        {
+            params: filters,
+            signal
+        }
+    );
+
+    return response.data;
+},
 
     getProductDetails: async (id) => {
         if(!id) throw new Error("Product ID is required");

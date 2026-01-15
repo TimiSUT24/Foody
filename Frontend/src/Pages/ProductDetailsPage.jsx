@@ -5,6 +5,7 @@ import {useParams, Link} from 'react-router-dom'
 import {useCart} from '../Context/CartContext'
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
+import { MdArrowForwardIos } from "react-icons/md";
 import "../CSS/ProductDetails.css"
 
 export default function DetailsPage(){
@@ -53,9 +54,18 @@ export default function DetailsPage(){
     return (
         <div className="product-details">
             <div className="category-breadcrumb">
-                <nav className="breadcrumbs">
+                <nav className="breadcrumb">
                     <Link to={`/?categoryId=${category?.id}`}>
                         {category?.mainCategory}
+                    </Link>
+                    <MdArrowForwardIos className="breadcrumb-arrow"/>
+                    <Link to={`/?categoryId=${category?.id}&subCategoryId=${subCategory?.id}`}>
+                    {subCategory?.name}</Link>
+                    <MdArrowForwardIos className="breadcrumb-arrow"/>
+                    <Link
+                        to={`/?categoryId=${category?.id}&subCategoryId=${subCategory?.id}&subSubCategoryId=${subSubCategory?.id}`}
+                    >
+                        {subSubCategory?.name}
                     </Link>
                 </nav>
             </div>
