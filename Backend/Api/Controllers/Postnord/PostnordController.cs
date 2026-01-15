@@ -36,5 +36,12 @@ namespace Api.Controllers.Postnord
             var result = await _postNord.BookShipmentAsync(dto,ct);
             return Ok(result);
         }
+
+        [HttpPost("postalCode/Validation")]
+        public async Task<IActionResult> ValidatePostalCode(PostalCodeRequest dtoRequest)
+        {
+            var result = await _postNord.ValidatePostalCode(dtoRequest);
+            return Ok(result);
+        }
     }
 }

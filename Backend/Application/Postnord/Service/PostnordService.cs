@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace Application.Postnord.Service
@@ -84,6 +85,34 @@ namespace Application.Postnord.Service
                 .Where(x => x.deliveryOptions.Any());
 
             return filtered;
+        }
+
+        public async Task<ValidationPostalCode> ValidatePostalCode(PostalCodeRequest dtorequest)
+        {
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"https://atapi2.postnord.com/rest/shipment/v1/validate/postalcode?apikey={_apiKey}"
+                );
+            request.Headers.Add("Accept-Language", "sv");
+            var payload = new[]
+            {
+
+                new {postalCode = dtorequest.PostCode, countryCode = "SE"}
+            };
+            request.Content = JsonContent.Create(payload);
+
+            var response = await _http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadFromJsonAsync<JsonElement[]>();
+            var firstResult = json?.FirstOrDefault();
+            string validationResult = firstResult?.GetProperty("validationResult").GetString() ?? "UNKNOWN";
+
+            return new ValidationPostalCode
+            {
+                ValidationResult = validationResult
+            };
+
         }
 
         public async Task<object> BookShipmentAsync(PostNordBookingRequestDto dto,CancellationToken ct)

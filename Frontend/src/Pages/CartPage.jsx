@@ -5,7 +5,7 @@ import { createPaymentIntent } from "../Services/StripeService"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Components/CheckoutForm"
-import { getDeliveryOptions } from "../Services/PostnordService"
+import { PostNordService } from "../Services/PostnordService"
 import { useAuth } from "../Context/AuthContext"
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
@@ -144,14 +144,19 @@ export default function CartPage(){
             if(Object.keys(newErrors).length > 0){
                 return;
             }
-            
-            const options = await getDeliveryOptions({
-            postCode: shipping.postalCode
-        })
-        if(options.status = 200){
-            setPostnordOptions(options)
-            setDeliver(true);
-        }
+            const validation = await PostNordService.postalCodeValidation(shipping.postalCode);
+            if(validation.validationResult === "VALID"){
+                const options = await PostNordService.getDeliveryOptions({
+                postCode: shipping.postalCode
+                })
+                if(options.status = 200){
+                    setPostnordOptions(options)
+                    setDeliver(true);
+                }
+            }
+            else{
+                alert("Postnummer ogiltigt")
+            }
 
         }catch(err){
             console.error(err);
