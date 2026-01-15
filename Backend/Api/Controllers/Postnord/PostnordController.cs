@@ -17,6 +17,8 @@ namespace Api.Controllers.Postnord
             _postNord = postNord;
         }
 
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 400)]
         [HttpPost("options")]
         public async Task<IActionResult> GetOptions([FromBody] DeliveryOptionsRequestDto dto)
         {
@@ -27,6 +29,8 @@ namespace Api.Controllers.Postnord
             return Ok(result);
         }
 
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 400)]
         [HttpPost("booking")]
         public async Task<IActionResult> Book([FromBody] PostNordBookingRequestDto dto,CancellationToken ct)
         {
@@ -37,6 +41,8 @@ namespace Api.Controllers.Postnord
             return Ok(result);
         }
 
+        [ProducesResponseType(statusCode:200)]
+        [ProducesResponseType(statusCode:400)]
         [HttpPost("postalCode/Validation")]
         public async Task<IActionResult> ValidatePostalCode(PostalCodeRequest dtoRequest)
         {

@@ -18,7 +18,7 @@
 
 .menu-dropdown {
     display: none;
-    position: absolute;
+    position:absolute;
     top: 40px;
     left: 0;
     background: white;
@@ -173,11 +173,30 @@
     justify-content: space-between;
   }
 
-  .menu-dropdown{
-    top:160px;
-  }
+.category-menu{
+        flex-direction: column;
+}
 
- 
+.menu-dropdown{
+    position:static;
+}
+
+.menu-item{
+    flex-direction: column;
+}
+
+.submenu{
+    position:static;
+
+}
+
+.submenu-item{
+    flex-direction: column;
+}
+
+.subsubmenu{
+    position:static;
+}
 
   #filter-container-header{
     display:flex;
@@ -199,7 +218,6 @@
     display: none;
   }
 
-  
   /* show filters when menu is open */
   .filter-container.open .category-menu,
   .filter-container.open #filter-price,
@@ -207,11 +225,11 @@
   .filter-container.open .brand-select {
     display: flex;
     z-index: 500;
-    width:100%;
+    width:90%;
   }
 
   .filter-container.open #filter-price{
-    width:99.5%;
+    width:89.5%;
   }
 
   .filter-container.open {

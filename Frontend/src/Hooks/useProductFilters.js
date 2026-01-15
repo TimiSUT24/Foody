@@ -21,7 +21,7 @@ export function useProductFilters(){
             }
         }
 
-        // 🔑 no state update → no re-render → no loop
+        //no state update → no re-render → no loop
         if (!changed) return prev;
 
         return { ...prev, ...newValues };
