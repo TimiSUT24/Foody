@@ -33,7 +33,7 @@ namespace Api.Controllers.Category
             return Ok(result);
         }
 
-        [HttpGet("subCategory{id:int}")]
+        [HttpGet("subCategory/{id:int}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         public async Task<IActionResult> GetSubCategoryById([FromRoute] int id)
@@ -43,7 +43,7 @@ namespace Api.Controllers.Category
         }
 
 
-        [HttpGet("subSubCategory{id:int}")]
+        [HttpGet("subSubCategory/{id:int}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         public async Task<IActionResult> GetSubSubCategoryById([FromRoute] int id)

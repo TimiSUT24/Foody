@@ -11,5 +11,6 @@ namespace Application.Postnord.Interfaces
     {
         Task<object> BookShipmentAsync(PostNordBookingRequestDto dto, CancellationToken ct);
         Task<object> GetDeliveryOptionsAsync(string postCode);
+        Task<ValidationPostalCode> ValidatePostalCode(PostalCodeRequest dtorequest);
     }
 }

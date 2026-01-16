@@ -35,6 +35,22 @@
     cursor: pointer;
 }
 
+.product-minus{
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-style: none;
+    background-color: orange;
+    border-color: orange;
+    cursor: pointer;
+}
+
+.product-minus:hover{
+    opacity: 95%;
+}
+
 .product-add:hover{
     opacity: 95%;
 }

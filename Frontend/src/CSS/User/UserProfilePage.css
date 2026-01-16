@@ -22,10 +22,33 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+    font-size: 16px;
+    height:50px;
+    opacity: 80%;
+    cursor: pointer;
+}
+
+.tabs button:hover{
+    opacity:100%;
 }
 
 .orders-btn{
-    min-width:170px;
+    min-width:200px;
+    display:flex;
+    align-items: center;
+    gap:10px;
+}
+
+.settings-btn{
+    display:flex;
+    align-items: center;
+    gap:10px;
+}
+
+.logout-btn{
+    display:flex;
+    align-items: center;
+    gap:10px; 
 }
 
 .tabs button:focus{
@@ -47,6 +70,40 @@
  gap:20px;
  display:flex;
  flex-direction: column;
+}
+
+@media (max-width: 1055px){
+    .user-profile,
+    .tabs,
+    .order-content,
+    .order-card,
+    .custom-hr{
+        width:100%;
+    }
+}
+
+@media (max-width: 600px){
+    .tabs,
+    .tab-logout{
+        flex-direction: column;
+        width:100%;
+        border-bottom: none;
+        gap:0;
+    }
+
+    .tabs{
+        padding-bottom:30px;
+    }
+
+    .user-profile{
+        margin-top:80px;
+    }
+
+    .orders-btn{
+        width:100%;
+    }
+
+    
 }
 
 

@@ -45,6 +45,10 @@ export function CartProvider({children}){
         })
     }
 
+    const getQty = (id) => {
+       return cart.find(p => p.id === id)?.qty ?? 0;
+    }
+
     //clear the whole cart
     const clearCart = () => {
         setCart([])
@@ -60,6 +64,7 @@ export function CartProvider({children}){
             addToCart,
             removeFromCart,
             clearCart,
+            getQty,
             totalItems,
             totalPrice
         }}>

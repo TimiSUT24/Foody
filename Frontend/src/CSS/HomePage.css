@@ -1,6 +1,6 @@
 
 body{
-    background-color:rgb(225, 234, 241);
+    background-color:rgba(217, 217, 222, 0.438);
 }
 
 .product-grid{
@@ -35,4 +35,9 @@ body{
     outline: none !important;
 }
 
-
+@media (max-width: 1000px) {
+    #food-container-h2{
+        font-size: 20px;
+        line-height: 1;
+    }
+}

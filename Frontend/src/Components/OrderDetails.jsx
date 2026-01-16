@@ -1,4 +1,12 @@
 import "../CSS/User/OrderDetails.css"
+import { PiPackage } from "react-icons/pi";
+import { MdOutlineLocalShipping } from "react-icons/md";
+import { RxCounterClockwiseClock } from "react-icons/rx";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { HiOutlineLocationMarker } from "react-icons/hi";
+import { CiCreditCard1 } from "react-icons/ci";
+import { MdArrowBack } from "react-icons/md";
+
 
 export default function OrderDetails({ order, onBack }) {
     const statusMap = {
@@ -6,28 +14,33 @@ export default function OrderDetails({ order, onBack }) {
             label: "Väntar",
             color: "rgb(255, 193, 7)",
             backgroundColor: "rgba(255, 193, 7, 0.1)",
-            borderColor: "rgba(255, 193, 7, 0.3)"
+            borderColor: "rgba(255, 193, 7, 0.3)",
+            icon: <RxCounterClockwiseClock/>
         },
         Processing: {
             label: "Behandlas",
             color: "rgb(13, 202, 240)",
             backgroundColor: "rgba(13, 202, 240, 0.1)",
-            borderColor: "rgba(13, 202, 240, 0.3)"
+            borderColor: "rgba(13, 202, 240, 0.3)",
+            icon: <PiPackage/>
         },
         Shipped: {
             label: "Skickad",
             color: "rgb(13, 110, 253)",
             backgroundColor: "rgba(13, 110, 253, 0.1)",
-            borderColor: "rgba(13, 110, 253, 0.3)"
+            borderColor: "rgba(13, 110, 253, 0.3)",
+            icon: <MdOutlineLocalShipping/>
         },
         Delivered: {
             label: "Levererad",
             color: "rgb(25, 135, 84)",
             backgroundColor: "rgba(25, 135, 84, 0.1)",
-            borderColor: "rgba(25, 135, 84, 0.3)"
+            borderColor: "rgba(25, 135, 84, 0.3)",
+            icon: <IoIosCheckmarkCircleOutline/>
         }
     };
-
+    const currentStatus = order.orderStatus;
+    const activeColor = statusMap[currentStatus]?.color;
     const status = statusMap[order.orderStatus];
     const date = new Date(order.orderDate).toLocaleDateString("sv-SE", {
         year: "numeric",
@@ -39,7 +52,7 @@ export default function OrderDetails({ order, onBack }) {
         <div className="order-details">
 
             {/* Back button */}
-            <button className="back-btn" onClick={onBack}>⬅ Tillbaka till beställningar</button>
+            <button className="back-btn" onClick={onBack}><MdArrowBack/>Tillbaka till beställningar</button>
 
             <div className="order-details-content">
                 {/* Header */}
@@ -56,35 +69,35 @@ export default function OrderDetails({ order, onBack }) {
                         border: `2px solid ${status.borderColor}`
                     }}
                     >
-                    {status.label}
+                    {status.icon}{status.label}
                 </div>
             </div>
 
             <div className="shipping-icons">
                 <div id="shipping-container">
-                    <div className="shipping-icon">
-                        <img  id="shipping-img" src="/IMG/icons8-delivery-time-50.png" alt=""/>
+                    <div className="shipping-icon" style={{backgroundColor: currentStatus === "Pending" ? activeColor : undefined}}>
+                        <icon id="shipping-img" style={{width:30,height:30}}><RxCounterClockwiseClock style={{width:30,height:30}}/></icon>
                     </div>               
                 <p>Väntar</p>
                 </div>
 
                 <div id="shipping-container">
-                <div className="shipping-icon">
-                        <img id="shipping-img" src="/IMG/icons8-box-64.png" alt=""/>
+                <div className="shipping-icon"  style={{backgroundColor: currentStatus === "Processing" ? activeColor : undefined}}>
+                        <icon id="shipping-img" style={{width:30,height:30}}><PiPackage style={{width:30,height:30}}/></icon>
                     </div>   
-                <p>Beställning</p>
+                <p>Behandlas</p>
                 </div>
 
                 <div id="shipping-container">
-                <div className="shipping-icon">
-                        <img  id="shipping-img" src="/IMG/icons8-delivery-50.png" alt=""/>
+                <div className="shipping-icon"  style={{backgroundColor: currentStatus === "Shipped" ? activeColor : undefined}}>
+                        <icon id="shipping-img" style={{width:32,height:32}}><MdOutlineLocalShipping style={{width:30,height:30}}/></icon>
                     </div>   
-                <p>Skickas</p>
+                <p>Skickad</p>
                 </div>
 
                 <div id="shipping-container">
-                <div className="shipping-icon">
-                        <img  id="shipping-img" src="/IMG/icons8-delivered-48.png" alt=""/>
+                <div className="shipping-icon"  style={{backgroundColor: currentStatus === "Delivered" ? activeColor : undefined}}>
+                        <icon id="shipping-img" style={{width:30,height:30}}><IoIosCheckmarkCircleOutline style={{width:30,height:30}}/></icon>
                     </div>   
                 <p>Levererad</p>
                 </div>
@@ -96,16 +109,16 @@ export default function OrderDetails({ order, onBack }) {
                 <h3 style={{textAlign:"left"}}>Produkter</h3>
                 {order.orderItems.map((item, index) => (
                     <div key={index} className="details-item">
-                        <div style={{backgroundColor:"#efbe9bff",padding:5,marginRight:8,borderRadius:10}}>
-                            <img src="/IMG/icons8-box-64.png" id="details-img"/>
+                        <div style={{backgroundColor:"hsl(28, 85%, 95%)",padding:5,marginRight:8,borderRadius:10}}>
+                            <icon><PiPackage style={{width:50,height:50,color:"hsl(28, 80%, 40%)"}}/></icon>
                         </div>
                         
-                       <div style={{display:"flex", alignItems:"center",width:"920px",justifyContent:"space-between"}}>
+                       <div className="details-item-text" style={{display:"flex", alignItems:"center",width:"920px",justifyContent:"space-between"}}>
                             <div>
                                 <p className="item-name">{item.foodName}</p>
                                 <p className="item-qty">Antal: {item.quantity}</p>
                             </div>
-                                <div style={{width:"80px",textAlign:"center"}}>
+                                <div className="item-price-div" style={{width:"80px",textAlign:"center"}}>
                                     <p className="item-price" style={{fontWeight:"bold"}}>
                                     {(item.unitPrice * item.quantity).toFixed(2)} kr
                                 </p>
@@ -150,7 +163,7 @@ export default function OrderDetails({ order, onBack }) {
 
                 <div className="details-extra-content">
                    <div id="details-extra-img">
-                          <img id="details-extra-image" src="/IMG/icons8-location-50.png" alt=""/>
+                          <icon id="details-extra-image"><HiOutlineLocationMarker style={{width:30,height:30}}/></icon>
                     </div>
                   
                     <div className="details-p">
@@ -164,7 +177,7 @@ export default function OrderDetails({ order, onBack }) {
 
                 <div className="details-extra-content">
                     <div id="details-extra-img">
-                          <img id="details-extra-image" src="/IMG/icons8-magnetic-card-50.png" alt="" />
+                          <icon id="details-extra-image"><CiCreditCard1 style={{width:30,height:30}}/></icon>
                     </div>
                   
                     <div className="details-p">

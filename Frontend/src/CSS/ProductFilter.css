@@ -15,22 +15,17 @@
     display: inline-block;
 }
 
-.menu-button {
-    padding: 8px 12px;
-    background: #f0f0f0;
-    border-radius: 4px;
-    cursor: pointer;
-}
 
 .menu-dropdown {
     display: none;
-    position: absolute;
+    position:absolute;
     top: 40px;
     left: 0;
     background: white;
     border: 1px solid #ddd;
     min-width: 220px;
-    z-index: 10;
+    z-index: 9000;
+    text-align: left;
 }
 
 .category-menu:hover .menu-dropdown {
@@ -39,8 +34,16 @@
 
 .menu-item {
     padding: 8px 12px;
-    position: relative;
+    position:relative;
     display:flex;
+    cursor: pointer;
+}
+
+.menu-item span{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    width:100%;
 }
 
 .menu-item:hover {
@@ -145,4 +148,95 @@
 #filter-price::-webkit-outer-spin-button,
 #filter-price::-webkit-inner-spin-button{
     -webkit-appearance: none;
+}
+
+.hamburger{
+    display:none;
+}
+
+@media (max-width: 1000px) {
+
+  /* show hamburger */
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+  }
+  
+  .search-div{
+    width:50%;
+  }
+
+  #menu-button{
+    width:100%;
+    justify-content: space-between;
+  }
+
+.category-menu{
+        flex-direction: column;
+}
+
+.menu-dropdown{
+    position:static;
+}
+
+.menu-item{
+    flex-direction: column;
+}
+
+.submenu{
+    position:static;
+
+}
+
+.submenu-item{
+    flex-direction: column;
+}
+
+.subsubmenu{
+    position:static;
+}
+
+  #filter-container-header{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  #filter-container-header-text{
+    padding-left: 20px;
+  }
+
+  /* hide filters by default */
+  .category-menu,
+  #filter-price,
+  #reset-filter,
+  .brand-select {
+    display: none;
+  }
+
+  /* show filters when menu is open */
+  .filter-container.open .category-menu,
+  .filter-container.open #filter-price,
+  .filter-container.open #reset-filter,
+  .filter-container.open .brand-select {
+    display: flex;
+    z-index: 500;
+    width:90%;
+  }
+
+  .filter-container.open #filter-price{
+    width:89.5%;
+  }
+
+  .filter-container.open {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height:fit-content;
+    padding-bottom:10px;
+  }
 }

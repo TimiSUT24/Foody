@@ -369,3 +369,6 @@ FodyWeavers.xsd
 /Frontend/localhost.pem
 /Frontend/localhost-key.pem
 /Frontend/localhost.pem
+/Frontend/localhost-key.pem
+/Frontend/localhost.pem
+/.gitignore

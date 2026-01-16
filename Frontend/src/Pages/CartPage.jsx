@@ -5,8 +5,10 @@ import { createPaymentIntent } from "../Services/StripeService"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Components/CheckoutForm"
-import { getDeliveryOptions } from "../Services/PostnordService"
+import { PostNordService } from "../Services/PostnordService"
 import { useAuth } from "../Context/AuthContext"
+import { CiCirclePlus } from "react-icons/ci";
+import { CiCircleMinus } from "react-icons/ci";
 import "../CSS/CartPage.css"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
@@ -142,14 +144,19 @@ export default function CartPage(){
             if(Object.keys(newErrors).length > 0){
                 return;
             }
-            
-            const options = await getDeliveryOptions({
-            postCode: shipping.postalCode
-        })
-        if(options.status = 200){
-            setPostnordOptions(options)
-            setDeliver(true);
-        }
+            const validation = await PostNordService.postalCodeValidation(shipping.postalCode);
+            if(validation.validationResult === "VALID"){
+                const options = await PostNordService.getDeliveryOptions({
+                postCode: shipping.postalCode
+                })
+                if(options.status = 200){
+                    setPostnordOptions(options)
+                    setDeliver(true);
+                }
+            }
+            else{
+                alert("Postnummer ogiltigt")
+            }
 
         }catch(err){
             console.error(err);
@@ -158,60 +165,60 @@ export default function CartPage(){
 
     return(
         <div className="cart-page">
-            <h1 style={{display:"flex",gridArea:"h1"}}>Varukorg</h1>
+            <h1 id="cart-page-h3"style={{display:"flex",gridArea:"h1"}}>Varukorg</h1>
 
-            <div id="shipping-information" style={{display:"flex",flexDirection:"column",gap:"20px",padding:"20px"}}>
+            <div id="shipping-information" style={{display:"flex",flexDirection:"column",gap:"10px",padding:"20px"}}>
                 <h2 style={{textAlign:"left"}}>LeveransInformation</h2>
 
-                <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.firstName ? "red" : "",}}>Förnamn *</p>
-                        <input type="text" name="firstName" value={shipping.firstName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.firstName ? "2px solid red" : "",}} />
+                        <p className="shipping-info-p" style={{margin:"0",color: error.firstName ? "red" : "",}}>Förnamn <p style={{color:"red",margin:0}}>*</p></p>
+                        <input className="shipping-info-inputs" type="text" name="firstName" value={shipping.firstName} onChange={handleChange} placeholder="Jan" style={{paddingLeft:"10px",border: error.firstName ? "2px solid red" : "",}} />
                     </div>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.lastName ? "red" : ""}}>Efternamn *</p>
-                        <input type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Jan" style={{width:"350px",paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
+                        <p className="shipping-info-p" style={{margin:"0",color: error.lastName ? "red" : ""}}>Efternamn <p style={{color:"red",margin:0}}>*</p></p>
+                        <input className="shipping-info-inputs" type="text" name="lastName" value={shipping.lastName} onChange={handleChange} placeholder="Carlsson" style={{paddingLeft:"10px",border: error.lastName ? "2px solid red" : ""}} />
                     </div>              
                 </div>
 
                 <div style={{display:"flex", flexDirection:"column",gap:"20px"}}>
 
                     <div style={{display:"flex", flexDirection:"column", gap:"5px"}}>
-                        <p style={{margin:"0",textAlign:"left",color: error.email ? "red" : ""}}>E-post *</p>
+                        <p className="shipping-info-p" style={{margin:"0",textAlign:"left",color: error.email ? "red" : ""}}>E-post <p style={{color:"red",margin:0}}>*</p></p>
                         <input type="email" name="email" value={shipping.email} onChange={handleChange} placeholder="jan@example.com" style={{paddingLeft:"10px",border: error.email ? "2px solid red" : ""}} />
                     </div>
 
                     <div style={{display:"flex", flexDirection:"column",gap:"5px"}}>
-                        <p style={{margin:"0",textAlign:"left",color: error.adress ? "red" : ""}}>Gatuadress *</p>
+                        <p className="shipping-info-p" style={{margin:"0",textAlign:"left",color: error.adress ? "red" : ""}}>Gatuadress <p style={{color:"red",margin:0}}>*</p></p>
                         <input type="text" name="adress" value={shipping.adress} onChange={handleChange} placeholder="123 Malmgatan" style={{paddingLeft:"10px",border: error.adress ? "2px solid red" : ""}}/>
                     </div>              
                 </div>
        
-                <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.state ? "red" : ""}}>Län *</p>
-                        <input type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{width:"350px",paddingLeft:"10px",border: error.state ? "2px solid red" : ""}}/>
+                        <p className="shipping-info-p" style={{margin:"0",color: error.state ? "red" : ""}}>Län <p style={{color:"red",margin:0}}>*</p></p>
+                        <input className="shipping-info-inputs" type="text" name="state" value={shipping.state} onChange={handleChange} placeholder="Halland" style={{paddingLeft:"10px",border: error.state ? "2px solid red" : ""}}/>
                     </div>   
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.phoneNumber ? "red" : ""}}>Telefonnummer *</p>
-                        <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{width:"350px",paddingLeft:"10px",border: error.phoneNumber ? "2px solid red" : ""}}/>
+                        <p className="shipping-info-p" style={{margin:"0",color: error.phoneNumber ? "red" : ""}}>Telefonnummer <p style={{color:"red",margin:0}}>*</p></p>
+                        <input className="postal-input" type="number" value={shipping.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="0721223333" style={{paddingLeft:"10px",border: error.phoneNumber ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
 
-                <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div className="shipping-info-combined" style={{display:"flex", justifyContent:"space-between"}}>
 
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.city ? "red" : ""}}>Ort *</p>
-                        <input type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{width:"350px",paddingLeft:"10px",border: error.city ? "2px solid red" : ""}}/>
+                        <p className="shipping-info-p"  style={{margin:"0",color: error.city ? "red" : ""}}>Ort <p style={{color:"red",margin:0}}>*</p></p>
+                        <input className="shipping-info-inputs" type="text" name="city" value={shipping.city} onChange={handleChange} placeholder="Stockholm" style={{paddingLeft:"10px",border: error.city ? "2px solid red" : ""}}/>
                     </div>  
                                    
                     <div style={{display:"flex",flexDirection:"column",textAlign:"left",gap:"5px"}}>
-                        <p style={{margin:"0",color: error.postalCode ? "red" : ""}}>Postnummer *</p>
-                        <input className="postal-input" type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{width:"350px",paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
+                        <p className="shipping-info-p"  style={{margin:"0",color: error.postalCode ? "red" : ""}}>Postnummer <p style={{color:"red",margin:0}}>*</p></p>
+                        <input className="postal-input"  type="number" value={shipping.postalCode} onChange={handleChange} name="postalCode" placeholder="10011" style={{paddingLeft:"10px",border: error.postalCode ? "2px solid red" : ""}}/>
                     </div>                 
                 </div>
                  <button className="checkout-btn" onClick={delivery}>Fortsätt</button>
@@ -235,9 +242,9 @@ export default function CartPage(){
                         <p style={{fontSize:13}}>{item.price} kr</p>
 
                         <div className="qty-controls">
-                            <button onClick ={() => removeFromCart(item.id)} style={{borderRadius:10,borderStyle:"solid",borderWidth:1,backgroundColor:"lightGray",opacity:"60%"}}>-</button>
+                            <button onClick ={() => removeFromCart(item.id)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCircleMinus className="ciCircleMinus"style={{width:22,height:22}}/></button>
                             <span>{item.qty}</span>
-                            <button onClick ={() => addToCart(item)} style={{borderRadius:10,borderStyle:"solid",borderWidth:1,backgroundColor:"lightGray",opacity:"60%"}}>+</button>                
+                            <button onClick ={() => addToCart(item)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCirclePlus className="ciCirclePlus" style={{width:22,height:22}}/></button>                
                         </div>
                     </div>
                 ))}
@@ -248,7 +255,7 @@ export default function CartPage(){
                 <div className="checkout-prices">
                     
                     <div className="checkout-price">
-                    <span >Subtotal:</span>
+                    <span>Subtotal:</span>
                     <span >{totals.subTotal} kr</span>
                     </div>
 
@@ -277,14 +284,14 @@ export default function CartPage(){
             </div>
 
             {deliver && (
-                <div id="payment">
+                <div id="delivery">
                     <h2 style={{ textAlign: "left" }}>Välj leverans</h2>
                     {postnordOptions.length === 0 ? (
                     <p>Inga hemleveransalternativ tillgängliga.</p>
                     ) : (
                     postnordOptions.map((warehouse, wIndex) => (
                         <div key={wIndex} className="warehouse-options">
-                        <h3>Från: {warehouse.warehouse.address.city}</h3>
+                        <h3 style={{textAlign:"left"}}>{warehouse.warehouse.address.city}</h3>
                         {warehouse.deliveryOptions.map((option, oIndex) => (
                             <div key={oIndex} className="delivery-option">
                             <input
@@ -295,17 +302,21 @@ export default function CartPage(){
                                 handleDeliverySelect(option.defaultOption.bookingInstructions)
                                 }
                             />
-                            <label>
-                                Postnord{" "}
+                            <label className="delivery-option-label">
+                                <img src="./IMG/postnordIcon.jpg" alt="Postnord" style={{width:30,height:30}}/>
+                                <div>
+                                    <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:"5px",margin:0}}>
+                                    <p>Postnord</p>
+                                    {option.defaultOption.descriptiveTexts.checkout.title}
+                                    </div>             
+                                <p className="delivery-time" style={{justifySelf:"start",marginTop:0,lineHeight:1}}>{option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}</p> 
+                                </div> 
+                                <p className="delivery-description">{option.defaultOption.descriptiveTexts.checkout.briefDescription}</p>   
+                                <label style={{backgroundColor:"rgba(15, 23, 42, 0.95)",padding:10,borderRadius:10,color:"white"}}>
+                                39 kr
+                                </label>                           
                             </label>
-                            <label>
-                                {option.defaultOption.descriptiveTexts.checkout.title} -{" "}
-                                {option.defaultOption.descriptiveTexts.checkout.friendlyDeliveryInfo}
-                             
-                            </label>
-                            <label>
-                                {" "}39 kr
-                            </label>
+                            
                             </div>
                         ))}
                         </div>

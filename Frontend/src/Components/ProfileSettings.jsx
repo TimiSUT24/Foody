@@ -14,8 +14,7 @@ export default function ProfileSettings(){
 
     const [password, setPassword] = useState({
         currentPass:"",
-        newPass:"",
-        confirmPass:""
+        newPass:""
     })
      const handleChangePassword = (e) => {
         setPassword({...password, [e.target.name]: e.target.value})
@@ -58,25 +57,25 @@ export default function ProfileSettings(){
                 <form className="personal-form" onSubmit={handleSubmit} >
                     <div className="personal-names">
 
-                        <div style={{display:"flex",flexDirection:"column", gap:5}}>
+                        <div className="personal-names-div" style={{display:"flex",flexDirection:"column", gap:5}}>
                             <p style={{textAlign:"left", margin:0}}>Förnamn</p>
-                            <input type="text" name="firstName" value={personal.firstName} onChange={handleChange} placeholder="Förnamn" style={{width:450,height:40,borderRadius:10,border:"1px solid gray"}}/>
+                            <input className="personal-names-input" type="text" name="firstName" value={personal.firstName} onChange={handleChange} placeholder="Förnamn" style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
                         </div>
-                        <div style={{display:"flex",flexDirection:"column", gap:5}}>
+                        <div className="personal-names-div" style={{display:"flex",flexDirection:"column", gap:5}}>
                             <p style={{textAlign:"left",margin:0}}>Efternamn</p>
-                            <input type="text" name="lastName" value={personal.lastName} onChange={handleChange} placeholder="Efternamn" style={{width:450,height:40,borderRadius:10,border:"1px solid gray"}}/>
+                            <input className="personal-names-input" type="text" name="lastName" value={personal.lastName} onChange={handleChange} placeholder="Efternamn" style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
                         </div>
                     
                     </div>
 
                     <div style={{display:"flex", flexDirection:"column",gap:5}}>
                         <p style={{textAlign:"left",margin:0}}>E-post</p>
-                        <input type="email" name="email" value={personal.email} onChange={handleChange} placeholder="Example.com" style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
+                        <input  className="personal-contact-input" type="email" name="email" value={personal.email} onChange={handleChange} placeholder="Example.com" style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
                     </div>
 
                     <div  style={{display:"flex", flexDirection:"column",gap:5}}>
                     <p style={{textAlign:"left",margin:0}}>Telefonnummer</p>
-                    <input type="number" name="phoneNumber" value={personal.phoneNumber} onChange={handleChange} placeholder="0721223344" style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
+                    <input  className="personal-contact-input" type="number" name="phoneNumber" value={personal.phoneNumber} onChange={handleChange} placeholder="0721223344" style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
                     </div>
 
                     <button className="personal-save-btn">Spara ändringar</button>
@@ -91,18 +90,13 @@ export default function ProfileSettings(){
                 <form className="password-form" onSubmit={handlePasswordSubmit}>
                     <div  style={{display:"flex", flexDirection:"column",gap:5}}>
                         <p style={{textAlign:"left",margin:0}}>Nurvarande lösenord</p>
-                        <input type="password" name="currentPass" value={password.currentPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
+                        <input className="password-input" type="password" name="currentPass" value={password.currentPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
                     </div>
                     
                     <div style={{display:"flex", flexDirection:"column",gap:5}}>
                         <p style={{textAlign:"left",margin:0}}>Nytt lösenord</p>
-                        <input type="password" name="newPass" value={password.newPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
-                    </div>
-
-                    <div style={{display:"flex", flexDirection:"column",gap:5}}>
-                        <p style={{textAlign:"left",margin:0}}>Bekräfta lösenord</p>
-                        <input type="password" name="confirmPass" value={password.confirmPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
-                    </div>                   
+                        <input className="password-input" type="password" name="newPass" value={password.newPass} onChange={handleChangePassword} style={{height:40,borderRadius:10,border:"1px solid gray"}}/>
+                    </div>            
 
                     <button className="change-pass">Ändra lösenord</button>
                 </form>

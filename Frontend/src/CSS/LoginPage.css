@@ -32,12 +32,13 @@
     -ms-border-radius: 8px;
     -o-border-radius: 8px;
     border: 1px solid #5e5d5d;
+    padding-left:5px;
 }
 
 .login-button{
     width:82%;
     height:40px;
-    background-color: rgb(29, 95, 251);
+    background-color: rgba(15, 23, 42, 0.95);
     color:white;
     border-style: none;
     border-radius: 10px;
@@ -48,4 +49,16 @@
     cursor: pointer;
 }
 
+@media (max-width: 630px) {
+    .login-page{
+        width:100%;
+        place-items: center;
+        margin-top:100px;
+    }
 
+    .login-page h3{
+       display: flex;
+       justify-content: center;
+       margin-left:0;
+    }
+}

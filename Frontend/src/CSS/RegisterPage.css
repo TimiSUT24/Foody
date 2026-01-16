@@ -20,13 +20,23 @@
     -ms-border-radius: 8px;
     -o-border-radius: 8px;
     border: 1px solid #5e5d5d;
+    padding-left:5px;
 }
 
 .register-row{
-    display: flex;
-    gap:40px;
+    display: flex;   
     place-self: center;
     margin-bottom:20px;
+    flex-direction: row;
+    gap:20px;
+    text-align: left;
+    width:75%;
+}
+
+.register-row h3{
+    font-size: 15px;
+    line-height: 0.1;
+    display:flex;
 }
 
 
@@ -36,14 +46,6 @@
     width:75%;
     place-self: center;
     gap:20px;
-}
-
-.fh3{
-   display:flex;
-   justify-content: center;
-   gap:240px;
-   font-size: 13px;
-   line-height: 0.1;
 }
 
 .register-column h3{
@@ -56,7 +58,7 @@
 .register-button{
     width:76%;
     height:40px;
-    background-color: rgb(29, 95, 251);
+    background-color: rgba(15, 23, 42, 0.95);
     color:white;
     border-style: none;
     border-radius: 10px;
@@ -66,4 +68,24 @@
     -o-border-radius: 10px;
     cursor: pointer;
     margin-top:20px;
+}
+
+@media (max-width: 630px) {
+     .register-page{
+        width:100%;
+        place-items: center;
+        margin-top:100px;
+        height:auto;
+        padding-bottom: 20px;
+    }  
+
+    .register-row{
+        flex-direction: column;
+        gap:10px;
+    }
+
+    .register-row input{
+        width:97%;
+    }
+
 }

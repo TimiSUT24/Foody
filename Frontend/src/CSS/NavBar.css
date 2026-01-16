@@ -17,6 +17,7 @@
 
 .navbar-links{
     display: flex;
+    align-items: center;
     gap:50px;
     -webkit-text-fill-color: rgb(212, 210, 210);
 }
@@ -36,4 +37,74 @@
 
 .navbar-logo{
     text-decoration: none;
+}
+
+#navbar-quantity{
+    position: absolute;
+    display: flex;
+    align-self: center;
+    background-color: orange;
+    -webkit-text-fill-color: white;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    font-size: 15px;
+    width:fit-content;
+    padding:2px;
+}
+
+.quantity-div{
+  height:15px;
+}
+
+.cart-link{
+  display:flex;
+  align-items: center;
+}
+
+.hamburger{
+    display:none;
+}
+
+@media (max-width: 1000px) {
+  .navbar {
+    height: 80px;
+    justify-content: space-between;
+    border-bottom: none;
+  }
+
+  .navbar-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    padding-bottom:20px;
+    gap: 20px;
+    background-color: rgba(15, 23, 42, 0.95);
+    display: none;
+    z-index: 9998;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    margin-right:40px;
+  }
+
+  .hamburger span {
+    width: 28px;
+    height: 3px;
+    background: whitesmoke;
+    border-radius: 2px;
+  }
+
 }

@@ -1,4 +1,5 @@
 import "../CSS/User/OrderCard.css"
+import { PiPackage } from "react-icons/pi";
 
 
 export default function OrderCard({order,onClick}){
@@ -24,7 +25,7 @@ export default function OrderCard({order,onClick}){
         <div className="order-card" onClick={onClick}>        
             <div className="order-container">               
                 <div id="order-img-container">
-                    <img id="shopping-img" src="/IMG/icons8-shopping-bag-50.png" style={{width:35,height:35}}/>
+                    <icon id="shopping-img"><PiPackage style={{width:30,height:30,color:"hsl(28, 80%, 40%)"}}/></icon>
                 </div>
                 
                 <div className="order-num">
@@ -52,7 +53,7 @@ export default function OrderCard({order,onClick}){
          
             </div>
 
-            <div style={{width:970,height:1,backgroundColor:"black",placeSelf:"center"}}>
+            <div style={{width:"98%",height:1,backgroundColor:"black",placeSelf:"center"}}>
                 </div>       
     
                 

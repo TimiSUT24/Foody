@@ -1,6 +1,8 @@
 import {NavLink, useLocation} from 'react-router-dom'
 import {useEffect, useState} from 'react'
 import {useCart} from "../Context/CartContext"
+import { PiShoppingCartSimpleLight } from "react-icons/pi";
+//import { useAuth } from "../Context/AuthContext";
 import "../CSS/NavBar.css"
 
 
@@ -16,6 +18,10 @@ export default function NavBar (){
 
     //const isAdmin = roles.includes("Admin");
     //const isUser = roles.includes("User");
+
+    useEffect(() => {
+      setMenuOpen(false);
+    },[location.pathname])
 
     useEffect(() => {
     // Map paths to body CSS classes
@@ -80,8 +86,12 @@ export default function NavBar (){
         <NavLink to="/deals">Erbjudanden</NavLink>
         <NavLink to="/about">Om</NavLink>
         <NavLink to="/login">Logga in</NavLink>
-        <NavLink to="/register">Registrera</NavLink>
-        <NavLink to="/cart">Varukorg {totalPrice.toFixed(2)} kr {totalItems !== 0 && totalItems}</NavLink>
+        <NavLink to="/register">Registrera</NavLink>      
+        <NavLink className="cart-link" to="/cart"><PiShoppingCartSimpleLight style={{width:23,height:23,color:"white",marginRight:7}} />Varukorg {totalPrice.toFixed(2)} kr 
+            <div className="quantity-div">
+              <p id="navbar-quantity" >{totalItems !== 0 && totalItems}</p>
+            </div>
+        </NavLink>         
         <NavLink to="/user-page">Mina sidor</NavLink>
         <NavLink to="/thank-you-page">thankyou</NavLink>
         
@@ -100,6 +110,11 @@ export default function NavBar (){
       <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
         {renderLinks()}
       </div>
+       <div className="hamburger" onClick={toggleMenu}>
+      <span />
+      <span />
+      <span />
+    </div>
     </nav>
     )
 }

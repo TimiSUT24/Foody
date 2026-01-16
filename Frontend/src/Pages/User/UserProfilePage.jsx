@@ -5,6 +5,9 @@ import OrderCard from "../../Components/OrderCard";
 import ProfileSettings from "../../Components/ProfileSettings";
 import OrderDetails from "../../Components/OrderDetails";
 import { useAuth } from "../../Context/AuthContext";
+import { DiAptana } from "react-icons/di";
+import { PiPackage } from "react-icons/pi";
+import { IoLogOutOutline } from "react-icons/io5";
 import "../../CSS/User/UserProfilePage.css"
 
 
@@ -36,11 +39,11 @@ export default function UserProfilePage(){
     return(
         <div className="user-profile">
 
-            <div className="tabs">
-                <button className="orders-btn" onClick={() => setActiveTab("orders")}>Mina beställningar</button>               
-                <div className="tab-logout">
-                <button className="settings-btn" onClick={() => setActiveTab("settings")}>Inställningar</button>
-                <button className="logout-btn" onClick={() => handleLogout()}>Logga ut</button>
+            <div className="tabs">      
+                <button className="orders-btn" onClick={() => setActiveTab("orders")}><icon><PiPackage style={{width:23,height:23}}/></icon><p>Mina beställningar</p></button>                                         
+                <div className="tab-logout">                  
+                <button className="settings-btn" onClick={() => setActiveTab("settings")}><icon><DiAptana style={{width:23,height:23}}/></icon><p>Inställningar</p></button>                
+                <button className="logout-btn" onClick={() => handleLogout()}><icon><IoLogOutOutline style={{width:23,height:23}}/></icon><p>Logga ut</p></button>
                 </div>
             </div>
 
@@ -70,7 +73,7 @@ export default function UserProfilePage(){
                 )}
         </>
     )}
-                {!selectedOrder && activeTab === "settings" &&
+                {activeTab === "settings" &&
                 <ProfileSettings />}
             
             </div>

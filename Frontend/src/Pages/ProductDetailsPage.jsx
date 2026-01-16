@@ -1,13 +1,22 @@
 import {useState,useEffect} from 'react'
 import {ProductService} from "../Services/ProductService"
-import {useParams} from 'react-router-dom'
+import { CategoryService } from '../Services/CategoryService'
+import {useParams, Link} from 'react-router-dom'
 import {useCart} from '../Context/CartContext'
+import { CiCirclePlus } from "react-icons/ci";
+import { CiCircleMinus } from "react-icons/ci";
+import { MdArrowForwardIos } from "react-icons/md";
 import "../CSS/ProductDetails.css"
 
 export default function DetailsPage(){
     const { id } = useParams();
     const [productdetails, setProduct] = useState(null);
-    const {addToCart} = useCart();
+    const {addToCart,removeFromCart, getQty} = useCart();
+    const productId = productdetails?.product?.id;
+    const quantity = productId ? getQty(productId) : 0;
+    const [category, setCategory] = useState(null);
+    const [subCategory, setSubCategory] = useState(null);
+    const [subSubCategory, setSubSubCategory] = useState(null);
 
     useEffect(() => {
         if(id){
@@ -17,12 +26,49 @@ export default function DetailsPage(){
         }
     }, [id])
 
-    if(!productdetails){
+    useEffect(() =>{
+        if(productdetails?.product?.categoryId){
+        CategoryService.getCategoryDetails(productdetails.product.categoryId)
+        
+        .then(setCategory)
+        .catch((err) => console.error(err));
+        }
+
+        if(productdetails?.product?.subCategoryId){
+        CategoryService.getSubCategoryDetails(productdetails.product.subCategoryId)
+        .then(setSubCategory)
+        .catch((err) => console.error(err));
+        }
+
+        if(productdetails?.product?.subSubCategoryId){
+        CategoryService.getSubSubCategoryDetails(productdetails.product.subSubCategoryId)
+        .then(setSubSubCategory)
+        .catch((err) => console.error(err));
+        }
+    },[productdetails?.product?.categoryId,productdetails?.product?.subCategoryId,productdetails?.product?.subSubCategoryId])
+
+    if(!productdetails || !productdetails.product){
         return <p>Laddar produkt...</p>
     }
 
     return (
         <div className="product-details">
+            <div className="category-breadcrumb">
+                <nav className="breadcrumb">
+                    <Link to={`/?categoryId=${category?.id}`}>
+                        {category?.mainCategory}
+                    </Link>
+                    <MdArrowForwardIos className="breadcrumb-arrow"/>
+                    <Link to={`/?categoryId=${category?.id}&subCategoryId=${subCategory?.id}`}>
+                    {subCategory?.name}</Link>
+                    <MdArrowForwardIos className="breadcrumb-arrow"/>
+                    <Link
+                        to={`/?categoryId=${category?.id}&subCategoryId=${subCategory?.id}&subSubCategoryId=${subSubCategory?.id}`}
+                    >
+                        {subSubCategory?.name}
+                    </Link>
+                </nav>
+            </div>
             <img className="details-img" src={productdetails.product.imageUrl} alt={productdetails.product.name} />
             <div className="product-info">
             {productdetails.product.brand && <p className="product-brand">Märke: {productdetails.product.brand}</p>}
@@ -40,17 +86,24 @@ export default function DetailsPage(){
             </div>
             <p id="weightText">{productdetails.product.weightText}</p>  
              <hr style={{width:"100%",borderStyle:"solid",borderColor:"gray",opacity:"15%"}}/>
-            
-            <button id="add-details-button" onClick={() => addToCart(productdetails.product)}>Lägg till</button>
+            {quantity === 0 ? (
+                                    <button id="add-details-button" onClick={() => addToCart(productdetails.product)}>Lägg till</button>
+                                    ) : (
+                                        <div style={{display:"flex",gap:10,justifyContent:"center",height:47}}>
+                                    <button id="minus-details-button" onClick={() => removeFromCart(productdetails.product.id)} style={{width:100}}><CiCircleMinus style={{width:22,height:22}}/></button>
+                                    <p style={{marginTop:20}}>{quantity} st</p>
+                                    <button id="add-details-button" onClick={() => addToCart(productdetails.product)} style={{width:100}}><CiCirclePlus style={{width:22,height:22,color:"white"}}/></button>
+                                </div>
+                                )}
             </div>
 
             <div className="product-extra-info">
             {/*if empty or null dont show p tags */}
             {productdetails.product.productInformation && <p><strong>ProduktInformation:</strong> {productdetails.product.productInformation}</p>}
-            {productdetails.product.country && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Land:</strong> {productdetails.product.country}</p>}
-            {productdetails.product.usage && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Användning:</strong> {productdetails.product.usage}</p>}
-            {productdetails.product.allergens && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
-            {productdetails.product.storage && <p style={{display:"flex", flexDirection:"row", gap:5}}><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
+            {productdetails.product.country && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Land:</strong> {productdetails.product.country}</p>}
+            {productdetails.product.usage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Användning:</strong> {productdetails.product.usage}</p>}
+            {productdetails.product.allergens && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
+            {productdetails.product.storage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
 
                 {productdetails.nutrition?.length > 0 && (
                     <table className="product-nutrition"> 
