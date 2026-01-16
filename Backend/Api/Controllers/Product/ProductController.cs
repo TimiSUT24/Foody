@@ -58,7 +58,7 @@ namespace Api.Controllers.Product
         [HttpGet("filter")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
-        public async Task<IActionResult> FilterProducts(string? name,string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct, int page = 1, int pageSize = 24)
+        public async Task<IActionResult> FilterProducts(string? name,string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct, int page = 1, int pageSize = 25)
         {
             var result = await _productService.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price,page,pageSize, ct);
             return Ok(result);

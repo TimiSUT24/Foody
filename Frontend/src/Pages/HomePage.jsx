@@ -1,4 +1,4 @@
-import {useState,useEffect} from 'react'
+import {useState,useEffect, useRef} from 'react'
 import {ProductService} from "../Services/ProductService"
 import {useProductFilters} from "../Hooks/useProductFilters";
 import ProductFilters from "../Components/ProductFilters";
@@ -10,6 +10,15 @@ import "../CSS/ProductCard.css"
 export default function HomePage(){
     const [products, setProducts] = useState([]);
     const [searchParams] = useSearchParams();
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const pageSize = 25;
+    const loadMoreRef = useRef(null);
+
+    const isResettingRef = useRef(false);
+    const isInitialLoadRef = useRef(true);
+
     
     const {
         filters,
@@ -20,20 +29,36 @@ export default function HomePage(){
     const subCategoryIdParam = searchParams.get("subCategoryId");
     const subSubCategoryIdParam = searchParams.get("subSubCategoryId");
 
-    useEffect(() => {
-    const controller = new AbortController();//cancel async operation thats in progress
+     useEffect(() => {
+        if (page > 1 &&!hasMore) return;
 
-    ProductService
-        .getProducts(filters, controller.signal)
-        .then(setProducts)
-        .catch(err => {
-            if (err.name !== "AbortError") {
-                console.error(err);
-            }
-        });
+        const controller = new AbortController();
+        setLoading(true);
 
-    return () => controller.abort();
-}, [filters]);
+        ProductService.getProducts(
+            { ...filters, page, pageSize },
+            controller.signal
+        )
+            .then(res => {
+                setProducts(prev =>
+                    page === 1 ? res.items : [...prev, ...res.items]
+                );
+                setHasMore(res.hasMore);
+
+                if(page === 1){
+                    isResettingRef.current = false;
+                    isInitialLoadRef.current = false;
+                }
+            })
+            .catch(err => {
+                if (err.name !== "AbortError") {
+                    console.error(err);
+                }
+            })
+            .finally(() => setLoading(false));
+
+        return () => controller.abort();
+    }, [filters, page]);
 
 useEffect(() => {
     if (!categoryIdParam) return;
@@ -43,6 +68,40 @@ useEffect(() => {
         subSubCategoryId: subSubCategoryIdParam ? Number(subSubCategoryIdParam) : null
      });
 }, [categoryIdParam,subCategoryIdParam,subSubCategoryIdParam]);
+
+useEffect(() => {
+    
+        isResettingRef.current = true;
+        isInitialLoadRef.current = true;
+
+        setProducts([]);
+        setPage(1);
+        setHasMore(true);
+    }, [
+        filters.categoryId,
+        filters.subCategoryId,
+        filters.subSubCategoryId
+    ]);
+
+    useEffect(() => {
+        if (!hasMore || loading) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !isResettingRef.current && !isInitialLoadRef.current) {
+                    setPage(prev => prev + 1);
+                }
+            },
+            { rootMargin: "200px" }
+        );
+
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [hasMore, loading]);
+    console.log(products.length)
     
     
     return (
@@ -64,6 +123,15 @@ useEffect(() => {
                     <ProductCard key={p.id} product={p}></ProductCard>         
                 ))}
             </div>
+            <div ref={loadMoreRef} />
+
+            
+            {loading && (
+                <p style={{ textAlign: "center", margin: "2rem 0" }}>
+                    Loading…
+                </p>
+            )}
+            
         </div>
     )
 

@@ -18,7 +18,7 @@ namespace Infrastructure.Seeding
         {
    
                 // Path to your JSON file
-                var jsonFile = Path.Combine("JsonFiles/icaDetailsGodis.json");
+                var jsonFile = Path.Combine("JsonFiles/Products.json");
                 if (!File.Exists(jsonFile))
                 {
                     Console.WriteLine("Couldnt seed");
