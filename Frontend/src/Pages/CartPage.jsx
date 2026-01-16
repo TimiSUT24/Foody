@@ -9,12 +9,13 @@ import { PostNordService } from "../Services/PostnordService"
 import { useAuth } from "../Context/AuthContext"
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import "../CSS/CartPage.css"
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
 
 export default function CartPage(){
-    const {cart, addToCart, removeFromCart} = useCart();
+    const {cart, addToCart, removeFromCart,removeWholeProductFromCart} = useCart();
     const [error, setError] = useState({})
     const [clientSecret, setClientSecret] = useState(null);
     const [userId, setUserId] = useState(null)
@@ -244,7 +245,8 @@ export default function CartPage(){
                         <div className="qty-controls">
                             <button onClick ={() => removeFromCart(item.id)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCircleMinus className="ciCircleMinus"style={{width:22,height:22}}/></button>
                             <span>{item.qty}</span>
-                            <button onClick ={() => addToCart(item)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCirclePlus className="ciCirclePlus" style={{width:22,height:22}}/></button>                
+                            <button onClick ={() => addToCart(item)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCirclePlus className="ciCirclePlus" style={{width:22,height:22}}/></button>   
+                            <button className="qty-delete-product" onClick ={() => removeWholeProductFromCart(item)}><RiDeleteBin6Line style={{width:18,height:18}}/></button>             
                         </div>
                     </div>
                 ))}

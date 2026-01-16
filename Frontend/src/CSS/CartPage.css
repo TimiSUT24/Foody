@@ -168,9 +168,19 @@
 .qty-controls{
     grid-area:qty;
     justify-self: start;
+    align-items: center;
     display:flex;
     gap:10px;
     padding-left:10px;
+}
+
+.qty-delete-product{
+    border-style: none !important;
+    background-color: transparent !important;
+}
+
+.qty-delete-product:hover{
+    color:red;
 }
 
 .checkout-prices{

@@ -29,38 +29,7 @@ export default function HomePage(){
     const subCategoryIdParam = searchParams.get("subCategoryId");
     const subSubCategoryIdParam = searchParams.get("subSubCategoryId");
 
-     useEffect(() => {
-        if (page > 1 &&!hasMore) return;
-
-        const controller = new AbortController();
-        setLoading(true);
-
-        ProductService.getProducts(
-            { ...filters, page, pageSize },
-            controller.signal
-        )
-            .then(res => {
-                setProducts(prev =>
-                    page === 1 ? res.items : [...prev, ...res.items]
-                );
-                setHasMore(res.hasMore);
-
-                if(page === 1){
-                    isResettingRef.current = false;
-                    isInitialLoadRef.current = false;
-                }
-            })
-            .catch(err => {
-                if (err.name !== "AbortError") {
-                    console.error(err);
-                }
-            })
-            .finally(() => setLoading(false));
-
-        return () => controller.abort();
-    }, [filters, page]);
-
-useEffect(() => {
+    useEffect(() => {
     if (!categoryIdParam) return;
 
     updateFilter({ categoryId: categoryIdParam ?Number(categoryIdParam) : null,
@@ -82,6 +51,38 @@ useEffect(() => {
         filters.subCategoryId,
         filters.subSubCategoryId
     ]);
+
+     useEffect(() => {
+        if (page > 1 &&!hasMore) return;
+
+        const controller = new AbortController();
+        setLoading(true);
+
+        ProductService.getProducts(
+            { ...filters, page, pageSize },
+            controller.signal // allow request cancellation 
+        )
+            .then(res => {
+                setProducts(prev =>
+                    page === 1 ? res.items : [...prev, ...res.items]
+                );
+                setHasMore(res.hasMore);
+
+                if(page === 1){
+                    isResettingRef.current = false;
+                    isInitialLoadRef.current = false;
+                }
+            })
+            .catch(err => {
+                if (err.name !== "AbortError") {
+                    console.error(err);
+                }
+            })
+            .finally(() => setLoading(false));
+
+        return () => controller.abort(); //abort an async operation before it has completed
+    }, [filters, page]);
+
 
     useEffect(() => {
         if (!hasMore || loading) return;

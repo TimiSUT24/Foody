@@ -87,10 +87,10 @@ export default function NavBar (){
         <NavLink to="/about">Om</NavLink>
         <NavLink to="/login">Logga in</NavLink>
         <NavLink to="/register">Registrera</NavLink>      
-        <NavLink className="cart-link" to="/cart"><PiShoppingCartSimpleLight style={{width:23,height:23,color:"white",marginRight:7}} />Varukorg {totalPrice.toFixed(2)} kr 
-            <div className="quantity-div">
+        <NavLink className="cart-link" to="/cart"><PiShoppingCartSimpleLight style={{width:23,height:23,color:"white",marginRight:7}} />Varukorg {totalPrice.toFixed(2)} kr
+        {totalItems !== 0 &&  <div className="quantity-div">
               <p id="navbar-quantity" >{totalItems !== 0 && totalItems}</p>
-            </div>
+            </div>}       
         </NavLink>         
         <NavLink to="/user-page">Mina sidor</NavLink>
         <NavLink to="/thank-you-page">thankyou</NavLink>
