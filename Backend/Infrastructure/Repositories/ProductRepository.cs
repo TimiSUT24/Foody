@@ -47,13 +47,15 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> FilterProducts(  
+        public async Task<(List<Product> Items, bool HasMore)> FilterProducts(  
             string name,
             string? brand,
             int? categoryId,
             int? subCategoryId,
             int? subSubCategoryId,
             decimal? price,
+            int page,
+            int pageSize,
             CancellationToken ct)
         {
             IQueryable<Product> query = _context.Products
@@ -85,8 +87,19 @@ namespace Infrastructure.Repositories
             // Filter by Price
             if (price.HasValue && price > 0)
                 query = query.Where(s => s.Price <= price);
-            
-            return await query.Take(200).OrderBy(s => s.Price).ToListAsync(ct);
+
+            var items = await query
+                .OrderBy(p => p.Price)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize + 1)
+                .ToListAsync(ct);
+
+            bool hasMore = items.Count > pageSize;
+
+            return (
+                Items: items.Take(pageSize).ToList(),
+                HasMore: hasMore
+                );
 
         }
     }

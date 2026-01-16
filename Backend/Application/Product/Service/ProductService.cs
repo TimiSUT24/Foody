@@ -75,18 +75,18 @@ namespace Application.Product.Service
             return mapping;
         }
 
-        public async Task<IEnumerable<ProductResponseDto>> FilterProducts(string? name, string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price , CancellationToken ct)
+        public async Task<InfiniteScrollResponse<ProductResponseDto>> FilterProducts(string? name, string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price, int page, int pageSize, CancellationToken ct)
         {
-            var filter = await _uow.Products.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
-            if(filter == null)
-            {
-                throw new KeyNotFoundException("No Filter found for products");
-            }
+            var (items, hasMore) = await _uow.Products.FilterProducts(name ?? "",brand,categoryId,subCategoryId,subSubCategoryId,price,page,pageSize,ct);
 
-            var mapping = _mapper.Map<IEnumerable<ProductResponseDto>>(filter)
+            var mapping = _mapper.Map<List<ProductResponseDto>>(items)
                 ?? throw new InvalidOperationException("Mapping failer");
 
-            return mapping;
+            return new InfiniteScrollResponse<ProductResponseDto>
+            {
+                Items = mapping,
+                HasMore = hasMore
+            };
         }
 
         public async Task<bool> Update(UpdateProductDto request, CancellationToken ct)
