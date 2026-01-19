@@ -3,6 +3,7 @@ using Application.Product.Dto.Request;
 using Application.Product.Dto.Response;
 using Application.Product.Interfaces;
 using AutoMapper;
+using Domain.Enum;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,14 @@ namespace Application.Product.Service
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _uow;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
+        private readonly ICalculateDiscount _discount;
 
-        public ProductService(IUnitOfWork uow, IMapper mapper)
+        public ProductService(IUnitOfWork uow, IMapper mapper, ICalculateDiscount discount)
         {
             _uow = uow;
             _mapper = mapper;
+            _discount = discount;
         }
 
         public async Task<bool> AddAsync(CreateProductDto request, CancellationToken ct)
@@ -79,8 +82,26 @@ namespace Application.Product.Service
         {
             var (items, hasMore) = await _uow.Products.FilterProducts(name ?? "",brand,categoryId,subCategoryId,subSubCategoryId,price,page,pageSize,ct);
 
-            var mapping = _mapper.Map<List<ProductResponseDto>>(items)
-                ?? throw new InvalidOperationException("Mapping failer");
+            var now = DateTime.UtcNow;
+            var mapping = items.Select(product =>
+            {
+                var finalPrice = _discount.GetFinalPrice(product, now);
+
+                return new ProductResponseDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    FinalPrice = finalPrice,
+                    HasOffer = finalPrice < product.Price,
+                    ImageUrl = product.ImageUrl,
+                    ComparePrice = product.ComparePrice,
+                    Currency = product.Currency,
+                    WeightText = product.WeightText,
+                    WeightValue = (decimal)product.WeightValue,
+
+                };
+            }).ToList();
 
             return new InfiniteScrollResponse<ProductResponseDto>
             {
@@ -127,6 +148,5 @@ namespace Application.Product.Service
 
             return mapping;
         }
-
     }
 }

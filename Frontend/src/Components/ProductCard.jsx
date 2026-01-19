@@ -8,7 +8,7 @@ export default function ProductCard({product}){
     const {addToCart, removeFromCart, getQty} = useCart();
     const quantity = getQty(product.id);
     return(
-        <div key={product.id} className="product-card">   
+        <div className="product-card">   
                     <Link to={`/product/${product.id}`} className="product-link">         
                     <img src={product.imageUrl} alt={product.name} style={{width:200, height:200}}/>
                     </Link>  
@@ -20,7 +20,19 @@ export default function ProductCard({product}){
                     <p>{product.weightText} {product.comparePrice}</p>
                               
                     </div>
-                    <p className="product-price">{product.price} {product.currency}</p>
+                    {product.hasOffer ? (
+                        <div className="product-price">
+                            <span style={{ textDecoration: "line-through", opacity: 0.6 }}>
+                                {product.price} {product.currency}
+                            </span>
+                            <span style={{ color: "red", marginLeft: 8, fontWeight: 600 }}>
+                                {product.finalPrice} {product.currency}
+                            </span>
+                        </div>
+                    ) : (
+                        <p className="product-price">{product.price} {product.currency}</p>
+                    )}
+                    
                     {quantity === 0 ? (
                         <button className="product-add" onClick={() => addToCart(product)}>Lägg till</button>
                         ) : (

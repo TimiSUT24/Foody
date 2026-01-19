@@ -35,6 +35,7 @@ namespace Domain.Models
         public SubCategory? SubCategory { get; set; }
         public int? SubSubCategoryId { get; set; }
         public SubSubCategory? SubSubCategory { get; set; }
+        public Offer? Offer { get; set; } 
 
         public ICollection<NutritionValue> NutritionValues { get; set; } = new List<NutritionValue>();
         public ICollection<ProductAttribute> ProductAttributes { get; set; } = new List<ProductAttribute>();

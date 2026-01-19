@@ -14,6 +14,7 @@ namespace Domain.Models
 
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
+        public decimal UnitPriceOriginal { get; set; }
         public decimal WeightValue { get; set; }
 
         public Order? Order { get; set; }

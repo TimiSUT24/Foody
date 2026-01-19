@@ -14,5 +14,6 @@ namespace Domain.Interfaces
         IOrderRepository Orders { get; }
         ICategoryRepository Category { get; }
         IUserRepository User { get; }
+        IOfferRepository Offer { get; }
     }
 }

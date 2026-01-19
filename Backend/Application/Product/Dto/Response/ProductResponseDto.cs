@@ -31,5 +31,7 @@ namespace Application.Product.Dto.Response
         public int CategoryId { get; init; }
         public int SubCategoryId { get; init; }
         public int SubSubCategoryId { get; init; }  
+        public decimal FinalPrice { get; init; } 
+        public bool HasOffer { get; init; }
     }
 }

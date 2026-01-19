@@ -32,6 +32,7 @@ namespace Infrastructure.Data
         public DbSet<NutritionValue> NutritionValues { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ShippingInformation> ShippingInformation { get; set; }
+        public DbSet<Offer> Offers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -67,6 +68,12 @@ namespace Infrastructure.Data
                 .HasMany(a => a.ProductAttributes)
                 .WithOne(f => f.Food)
                 .HasForeignKey(f => f.FoodId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Product>()
+                .HasOne(s => s.Offer)
+                .WithOne(s => s.Product)
+                .HasForeignKey<Offer>(s => s.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Order>()

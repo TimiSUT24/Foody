@@ -14,7 +14,7 @@ export default function HomePage(){
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const pageSize = 25;
-    const loadMoreRef = useRef(null);
+    const loadMoreRef = useRef(null); // ref does not trigger re-renders
 
     const isResettingRef = useRef(false);
     const isInitialLoadRef = useRef(true);
@@ -40,7 +40,7 @@ export default function HomePage(){
 
 useEffect(() => {
     
-        isResettingRef.current = true;
+        isResettingRef.current = true; // access ref value 
         isInitialLoadRef.current = true;
 
         setProducts([]);
@@ -102,7 +102,6 @@ useEffect(() => {
 
         return () => observer.disconnect();
     }, [hasMore, loading]);
-    console.log(products.length)
     
     
     return (

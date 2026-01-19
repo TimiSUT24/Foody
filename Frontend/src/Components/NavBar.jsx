@@ -1,6 +1,7 @@
 import {NavLink, useLocation} from 'react-router-dom'
 import {useEffect, useState} from 'react'
 import {useCart} from "../Context/CartContext"
+import api from "../Api/api"
 import { PiShoppingCartSimpleLight } from "react-icons/pi";
 //import { useAuth } from "../Context/AuthContext";
 import "../CSS/NavBar.css"
@@ -9,8 +10,9 @@ import "../CSS/NavBar.css"
 export default function NavBar (){
     //const {user} = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(0);
     const location = useLocation();
-    const {totalItems, totalPrice} = useCart();
+    const {totalItems, cart} = useCart();
 
     const toggleMenu = () => setMenuOpen(p => !p)
 
@@ -22,6 +24,17 @@ export default function NavBar (){
     useEffect(() => {
       setMenuOpen(false);
     },[location.pathname])
+
+      useEffect(() => {
+    const fetchTotal = async () => {
+        const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:""})
+        setTotalPrice(response.data.total);
+    };
+    fetchTotal();
+   
+
+  },[cart])
+    
 
     useEffect(() => {
     // Map paths to body CSS classes

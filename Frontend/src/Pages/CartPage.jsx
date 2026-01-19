@@ -240,8 +240,19 @@ export default function CartPage(){
                     <div key={item.id} className="cart-item">                  
                         <img src={item.imageUrl} alt="" style={{width:50}}/>
                         <p className="p2" style={{fontSize:13}}>{item.name}</p>
-                        <p style={{fontSize:13}}>{item.price} kr</p>
-
+                        {item.hasOffer ? (
+                        <div className="product-price">
+                            <span style={{ textDecoration: "line-through", opacity: 0.6, fontSize:17}}>
+                                {item.price} {item.currency}
+                            </span>
+                            <span style={{ color: "red", marginLeft: 8, fontWeight: 600, fontSize:17 }}>
+                                {item.finalPrice} {item.currency}
+                            </span>
+                        </div>
+                    ) : (
+                        <p className="product-price" style={{fontSize:17}}>{item.finalPrice} kr</p>
+                    )}
+                        
                         <div className="qty-controls">
                             <button onClick ={() => removeFromCart(item.id)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCircleMinus className="ciCircleMinus"style={{width:22,height:22}}/></button>
                             <span>{item.qty}</span>

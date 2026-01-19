@@ -22,12 +22,22 @@ namespace Infrastructure.Repositories
         {
             var query = await _context.Products
                 .AsNoTracking()
+                .Include(s => s.Offer)
                 .Include(s => s.ProductAttributes)
                 .Include(s => s.NutritionValues)
                 .Include(s => s.Category).ThenInclude(s => s.SubCategories).ThenInclude(s => s.SubSubCategories)
                 .FirstOrDefaultAsync(s => s.Id == id, ct);
 
             return query; 
+        }
+
+        public async Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken ct)
+        {
+            return await _context.Products
+                .AsNoTracking()
+                .Include(s => s.Offer)
+                .Where(s => ids.Contains(s.Id))
+                .ToListAsync(ct);
         }
 
         public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
@@ -47,6 +57,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
+
         public async Task<(List<Product> Items, bool HasMore)> FilterProducts(  
             string name,
             string? brand,
@@ -60,6 +71,7 @@ namespace Infrastructure.Repositories
         {
             IQueryable<Product> query = _context.Products
                 .AsNoTracking()
+                .Include(s => s.Offer)
                 .Include(s => s.Category)
                 .ThenInclude(s => s.SubCategories)
                 .ThenInclude(s => s.SubSubCategories);
@@ -90,6 +102,7 @@ namespace Infrastructure.Repositories
 
             var items = await query
                 .OrderBy(p => p.Price)
+                .ThenBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize + 1)
                 .ToListAsync(ct);

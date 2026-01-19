@@ -17,13 +17,15 @@ namespace Infrastructure.UnitOfWork
         public IOrderRepository Orders { get; }
         public ICategoryRepository Category { get; }
         public IUserRepository User { get; }
+        public IOfferRepository Offer { get; }
 
         public UnitOfWork(FoodyDbContext context, 
                         IProductRepository products,
                         INutritionValueRepository nutritionValues,
                         IOrderRepository orders,
                         ICategoryRepository category,
-                        IUserRepository user)
+                        IUserRepository user,
+                        IOfferRepository offer)
         {
             _context = context;
             Products = products;
@@ -31,6 +33,7 @@ namespace Infrastructure.UnitOfWork
             Orders = orders;
             Category = category;
             User = user;
+            Offer = offer;
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken ct = default)
