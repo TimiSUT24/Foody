@@ -56,8 +56,7 @@ namespace Infrastructure.Repositories
                 .Distinct()
                 .ToListAsync();
         }
-
-
+   
         public async Task<(List<Product> Items, bool HasMore)> FilterProducts(  
             string name,
             string? brand,
@@ -65,6 +64,7 @@ namespace Infrastructure.Repositories
             int? subCategoryId,
             int? subSubCategoryId,
             decimal? price,
+            bool? offer,
             int page,
             int pageSize,
             CancellationToken ct)
@@ -100,12 +100,19 @@ namespace Infrastructure.Repositories
             if (price.HasValue && price > 0)
                 query = query.Where(s => s.Price <= price);
 
-            var items = await query
-                .OrderBy(p => p.Price)
-                .ThenBy(p => p.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize + 1)
-                .ToListAsync(ct);
+            var utcNow = DateTime.UtcNow;
+            if(offer == true)
+            {
+                query = query.Where(s => s.Offer != null && s.Offer.StartsAtUtc <= utcNow && s.Offer.EndsAtUtc >= utcNow);
+
+            }
+
+                var items = await query
+                    .OrderBy(p => p.Price)
+                    .ThenBy(p => p.Id)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize + 1)
+                    .ToListAsync(ct);
 
             bool hasMore = items.Count > pageSize;
 

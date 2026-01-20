@@ -19,6 +19,7 @@ namespace Domain.Interfaces
            int? subCategoryId,
            int? subSubCategoryId,
            decimal? price,
+           bool? offer,
            int page,
            int pageSize,
            CancellationToken ct);

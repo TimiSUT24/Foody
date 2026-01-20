@@ -1,4 +1,5 @@
 ﻿using Application.Offer.Dto.Request;
+using Application.Offer.Dto.Response;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace Application.Offer.Mapper
 
 
             //response
+            CreateMap<Domain.Models.Offer, OfferResponseDto>();
+            CreateMap<Domain.Models.Offer, OfferResponseListDto>()
+                  .ForMember(dest => dest.Offer, opt => opt.MapFrom(s => s));
         }
     }
 }

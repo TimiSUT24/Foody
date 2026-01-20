@@ -1,4 +1,5 @@
 ﻿using Application.Offer.Dto.Request;
+using Application.Offer.Dto.Response;
 using Application.Offer.Interfaces;
 using AutoMapper;
 using Domain.Interfaces;
@@ -23,7 +24,7 @@ namespace Application.Offer.Service
 
         public async Task<bool> AddOffer(AddOfferDto request, CancellationToken ct)
         {
-            var product = _uow.Products.GetByIdAsync(request.ProductId, ct);
+            var product = await _uow.Products.GetByIdAsync(request.ProductId, ct);
             if (product == null)
             {
                 throw new KeyNotFoundException("Product not found");
@@ -32,6 +33,47 @@ namespace Application.Offer.Service
             await _uow.Offer.AddAsync(mapper, ct);
             await _uow.SaveChangesAsync(ct);
 
+            return true;
+        }
+
+        public async Task<IEnumerable<OfferResponseDto>> GetAllOffers(CancellationToken ct)
+        {
+            var offers = await _uow.Offer.GetAllAsync(ct);
+            if(offers == null)
+            {
+                throw new KeyNotFoundException("No offers was found");
+            }
+
+            var mapping = _mapper.Map<IEnumerable<OfferResponseDto>>(offers)
+            ?? throw new InvalidOperationException("Mapping failed");
+
+            return mapping;
+        }
+
+        public async Task<OfferResponseDto> GetOfferById(int id, CancellationToken ct)
+        {
+            var offer = await _uow.Offer.GetByIdAsync(id, ct);
+            if (offer == null)
+            {
+                throw new KeyNotFoundException("offer was not found");
+            }
+
+            var mapping = _mapper.Map<OfferResponseDto>(offer) 
+                ?? throw new InvalidOperationException("Mapping failed");
+
+            return mapping;
+        }
+
+        public async Task<bool> DeleteOffer(int id, CancellationToken ct)
+        {
+            var offer = await _uow.Offer.GetByIdAsync(id, ct);
+            if (offer == null)
+            {
+                throw new KeyNotFoundException("Offer id was not found");
+            }
+
+            _uow.Offer.Delete(offer);
+            await _uow.SaveChangesAsync(ct);
             return true;
         }
         

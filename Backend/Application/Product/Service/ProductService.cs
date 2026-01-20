@@ -1,4 +1,5 @@
 ﻿using Application.Exceptions;
+using Application.NutritionValue.Dto.Response;
 using Application.Product.Dto.Request;
 using Application.Product.Dto.Response;
 using Application.Product.Interfaces;
@@ -68,19 +69,66 @@ namespace Application.Product.Service
         public async Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct)
         {
             var product = await _uow.Products.GetProductDetailsById(id, ct);
-            if(product == null)
+            if (product == null)
             {
                 throw new KeyNotFoundException("Couldnt find ProductDetails");
             }
 
-            var mapping = _mapper.Map<ProductDetailsResponse>(product) 
-                ?? throw new InvalidOperationException("Mapping failed");
+            var now = DateTime.UtcNow;
+            var finalPrice = _discount.GetFinalPrice(product, now);
+            var mapping = new ProductDetailsResponse
+            {
+
+                Product = new ProductResponseDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    FinalPrice = finalPrice,
+                    HasOffer = finalPrice < product.Price,
+                    ImageUrl = product.ImageUrl,
+                    ComparePrice = product.ComparePrice,
+                    Currency = product.Currency,
+                    WeightText = product.WeightText,
+                    WeightValue = (decimal)product.WeightValue,
+                    Ingredients = product.Ingredients,
+                    Usage = product.Usage,
+                    Storage = product.Storage,
+                    Allergens = product.Allergens,
+                    Brand = product.Brand,
+                    Country = product.Country,
+                    ProductInformation = product.ProductInformation,
+
+                    CategoryId = (int)product.CategoryId,
+                    SubCategoryId = (int)product.SubCategoryId,
+                    SubSubCategoryId = (int)product.SubSubCategoryId
+                  
+
+                },
+                Nutrition = product.NutritionValues?.Select(item => new NutritionValueResponse
+                {
+                    Name = item.Name,
+                    Value = item.Value,
+                    NutritionUnitText = item.NutritionUnitText,
+                    Id = item.Id
+
+                }).ToList(),
+
+                Attribute = product.ProductAttributes?.Select(item => new ProductAttributeResponse
+                {
+                    Id = item.Id,
+                    Value = item.Value
+                }).ToList()
+
+            };
+
             return mapping;
+                    
         }
 
-        public async Task<InfiniteScrollResponse<ProductResponseDto>> FilterProducts(string? name, string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price, int page, int pageSize, CancellationToken ct)
+        public async Task<InfiniteScrollResponse<ProductResponseDto>> FilterProducts(string? name, string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price,bool? offer, int page, int pageSize, CancellationToken ct)
         {
-            var (items, hasMore) = await _uow.Products.FilterProducts(name ?? "",brand,categoryId,subCategoryId,subSubCategoryId,price,page,pageSize,ct);
+            var (items, hasMore) = await _uow.Products.FilterProducts(name ?? "",brand,categoryId,subCategoryId,subSubCategoryId,price,offer,page,pageSize,ct);
 
             var now = DateTime.UtcNow;
             var mapping = items.Select(product =>
@@ -99,6 +147,8 @@ namespace Application.Product.Service
                     Currency = product.Currency,
                     WeightText = product.WeightText,
                     WeightValue = (decimal)product.WeightValue,
+                    IsAvailable = product.Stock > 0,
+
 
                 };
             }).ToList();

@@ -13,16 +13,18 @@ namespace Infrastructure.HelperMethod
     {
         public decimal GetFinalPrice(Product product, DateTime utcNow)
         {
-            if (product.Offer == null)
-                return product.Price;
-
             var offer = product.Offer;
 
-            if (!offer.IsActive ||
-                offer.EndsAtUtc < utcNow)
+            if(offer == null)
             {
                 return product.Price;
             }
+
+            if (!offer.IsActive(utcNow))
+            {
+                return product.Price;
+            }
+              
 
             return offer.DiscountType switch
             {

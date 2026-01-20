@@ -58,9 +58,9 @@ namespace Api.Controllers.Product
         [HttpGet("filter")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
-        public async Task<IActionResult> FilterProducts(string? name,string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct, int page = 1, int pageSize = 25)
+        public async Task<IActionResult> FilterProducts(string? name,string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price,bool? offer, CancellationToken ct, int page = 1, int pageSize = 25)
         {
-            var result = await _productService.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price,page,pageSize, ct);
+            var result = await _productService.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price,offer,page,pageSize, ct);
             return Ok(result);
         }
 
@@ -84,6 +84,8 @@ namespace Api.Controllers.Product
             return Ok(result);
         }
 
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
         [HttpGet("brands")]
         public async Task<IActionResult> GetBrands([FromQuery] int? categoryId)
         {

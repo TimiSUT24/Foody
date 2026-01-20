@@ -16,7 +16,6 @@ namespace Application.Offer.Dto.Request
         public decimal DiscountValue { get; set; }
         public DateTime StartsAtUtc { get; set; }
         public DateTime EndsAtUtc { get; set; }
-        public bool IsActive { get; set; }
 
     }
 }

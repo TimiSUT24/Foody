@@ -31,7 +31,6 @@
   <ItemGroup>
     <Folder Include="Category\Dto\Request\" />
     <Folder Include="Category\Validator\" />
-    <Folder Include="Offer\Dto\Response\" />
     <Folder Include="OrderItem\Dto\Request\" />
     <Folder Include="OrderItem\Dto\Response\" />
     <Folder Include="OrderItem\Interfaces\" />

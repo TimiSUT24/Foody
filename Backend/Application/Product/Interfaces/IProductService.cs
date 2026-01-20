@@ -17,6 +17,6 @@ namespace Application.Product.Interfaces
         Task<bool> Update(UpdateProductDto request, CancellationToken ct);
         Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct);
         Task<IEnumerable<string?>> GetBrands(int? categoryId);
-        Task<InfiniteScrollResponse<ProductResponseDto>> FilterProducts(string? name, string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, int page, int pageSize, CancellationToken ct);
+        Task<InfiniteScrollResponse<ProductResponseDto>> FilterProducts(string? name, string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price,bool? offer, int page, int pageSize, CancellationToken ct);
     }
 }
