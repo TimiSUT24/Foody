@@ -18,9 +18,10 @@ namespace Application.Offer.Mapper
 
 
             //response
-            CreateMap<Domain.Models.Offer, OfferResponseDto>();
-            CreateMap<Domain.Models.Offer, OfferResponseListDto>()
-                  .ForMember(dest => dest.Offer, opt => opt.MapFrom(s => s));
+            CreateMap<Domain.Models.Offer, OfferResponseDto>()
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => DateTime.UtcNow >= src.StartsAtUtc 
+                                                                         && DateTime.UtcNow <= src.EndsAtUtc));
+           
         }
     }
 }

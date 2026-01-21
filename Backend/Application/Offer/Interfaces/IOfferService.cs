@@ -13,5 +13,6 @@ namespace Application.Offer.Interfaces
         Task<bool> AddOffer(AddOfferDto request, CancellationToken ct);
         Task<bool> DeleteOffer(int id, CancellationToken ct);
         Task<IEnumerable<OfferResponseDto>> GetAllOffers(CancellationToken ct);
+        Task<OfferResponseDto> GetOfferById(int id, CancellationToken ct);
     }
 }

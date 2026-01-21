@@ -34,5 +34,25 @@ namespace Api.Controllers.Offer
             var result = await _offerService.GetAllOffers(ct);
             return Ok(result);
         }
+
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 400)]
+        [ProducesResponseType(statusCode: 404)]
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetOfferById([FromRoute] int id, CancellationToken ct)
+        {
+            var result = await _offerService.GetOfferById(id,ct);
+            return Ok(result);
+        }
+
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 400)]
+        [ProducesResponseType(statusCode: 404)]
+        [HttpDelete("delete/{id:int}")]
+        public async Task<IActionResult> DeleteOffer([FromRoute] int id, CancellationToken ct)
+        {
+            var result = await _offerService.DeleteOffer(id, ct);
+            return Ok(result);
+        }
     }
 }

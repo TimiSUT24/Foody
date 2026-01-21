@@ -55,7 +55,7 @@ namespace Application.Offer.Service
             var offer = await _uow.Offer.GetByIdAsync(id, ct);
             if (offer == null)
             {
-                throw new KeyNotFoundException("offer was not found");
+                throw new KeyNotFoundException("Offer was not found");
             }
 
             var mapping = _mapper.Map<OfferResponseDto>(offer) 
