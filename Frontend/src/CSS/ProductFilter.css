@@ -201,27 +201,14 @@
     justify-content: space-between;
   }
 
-.category-menu{
+.category-menu,
+.menu-item,
+.submenu-item{
         flex-direction: column;
 }
 
-.menu-dropdown{
-    position:static;
-}
-
-.menu-item{
-    flex-direction: column;
-}
-
-.submenu{
-    position:static;
-
-}
-
-.submenu-item{
-    flex-direction: column;
-}
-
+.menu-dropdown,
+.submenu,
 .subsubmenu{
     position:static;
 }
