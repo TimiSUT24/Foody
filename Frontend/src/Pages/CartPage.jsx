@@ -246,7 +246,7 @@ export default function CartPage(){
                                 {item.price} {item.currency}
                             </span>
                             <span style={{ color: "red", marginLeft: 8, fontWeight: 600, fontSize:17 }}>
-                                {item.finalPrice} {item.currency}
+                                {item.finalPrice} {item.currency} {item.offerName}
                             </span>
                         </div>
                     ) : (

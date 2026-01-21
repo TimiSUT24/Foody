@@ -87,11 +87,11 @@ export default function DetailsPage(){
                                 {productdetails.product.price} {productdetails.product.currency}
                             </span>
                             <span style={{ color: "red", marginLeft: 8, fontWeight:"bold", fontSize:18 }}>
-                                {productdetails.product.finalPrice} {productdetails.product.currency}
+                                {productdetails.product.finalPrice} {productdetails.product.currency} {productdetails.product.offerName}
                             </span>
                         </div>
                     ) : (
-                        <p style={{fontWeight:"bold",fontSize:18}}>{productdetails.product.price} {productdetails.product.currency}</p>
+                        <p style={{fontWeight:"bold",fontSize:18}}>{productdetails.product.price}</p>
                     )}
                 <p>{productdetails.product.comparePrice}</p>    
             </div>

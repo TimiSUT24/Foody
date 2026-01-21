@@ -26,7 +26,7 @@ export default function ProductCard({product}){
                                 {product.price} {product.currency}
                             </span>
                             <span style={{ color: "red", marginLeft: 8, fontWeight: 600 }}>
-                                {product.finalPrice} {product.currency}
+                                {product.finalPrice} {product.currency} {product.offerName}
                             </span>
                         </div>
                     ) : (

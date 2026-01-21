@@ -10,7 +10,7 @@ namespace Application.Offer.Dto.Request
     public record AddOfferDto
     {
         public int ProductId { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; }
         public DiscountType DiscountType { get; set; }
 
         public decimal DiscountValue { get; set; }

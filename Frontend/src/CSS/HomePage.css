@@ -5,7 +5,7 @@ body{
 
 .product-grid{
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
     padding:10px;
     gap:10px;
     row-gap: 30px;
@@ -39,5 +39,12 @@ body{
     #food-container-h2{
         font-size: 20px;
         line-height: 1;
+    }
+
+}
+
+@media (max-width:360px){
+    .product-grid{
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
 }

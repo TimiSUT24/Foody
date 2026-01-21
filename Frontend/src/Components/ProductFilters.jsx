@@ -10,7 +10,6 @@ export default function ProductFilters({
     updateFilter,
 }){
     const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [brands, setBrands] = useState([])
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
@@ -55,10 +54,10 @@ export default function ProductFilters({
             <div id="filter-container-header">
             <h3  id="filter-container-header-text" style={{display:"flex",alignItems:"center",gap:10}}> <img src="/IMG/icons8-sort-50.png" style={{height:40}}></img> Sortera:</h3>
 
-            <div className="hamburger" onClick={toggleMenu}>
-                <span style={{backgroundColor:"black"}} />
-                <span style={{backgroundColor:"black"}}/>
-                <span style={{backgroundColor:"black"}}/>
+            <div className="hamburger-filter" onClick={toggleMenu}>
+                <span/>
+                <span/>
+                <span/>
             </div> 
             </div>
 
@@ -71,19 +70,19 @@ export default function ProductFilters({
                         onChange={(e) => updateFilter({name: e.target.value})}
                         className="search">
                     </input>                  
-                </div>       
-            
-            <select 
-            value ={filters.brand} 
-            onChange={(e) => updateFilter({brand: e.target.value})}
-            className="brand-select">
-                <option value="">Alla varumärken</option>
-                {brands.map((brand, index) => (
-                    <option key={index} value={brand}>
-                        {brand}
-                    </option>
-                ))}
-            </select>
+                </div>    
+
+                <select 
+                    value ={filters.brand} 
+                    onChange={(e) => updateFilter({brand: e.target.value})}
+                    className="brand-select">
+                        <option value="">Alla varumärken</option>
+                        {brands.map((brand, index) => (
+                            <option key={index} value={brand}>
+                                {brand}
+                            </option>
+                        ))}
+                </select>        
 
             <div className="category-menu">
                 <button id="menu-button">Välj kategori <icon><MdKeyboardArrowDown style={{width:20,height:20,paddingLeft:52}}/></icon></button>
@@ -160,21 +159,29 @@ export default function ProductFilters({
                     ))}
                 </div>
             </div>
-
-                    <input  
-                    type="number"
-                    placeholder="Pris"
-                    value={filters.price}
-                    onChange={(e) =>{ 
-                        const value = e.target.value
-                        if(value === ""){
-                            updateFilter({price: ""})
-                            return;
-                        }
-                        updateFilter({price: Number(value)})}}
-                    id="filter-price"
-                    min="0"
-                />
+                    
+                    <div className="price-div">
+                        <input  
+                            type="number"
+                            placeholder="Pris"
+                            value={filters.price}
+                            onChange={(e) =>{ 
+                                const value = e.target.value
+                                if(value === ""){
+                                    updateFilter({price: ""})
+                                    return;
+                                }
+                                updateFilter({price: Number(value)})}}
+                            id="filter-price"
+                            min="0"
+                            style={{paddingLeft:"5px"}}
+                        />
+                    </div>
+                   
+                   <div className="offer-div">                        
+                        <input type="checkbox" id="offer-checkbox" checked={filters.offer} onChange={(e) => updateFilter({offer: e.target.checked})}/>
+                        <p style={{fontSize:14}}>Erbjudanden</p>
+                   </div>
            
 
             <button id="reset-filter" onClick = {() =>                
@@ -184,7 +191,8 @@ export default function ProductFilters({
                 subSubCategoryId: null,
                 price: "",
                 brand: "",
-                name: ""
+                name: "",
+                offer: false
             })}>Rensa filter</button>
             
         </div>

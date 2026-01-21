@@ -35,7 +35,6 @@ export default function NavBar (){
 
   },[cart])
     
-
     useEffect(() => {
     // Map paths to body CSS classes
     const bodyClassMap = {
@@ -96,7 +95,6 @@ export default function NavBar (){
     return (
       <>
         <NavLink to="/">Hem</NavLink>
-        <NavLink to="/deals">Erbjudanden</NavLink>
         <NavLink to="/about">Om</NavLink>
         <NavLink to="/login">Logga in</NavLink>
         <NavLink to="/register">Registrera</NavLink>      

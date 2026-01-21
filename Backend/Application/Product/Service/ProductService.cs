@@ -98,12 +98,11 @@ namespace Application.Product.Service
                     Brand = product.Brand,
                     Country = product.Country,
                     ProductInformation = product.ProductInformation,
-
+                    OfferName = product.Offer?.Name,
                     CategoryId = (int)product.CategoryId,
                     SubCategoryId = (int)product.SubCategoryId,
                     SubSubCategoryId = (int)product.SubSubCategoryId
-                  
-
+       
                 },
                 Nutrition = product.NutritionValues?.Select(item => new NutritionValueResponse
                 {
@@ -148,8 +147,7 @@ namespace Application.Product.Service
                     WeightText = product.WeightText,
                     WeightValue = (decimal)product.WeightValue,
                     IsAvailable = product.Stock > 0,
-
-
+                    OfferName = product.Offer?.Name
                 };
             }).ToList();
 
