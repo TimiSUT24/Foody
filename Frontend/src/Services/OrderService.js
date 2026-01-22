@@ -2,8 +2,8 @@ import api from "../Api/api";
 
 export const OrderService = {
 
-    myOrders: async () => {
-        const response = await api.get("/api/Order/MyOrders");
+    myOrders: async (status) => {
+        const response = await api.get("/api/Order/MyOrders",{params: {status}});
         return response.data;
     },
 

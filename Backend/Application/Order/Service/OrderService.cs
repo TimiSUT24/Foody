@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Enum;
 
 namespace Application.Order.Service
 {
@@ -142,9 +143,9 @@ namespace Application.Order.Service
             return mapping;
         }
 
-        public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, CancellationToken ct)
+        public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, OrderStatus? status, CancellationToken ct)
         {
-            var userOrders = await _uow.Orders.GetMyOrders(userId, ct);
+            var userOrders = await _uow.Orders.GetMyOrders(userId, status, ct);
             if (userOrders == null)
             {
                 throw new KeyNotFoundException("User has no orders");

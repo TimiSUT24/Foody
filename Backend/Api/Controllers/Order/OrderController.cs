@@ -1,5 +1,6 @@
 ﻿using Application.Order.Dto.Request;
 using Application.Order.Interfaces;
+using Domain.Enum;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Http;
@@ -55,9 +56,9 @@ namespace Api.Controllers.Order
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
         [ProducesResponseType(statusCode: 401)]
-        public async Task<IActionResult> GetMyOrders(CancellationToken ct)
+        public async Task<IActionResult> GetMyOrders(OrderStatus? status,CancellationToken ct)
         {
-            var result = await _orderService.GetUserOrders(UserId, ct);
+            var result = await _orderService.GetUserOrders(UserId, status, ct);
             return Ok(result);
         }
 

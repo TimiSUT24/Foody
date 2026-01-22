@@ -72,6 +72,57 @@
  flex-direction: column;
 }
 
+.order-filter-div{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap:3px;
+}
+
+#order-filter-button-div{
+    width:100%;
+    background-color: white;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.order-filter-button{
+    width:100%;
+    height:30px;
+    border:1px solid;
+    cursor: pointer;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+#order-btn1:hover
+{
+    background-color: rgb(255, 193, 7) !important;
+    color:white !important;
+}
+
+#order-btn2:hover{
+    background-color:rgb(13, 202, 240) !important;
+    color: white !important;
+}
+
+#order-btn3:hover{
+    background-color:rgb(13, 110, 253) !important;
+    color: white !important;
+}
+
+#order-btn4:hover{
+    background-color:rgb(25, 135, 84) !important;
+    color: white !important;
+}
+
+
 @media (max-width: 1055px){
     .user-profile,
     .tabs,

@@ -29,7 +29,6 @@ body{
     width:400px !important;
     height:45px !important;
     border-style:none !important;
-    
 }
 .search:focus{
     outline: none !important;
@@ -41,6 +40,11 @@ body{
         line-height: 1;
     }
 
+    #food-container-h2,
+    #food-container-p{
+        padding-right:20px;
+        padding-left:20px;
+    }
 }
 
 @media (max-width:360px){
