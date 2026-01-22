@@ -49,7 +49,11 @@ useEffect(() => {
     }, [
         filters.categoryId,
         filters.subCategoryId,
-        filters.subSubCategoryId
+        filters.subSubCategoryId,
+        filters.brand,
+        filters.price,
+        filters.search,
+        filters.offer
     ]);
 
      useEffect(() => {
@@ -63,15 +67,20 @@ useEffect(() => {
             controller.signal // allow request cancellation 
         )
             .then(res => {
-                setProducts(prev =>
-                    page === 1 ? res.items : [...prev, ...res.items]
-                );
-                setHasMore(res.hasMore);
+                setProducts(prev => {
+                        if (page === 1) return res.items;
+                        //prevent duplicate keys replaces old with new value
+                        const map = new Map(prev.map(p => [p.id, p]));
+                        res.items.forEach(p => map.set(p.id, p));
 
-                if(page === 1){
-                    isResettingRef.current = false;
-                    isInitialLoadRef.current = false;
-                }
+                        return Array.from(map.values());
+                });
+                    setHasMore(res.hasMore);
+
+                    if(page === 1){
+                        isResettingRef.current = false;
+                        isInitialLoadRef.current = false;
+                    }
             })
             .catch(err => {
                 if (err.name !== "AbortError") {
@@ -89,7 +98,7 @@ useEffect(() => {
 
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && !isResettingRef.current && !isInitialLoadRef.current) {
+                if (entry.isIntersecting && !isResettingRef.current && !isInitialLoadRef.current && !loading && hasMore) {
                     setPage(prev => prev + 1);
                 }
             },

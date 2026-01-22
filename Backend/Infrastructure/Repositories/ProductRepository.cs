@@ -98,7 +98,7 @@ namespace Infrastructure.Repositories
 
             // Filter by Price
             if (price.HasValue && price > 0)
-                query = query.Where(s => s.Price <= price);
+                query = query.Where(s => s.Price >= price);
 
             var utcNow = DateTime.UtcNow;
             if(offer == true)

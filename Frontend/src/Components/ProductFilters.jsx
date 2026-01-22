@@ -27,8 +27,6 @@ export default function ProductFilters({
             setCategories(Array.isArray(data) ? data : data.categories);
         } catch (err) {
             console.error("Failed to load categories",err);
-        }finally{
-            setLoading(false);
         }
     };
 
