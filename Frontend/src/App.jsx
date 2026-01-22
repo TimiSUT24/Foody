@@ -9,6 +9,7 @@ import CompletePage from './Pages/CompletePage'
 import UserPage from './Pages/User/UserPage'
 import UserProfilePage from './Pages/User/UserProfilePage'
 import OrderThankYouPage from './Pages/OrderThankYouPage'
+import AboutPage from './Pages/AboutPage'
 import './App.css'
 
 
@@ -20,6 +21,7 @@ function App() {
     <NavBar></NavBar>
         <Routes> 
         <Route path="/" element={<HomePage />}></Route>
+        <Route path="/about" element={<AboutPage />}></Route>
         <Route path="/cart" element={<CartPage />}></Route>
         <Route path="/product/:id" element={<DetailsPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>

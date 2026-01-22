@@ -1,0 +1,104 @@
+.about-page{
+    margin-top:150px;
+    max-width:1000px;
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    gap:20px;
+    align-items: center;
+    justify-self: center;
+}
+
+.about-header-h1{
+    padding:0;
+}
+
+.about-description-div{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    background-color: white;
+    text-align: start;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    
+}
+
+.about-description-div h3,
+.about-description-div p{
+    padding:20px;
+    margin:0;
+}
+
+.about-usage-grid{
+    display:grid;
+    width:100%;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));  
+    gap:20px;
+}
+
+.about-usage-grid-item{
+    display:flex;
+    flex-direction: column;
+    text-align: start;
+    padding:20px;
+    max-height:300px;
+    background-color: white;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.about-usage-icon{
+    width:40px;
+    height:40px;
+    color:white;
+}
+
+.about-usage-icon-tag{
+    background-color: hsl(222, 25%, 16%);
+    width:fit-content;
+    border-radius:30px;
+    -webkit-border-radius:30px;
+    -moz-border-radius:30px;
+    -ms-border-radius:30px;
+    -o-border-radius:30px;
+    padding:10px;
+}
+
+.about-account{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    background-color: white;
+    text-align: start;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.about-account h3,
+.about-account p,
+.about-account li{
+    margin:0;
+    padding:20px;
+}
+
+.about-account li{
+    color:rgb(99, 189, 99);
+    -webkit-text-fill-color: black;
+    padding:3px;
+}
+
+@media (max-width:500px){
+    .about-usage-grid{
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));  
+    }
+}
