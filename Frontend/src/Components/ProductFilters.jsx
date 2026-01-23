@@ -83,7 +83,11 @@ export default function ProductFilters({
                 </select>        
 
             <div className="category-menu">
-                <button id="menu-button">Välj kategori <icon><MdKeyboardArrowDown style={{width:20,height:20,paddingLeft:52}}/></icon></button>
+                <div id="menu-button-div">
+                    <button className="menu-button">Välj kategori </button>
+                    <icon><MdKeyboardArrowDown className="menu-button-icon"/></icon>
+                </div>
+               
                 
 
                 <div className="menu-dropdown">
@@ -98,7 +102,9 @@ export default function ProductFilters({
                         Alla kategorier
                     </div>
 
-                    {categories.map(cat => (
+                    {categories.map(cat => {  
+                        const isCatActive = filters.categoryId === cat.id;  
+                        return (   
                         <div className="menu-item" key={cat.id}>
                             <span
                                 onClick={() => 
@@ -110,11 +116,11 @@ export default function ProductFilters({
                                 }
                             >
                                 {cat.mainCategory}
-                                {cat.subCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" style={{width:15}}></img>}
+                                {cat.subCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png"  className={`menu-item-arrow ${isCatActive ? "open" : ""}`} style={{width:15}}></img>}
                             </span>
 
                                 {/*Sub category */}
-                            <div className="submenu">
+                            <div className={`submenu ${isCatActive ? "open" : ""}`}>
                                 {cat.subCategories?.map(sc => (
                                     <div className="submenu-item" key={sc.id}>
                                         <span
@@ -127,7 +133,7 @@ export default function ProductFilters({
                                             }
                                         >
                                             {sc.name}
-                                            {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" style={{width:15}}></img>}
+                                            {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" className={`menu-item-arrow ${isCatActive ? "open" : ""}`}style={{width:15}}></img>}
                                         </span>
 
                                         {/* Subsub category */}
@@ -154,7 +160,8 @@ export default function ProductFilters({
                             </div>
 
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
                     
