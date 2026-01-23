@@ -12,7 +12,9 @@ const decodeUser = (token) => {
         decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
       username:
         decoded.username ||
-        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+        roles: decoded.roles ||
+        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
     };
   } catch {
     return null;

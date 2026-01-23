@@ -1,5 +1,6 @@
 ﻿using Application.Product.Dto.Request;
 using Application.Product.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -17,7 +18,7 @@ namespace Api.Controllers.Product
         {
             _productService = productService;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:409)]
@@ -27,7 +28,7 @@ namespace Api.Controllers.Product
             var result = await _productService.AddAsync(request, ct);
             return CreatedAtAction(nameof(CreateProduct), result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetSome")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
@@ -63,7 +64,7 @@ namespace Api.Controllers.Product
             var result = await _productService.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price,offer,page,pageSize, ct);
             return Ok(result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("update")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -74,6 +75,7 @@ namespace Api.Controllers.Product
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]

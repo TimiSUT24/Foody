@@ -71,6 +71,7 @@ namespace Infrastructure.Repositories
         {
             IQueryable<Product> query = _context.Products
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(s => s.Offer)
                 .Include(s => s.Category)
                 .ThenInclude(s => s.SubCategories)

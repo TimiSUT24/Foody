@@ -1,5 +1,6 @@
 ﻿using Application.Offer.Dto.Request;
 using Application.Offer.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Api.Controllers.Offer
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class OfferController : ControllerBase
     {
         private readonly IOfferService _offerService; 

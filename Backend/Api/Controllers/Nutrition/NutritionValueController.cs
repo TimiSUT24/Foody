@@ -1,5 +1,6 @@
 ﻿using Application.NutritionValue.Dto.Request;
 using Application.NutritionValue.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ namespace Api.Controllers.Nutrition
             _nutritionValueService = nutritionValueService;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:404)]
@@ -44,6 +46,8 @@ namespace Api.Controllers.Nutrition
             return Ok(result);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPut("update")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -54,6 +58,8 @@ namespace Api.Controllers.Nutrition
             return Ok(result);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]

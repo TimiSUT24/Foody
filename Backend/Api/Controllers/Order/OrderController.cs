@@ -3,6 +3,7 @@ using Application.Order.Interfaces;
 using Domain.Enum;
 using Domain.Interfaces;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -29,7 +30,7 @@ namespace Api.Controllers.Order
                 ? id
                 : throw new UnauthorizedAccessException("Ingen inloggad användare.");
 
-
+        [Authorize]
         [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:404)]
@@ -42,6 +43,7 @@ namespace Api.Controllers.Order
             
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet("{id:Guid}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -52,6 +54,7 @@ namespace Api.Controllers.Order
             return Ok(result);
         }
 
+        [Authorize(Roles ="User")]
         [HttpGet("MyOrders")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -62,6 +65,7 @@ namespace Api.Controllers.Order
             return Ok(result);
         }
 
+        [Authorize(Roles = "User")]
         [HttpGet("MyOrder{orderId:guid}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -72,6 +76,7 @@ namespace Api.Controllers.Order
             return Ok(result);
         }
 
+        //Security issue 
         [HttpPatch("update-order")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -80,8 +85,8 @@ namespace Api.Controllers.Order
             var result = await _orderService.UpdateOrder(request, ct);
             return Ok(result);
         }
-        
 
+        [Authorize(Roles = "User")]
         [HttpPut("Cancel{orderId:guid}")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]

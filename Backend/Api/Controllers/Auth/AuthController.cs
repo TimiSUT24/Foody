@@ -73,6 +73,7 @@ namespace Api.Controllers.Auth
             return Ok(result);
         }
 
+        [Authorize(Roles ="User")]
         [HttpPatch("update-profile")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 401)]
@@ -84,7 +85,7 @@ namespace Api.Controllers.Auth
             SetRefreshCookie(result.RefreshToken);
             return Ok(result);
         }
-
+        [Authorize(Roles = "User")]
         [HttpPut("change-password")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 401)]
@@ -96,7 +97,7 @@ namespace Api.Controllers.Auth
             SetRefreshCookie(result.RefreshToken);
             return Ok(result);
         }
-
+        [Authorize(Roles = "User")]
         [HttpPost("logout")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 401)]
