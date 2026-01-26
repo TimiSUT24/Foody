@@ -1,4 +1,4 @@
-import {useState, useEffect, use} from 'react'
+import {useState, useEffect} from 'react'
 import {CategoryService} from '../Services/CategoryService'
 import { ProductService } from '../Services/ProductService';
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -120,20 +120,22 @@ export default function ProductFilters({
                             </span>
 
                                 {/*Sub category */}
-                            <div className={`submenu ${isCatActive ? "open" : ""}`}>
-                                {cat.subCategories?.map(sc => (
+                            <div className="submenu" >
+                                {cat.subCategories?.map(sc => {
+                                    const isSubActive = filters.subCategoryId === sc.id;
+                                    return(
                                     <div className="submenu-item" key={sc.id}>
                                         <span
                                             onClick={() =>                                              
                                                 updateFilter({
                                                     categoryId: cat.id,
-                                                    subCategoryId: sc.id,
+                                                    subCategoryId: isSubActive ? null :sc.id,
                                                     subSubCategoryId: null
                                                 })
                                             }
                                         >
                                             {sc.name}
-                                            {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" className={`menu-item-arrow ${isCatActive ? "open" : ""}`}style={{width:15}}></img>}
+                                            {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" className={`menu-item-arrow ${isSubActive ? "open" : ""}`}style={{width:15}}></img>}
                                         </span>
 
                                         {/* Subsub category */}
@@ -156,7 +158,8 @@ export default function ProductFilters({
                                         </div>
 
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
                         </div>

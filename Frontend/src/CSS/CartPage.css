@@ -341,6 +341,10 @@
         margin:0;
     }
 
+    .cart-item{
+        height:fit-content;
+    }
+
     .checkout-price{
         text-align: left;
         gap:10px;
