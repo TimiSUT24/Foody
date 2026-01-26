@@ -1,28 +1,49 @@
-import {NavLink, useLocation} from 'react-router-dom'
+import {NavLink, useLocation, useNavigate} from 'react-router-dom'
 import {useEffect, useState} from 'react'
 import {useCart} from "../Context/CartContext"
+import api from "../Api/api"
 import { PiShoppingCartSimpleLight } from "react-icons/pi";
-//import { useAuth } from "../Context/AuthContext";
+import { useAuth } from "../Context/AuthContext";
 import "../CSS/NavBar.css"
 
 
 export default function NavBar (){
-    //const {user} = useAuth();
+    const {user} = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(0);
     const location = useLocation();
-    const {totalItems, totalPrice} = useCart();
+    const {totalItems, cart} = useCart();
+    const navigate = useNavigate();
 
     const toggleMenu = () => setMenuOpen(p => !p)
 
-    //const roles = Array.isArray(user?.roles) ? user.roles : user?.role ? [user.role] : [];
+    const roles = user?.roles ?? [];
 
-    //const isAdmin = roles.includes("Admin");
-    //const isUser = roles.includes("User");
+    const isAdmin = roles.includes("Admin");
+    const isUser = roles.includes("User");
 
+    //handle so user cant click cart link if logged out
+    const handleCartLink = (e) => {
+      if(!user){
+        e.preventDefault();
+        navigate("/login");
+      }
+    }
+    
     useEffect(() => {
       setMenuOpen(false);
     },[location.pathname])
 
+      useEffect(() => {
+    const fetchTotal = async () => {
+        const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:""})
+        setTotalPrice(response.data.total);
+    };
+    fetchTotal();
+   
+
+  },[cart])
+    
     useEffect(() => {
     // Map paths to body CSS classes
     const bodyClassMap = {
@@ -55,46 +76,45 @@ export default function NavBar (){
 
     const renderLinks = () => {
     //ADMIN
-    /*if (isAdmin) {
+    if (isAdmin) {
       return (
         <>
           <NavLink to="/">Hem</NavLink>
-          <NavLink to="/products">Produkter</NavLink>
           <NavLink to="/cart">Varukorg</NavLink>
           <NavLink to="/admin">Admin</NavLink>
           <NavLink to="/profile">Min Profil</NavLink>
         </>
       );
-    }*/
+    }
 
     //LOGGED IN USER
-    /*if (isUser) {
+    if (isUser) {
       return (
         <>
           <NavLink to="/">Hem</NavLink>
-          <NavLink to="/products">Produkter</NavLink>
-          <NavLink to="/cart">Varukorg</NavLink>
-          <NavLink to="/profile">Min Profil</NavLink>
+          <NavLink to="/about">Om</NavLink>
+          <NavLink className="cart-link" to="/cart"><PiShoppingCartSimpleLight style={{width:23,height:23,color:"white",marginRight:7}} />Varukorg {totalPrice.toFixed(2)} kr
+            {totalItems !== 0 &&  <div className="quantity-div">
+                  <p id="navbar-quantity" >{totalItems !== 0 && totalItems}</p>
+                </div>}       
+          </NavLink>
+          <NavLink to="/user-page">Mina sidor</NavLink>
         </>
       );
-    }*/
+    }
 
     //LOGGED OUT 
     return (
       <>
         <NavLink to="/">Hem</NavLink>
-        <NavLink to="/deals">Erbjudanden</NavLink>
         <NavLink to="/about">Om</NavLink>
         <NavLink to="/login">Logga in</NavLink>
         <NavLink to="/register">Registrera</NavLink>      
-        <NavLink className="cart-link" to="/cart"><PiShoppingCartSimpleLight style={{width:23,height:23,color:"white",marginRight:7}} />Varukorg {totalPrice.toFixed(2)} kr 
-            <div className="quantity-div">
+        <NavLink className={`cart-link ${!user ? "disabled" : ""}`} to="/cart" onClick={handleCartLink}><PiShoppingCartSimpleLight style={{width:23,height:23,color:"white",marginRight:7}} />Varukorg {totalPrice.toFixed(2)} kr
+        {totalItems !== 0 &&  <div className="quantity-div">
               <p id="navbar-quantity" >{totalItems !== 0 && totalItems}</p>
-            </div>
+            </div>}       
         </NavLink>         
-        <NavLink to="/user-page">Mina sidor</NavLink>
-        <NavLink to="/thank-you-page">thankyou</NavLink>
-        
       </> 
     );
   };

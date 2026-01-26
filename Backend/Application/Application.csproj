@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="OrderItem\**" />
+    <EmbeddedResource Remove="OrderItem\**" />
+    <None Remove="OrderItem\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="15.0.1" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
@@ -31,12 +37,6 @@
   <ItemGroup>
     <Folder Include="Category\Dto\Request\" />
     <Folder Include="Category\Validator\" />
-    <Folder Include="OrderItem\Dto\Request\" />
-    <Folder Include="OrderItem\Dto\Response\" />
-    <Folder Include="OrderItem\Interfaces\" />
-    <Folder Include="OrderItem\Mapper\" />
-    <Folder Include="OrderItem\Service\" />
-    <Folder Include="OrderItem\Validator\" />
   </ItemGroup>
 
   <ItemGroup>

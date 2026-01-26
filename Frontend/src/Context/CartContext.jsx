@@ -45,6 +45,14 @@ export function CartProvider({children}){
         })
     }
 
+    const removeWholeProductFromCart = (product) => {
+        setCart(prev => {
+            const item = prev.find(p => p.id === product.id);
+            if(!item) return prev;
+            return prev.filter(p => p.id !== product.id);
+        })
+    }
+
     const getQty = (id) => {
        return cart.find(p => p.id === id)?.qty ?? 0;
     }
@@ -56,13 +64,15 @@ export function CartProvider({children}){
     }
 
     const totalItems = cart.reduce((sum,item) => sum + item.qty, 0);
-    const totalPrice = cart.reduce((sum,item) => sum + item.price * item.qty, 0);
+    const totalPrice = cart.reduce((sum,item) => sum + item.finalPrice * item.qty, 0);
+    
 
     return (
         <CartContext.Provider value ={{
             cart,
             addToCart,
             removeFromCart,
+            removeWholeProductFromCart,
             clearCart,
             getQty,
             totalItems,

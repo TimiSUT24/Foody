@@ -11,13 +11,17 @@ namespace Domain.Interfaces
     {
         Task<Product> GetProductDetailsById(int id, CancellationToken ct);
         Task<IEnumerable<string?>> GetBrands(int? categoryId);
-        Task<IEnumerable<Product>> FilterProducts(
-            string? name,
-            string? brand,
-            int? categoryId,
-            int? subCategoryId,
-            int? subSubCategoryId,
-            decimal? price,
-            CancellationToken ct);
+        Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken ct);
+        Task<(List<Product> Items, bool HasMore)> FilterProducts(
+           string name,
+           string? brand,
+           int? categoryId,
+           int? subCategoryId,
+           int? subSubCategoryId,
+           decimal? price,
+           bool? offer,
+           int page,
+           int pageSize,
+           CancellationToken ct);
     }
 }

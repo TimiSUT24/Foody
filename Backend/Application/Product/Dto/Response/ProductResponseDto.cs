@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Application.Offer.Dto.Response;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,5 +32,8 @@ namespace Application.Product.Dto.Response
         public int CategoryId { get; init; }
         public int SubCategoryId { get; init; }
         public int SubSubCategoryId { get; init; }  
+        public decimal FinalPrice { get; init; } 
+        public bool HasOffer { get; init; }
+        public string? OfferName { get; init; } = string.Empty;
     }
 }

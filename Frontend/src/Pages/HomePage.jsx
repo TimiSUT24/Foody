@@ -1,4 +1,4 @@
-import {useState,useEffect} from 'react'
+import {useState,useEffect, useRef} from 'react'
 import {ProductService} from "../Services/ProductService"
 import {useProductFilters} from "../Hooks/useProductFilters";
 import ProductFilters from "../Components/ProductFilters";
@@ -10,6 +10,15 @@ import "../CSS/ProductCard.css"
 export default function HomePage(){
     const [products, setProducts] = useState([]);
     const [searchParams] = useSearchParams();
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const pageSize = 25;
+    const loadMoreRef = useRef(null); // ref does not trigger re-renders
+
+    const isResettingRef = useRef(false);
+    const isInitialLoadRef = useRef(true);
+
     
     const {
         filters,
@@ -21,21 +30,6 @@ export default function HomePage(){
     const subSubCategoryIdParam = searchParams.get("subSubCategoryId");
 
     useEffect(() => {
-    const controller = new AbortController();//cancel async operation thats in progress
-
-    ProductService
-        .getProducts(filters, controller.signal)
-        .then(setProducts)
-        .catch(err => {
-            if (err.name !== "AbortError") {
-                console.error(err);
-            }
-        });
-
-    return () => controller.abort();
-}, [filters]);
-
-useEffect(() => {
     if (!categoryIdParam) return;
 
     updateFilter({ categoryId: categoryIdParam ?Number(categoryIdParam) : null,
@@ -43,13 +37,87 @@ useEffect(() => {
         subSubCategoryId: subSubCategoryIdParam ? Number(subSubCategoryIdParam) : null
      });
 }, [categoryIdParam,subCategoryIdParam,subSubCategoryIdParam]);
+
+useEffect(() => {
+    
+        isResettingRef.current = true; // access ref value 
+        isInitialLoadRef.current = true;
+
+        setProducts([]);
+        setPage(1);
+        setHasMore(true);
+    }, [
+        filters.categoryId,
+        filters.subCategoryId,
+        filters.subSubCategoryId,
+        filters.brand,
+        filters.price,
+        filters.search,
+        filters.offer
+    ]);
+
+     useEffect(() => {
+        if (page > 1 &&!hasMore) return;
+
+        const controller = new AbortController();
+        setLoading(true);
+
+        ProductService.getProducts(
+            { ...filters, page, pageSize },
+            controller.signal // allow request cancellation 
+        )
+            .then(res => {
+                setProducts(prev => {
+                        if (page === 1) return res.items;
+                        //prevent duplicate keys replaces old with new value
+                        const map = new Map(prev.map(p => [p.id, p]));
+                        res.items.forEach(p => map.set(p.id, p));
+
+                        return Array.from(map.values());
+                });
+                    setHasMore(res.hasMore);
+
+                    if(page === 1){
+                        isResettingRef.current = false;
+                        isInitialLoadRef.current = false;
+                    }
+            })
+            .catch(err => {
+                if (err.name !== "AbortError") {
+                    console.error(err);
+                }
+            })
+            .finally(() => setLoading(false));
+
+        return () => controller.abort(); //abort an async operation before it has completed
+    }, [filters, page]);
+
+
+    useEffect(() => {
+        if (!hasMore || loading) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !isResettingRef.current && !isInitialLoadRef.current && !loading && hasMore) {
+                    setPage(prev => prev + 1);
+                }
+            },
+            { rootMargin: "200px" }
+        );
+
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [hasMore, loading]);
     
     
     return (
         <div className ="home-container">
             <div className="food-container">
                 <h2 id="food-container-h2"style={{position:"absolute",top:250,placeSelf:"center",color:"white",zIndex:1}}>Premiumlivsmedel, levererade färska</h2>
-                <p style={{position:"absolute",top:300,placeSelf:"center",color:"white",zIndex:1}}>Upptäck utsökta köttdetaljer, hantverksbakat bröd och den allra färskaste havsmaten — direkt från noggrant utvalda kvalitetsleverantörer.</p>
+                <p  id="food-container-p"style={{position:"absolute",top:300,placeSelf:"center",color:"white",zIndex:1}}>Upptäck utsökta köttdetaljer, hantverksbakat bröd och den allra färskaste havsmaten — direkt från noggrant utvalda kvalitetsleverantörer.</p>
                 <div style={{position:"absolute",backgroundColor:"black",top:150,width:"100vw",height:400,zIndex:0,opacity:"55%" }}></div>
                 <img src="IMG/food.jpg" alt="" className="food-pic" />
             </div>
@@ -64,6 +132,15 @@ useEffect(() => {
                     <ProductCard key={p.id} product={p}></ProductCard>         
                 ))}
             </div>
+            <div ref={loadMoreRef} />
+
+            
+            {loading && (
+                <p style={{ textAlign: "center", margin: "2rem 0" }}>
+                    Loading…
+                </p>
+            )}
+            
         </div>
     )
 

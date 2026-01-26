@@ -9,6 +9,9 @@ using Application.Category.Service;
 using Application.NutritionValue.Interfaces;
 using Application.NutritionValue.Mapper;
 using Application.NutritionValue.Service;
+using Application.Offer.Interfaces;
+using Application.Offer.Mapper;
+using Application.Offer.Service;
 using Application.Order.Interfaces;
 using Application.Order.Mapper;
 using Application.Order.Service;
@@ -26,6 +29,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Data;
 using Infrastructure.ExternalService;
+using Infrastructure.HelperMethod;
 using Infrastructure.Repositories;
 using Infrastructure.Seeding;
 using Infrastructure.UnitOfWork;
@@ -99,6 +103,8 @@ namespace Api
             builder.Services.AddSingleton<IEmailService, EmailService>();
             builder.Services.AddHttpClient<IPostnordService, PostnordService>();
             builder.Services.AddSingleton<IStripeService, StripeService>();
+            builder.Services.AddScoped<ICalculateDiscount, CalculateDiscount>();
+            builder.Services.AddScoped<IOfferService, OfferService>();
 
 
             //Unit Of Work + Repositories
@@ -109,6 +115,7 @@ namespace Api
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 
             //Mapper
             builder.Services.AddAutoMapper(cfg =>
@@ -119,7 +126,8 @@ namespace Api
             typeof(AuthProfile),
             typeof(NutritionValueProfile),
             typeof(OrderProfile),
-            typeof(CategoryProfile));
+            typeof(CategoryProfile),
+            typeof(OfferProfile));
 
             //AutoValidation
             builder.Services.AddValidatorsFromAssembly(typeof(CreateProductValidator).Assembly);

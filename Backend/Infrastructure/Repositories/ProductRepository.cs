@@ -22,12 +22,22 @@ namespace Infrastructure.Repositories
         {
             var query = await _context.Products
                 .AsNoTracking()
+                .Include(s => s.Offer)
                 .Include(s => s.ProductAttributes)
                 .Include(s => s.NutritionValues)
                 .Include(s => s.Category).ThenInclude(s => s.SubCategories).ThenInclude(s => s.SubSubCategories)
                 .FirstOrDefaultAsync(s => s.Id == id, ct);
 
             return query; 
+        }
+
+        public async Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken ct)
+        {
+            return await _context.Products
+                .AsNoTracking()
+                .Include(s => s.Offer)
+                .Where(s => ids.Contains(s.Id))
+                .ToListAsync(ct);
         }
 
         public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
@@ -46,18 +56,23 @@ namespace Infrastructure.Repositories
                 .Distinct()
                 .ToListAsync();
         }
-
-        public async Task<IEnumerable<Product>> FilterProducts(  
+   
+        public async Task<(List<Product> Items, bool HasMore)> FilterProducts(  
             string name,
             string? brand,
             int? categoryId,
             int? subCategoryId,
             int? subSubCategoryId,
             decimal? price,
+            bool? offer,
+            int page,
+            int pageSize,
             CancellationToken ct)
         {
             IQueryable<Product> query = _context.Products
                 .AsNoTracking()
+                .AsSplitQuery()
+                .Include(s => s.Offer)
                 .Include(s => s.Category)
                 .ThenInclude(s => s.SubCategories)
                 .ThenInclude(s => s.SubSubCategories);
@@ -84,9 +99,28 @@ namespace Infrastructure.Repositories
 
             // Filter by Price
             if (price.HasValue && price > 0)
-                query = query.Where(s => s.Price <= price);
-            
-            return await query.Take(200).OrderBy(s => s.Price).ToListAsync(ct);
+                query = query.Where(s => s.Price >= price);
+
+            var utcNow = DateTime.UtcNow;
+            if(offer == true)
+            {
+                query = query.Where(s => s.Offer != null && s.Offer.StartsAtUtc <= utcNow && s.Offer.EndsAtUtc >= utcNow);
+
+            }
+
+                var items = await query
+                    .OrderBy(p => p.Price)
+                    .ThenBy(p => p.Id)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize + 1)
+                    .ToListAsync(ct);
+
+            bool hasMore = items.Count > pageSize;
+
+            return (
+                Items: items.Take(pageSize).ToList(),
+                HasMore: hasMore
+                );
 
         }
     }

@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Enum;
+using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -18,15 +19,22 @@ namespace Infrastructure.Repositories
             _context = context; 
         }
 
-        public async Task<List<Order>> GetMyOrders(Guid userId, CancellationToken ct)
+        public async Task<List<Order>> GetMyOrders(Guid userId, OrderStatus? status, CancellationToken ct)
         {
-            return await _context.Orders
-                .AsNoTracking()
-                .Include(o => o.ShippingInformation)
-                .Include(o => o.OrderItems)
-                    .ThenInclude(f => f.Food)
-                    .Include(u => u.User)
-                .Where(o => o.UserId == userId)
+             IQueryable<Order> query = _context.Orders
+             .AsNoTracking()
+             .Include(o => o.ShippingInformation)
+             .Include(o => o.OrderItems)
+                 .ThenInclude(i => i.Food)
+             .Include(o => o.User)
+             .Where(o => o.UserId == userId);
+
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.OrderStatus == status.Value);
+            }
+
+            return await query
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync(ct);
         }

@@ -4,6 +4,7 @@ using Application.Order.Interfaces;
 using AutoMapper;
 using Domain.Interfaces;
 using Domain.Models;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Enum;
 
 namespace Application.Order.Service
 {
@@ -20,12 +22,14 @@ namespace Application.Order.Service
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
+        private readonly ICalculateDiscount _discount;
 
-        public OrderService(IUnitOfWork uow, IMapper mapper, IEmailService emailService)
+        public OrderService(IUnitOfWork uow, IMapper mapper, IEmailService emailService, ICalculateDiscount discount)
         {
             _uow = uow;
             _mapper = mapper;
             _emailService = emailService;
+            _discount = discount;
         }
 
         private decimal ConvertToKg(decimal? value, string? unit)
@@ -83,7 +87,8 @@ namespace Application.Order.Service
                 {
                     FoodId = item.FoodId,
                     Quantity = item.Quantity,
-                    UnitPrice = product.Price,
+                    UnitPrice = totals.UnitPrice,
+                    UnitPriceOriginal = product.Price,
                     WeightValue = (decimal)product.WeightValue
                 };
                 product.Stock -= item.Quantity;
@@ -138,9 +143,9 @@ namespace Application.Order.Service
             return mapping;
         }
 
-        public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, CancellationToken ct)
+        public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, OrderStatus? status, CancellationToken ct)
         {
-            var userOrders = await _uow.Orders.GetMyOrders(userId, ct);
+            var userOrders = await _uow.Orders.GetMyOrders(userId, status, ct);
             if (userOrders == null)
             {
                 throw new KeyNotFoundException("User has no orders");
@@ -263,18 +268,20 @@ namespace Application.Order.Service
             decimal momsRate = 0.12M;
             decimal shippingTax = 0M;
             decimal total = 0M;
-            var products = await _uow.Products.GetAllAsync(ct);
+            var unitPrice = 0M;
+            var productIds = cartItems.Items.Select(s => s.Id).ToList();
+
+            var products = await _uow.Products.GetByIdsAsync(productIds, ct);
+            var now = DateTime.UtcNow;
+
             foreach (var item in cartItems.Items)
             {
 
-                if (!products.Any(s => s.Id == item.Id))
-                {
-                    throw new KeyNotFoundException("Invalid id");
-                }
+                var product = products.FirstOrDefault(s => s.Id == item.Id);
+                if (product == null) throw new KeyNotFoundException($"Product id {product.Id} not found");
 
-                var product = await _uow.Products.GetByIdAsync(item.Id, ct);
-
-                subTotal += product.Price * item.Qty;                
+                unitPrice = _discount.GetFinalPrice(product, now);
+                subTotal += unitPrice * item.Qty;                
           
             }
 
@@ -292,6 +299,7 @@ namespace Application.Order.Service
                 Moms = decimal.Round(momsTotal, 2, MidpointRounding.AwayFromZero),
                 Total = decimal.Round(total,2,MidpointRounding.AwayFromZero),
                 ShippingTax = shippingTax,
+                UnitPrice = unitPrice
             };
         }
 

@@ -67,6 +67,41 @@ namespace Infrastructure.Migrations
                     b.ToTable("NutritionValues");
                 });
 
+            modelBuilder.Entity("Domain.Models.Offer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DiscountType")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("EndsAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("StartsAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("Offers");
+                });
+
             modelBuilder.Entity("Domain.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -151,6 +186,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bytea");
 
                     b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("UnitPriceOriginal")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -655,6 +693,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Food");
                 });
 
+            modelBuilder.Entity("Domain.Models.Offer", b =>
+                {
+                    b.HasOne("Domain.Models.Product", "Product")
+                        .WithOne("Offer")
+                        .HasForeignKey("Domain.Models.Offer", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Domain.Models.Order", b =>
                 {
                     b.HasOne("Domain.Models.User", "User")
@@ -835,6 +884,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.Product", b =>
                 {
                     b.Navigation("NutritionValues");
+
+                    b.Navigation("Offer");
 
                     b.Navigation("OrderItems");
 

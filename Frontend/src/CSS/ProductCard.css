@@ -73,3 +73,10 @@
     margin-bottom:18px;
     font-weight: bold;
 }
+
+@media (max-width:360px){
+    .product-card{
+        height:fit-content;
+        padding:5px;
+    }
+}

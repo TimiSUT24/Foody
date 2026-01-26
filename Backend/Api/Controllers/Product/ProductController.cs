@@ -1,5 +1,6 @@
 ﻿using Application.Product.Dto.Request;
 using Application.Product.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -17,7 +18,7 @@ namespace Api.Controllers.Product
         {
             _productService = productService;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("create")]
         [ProducesResponseType(statusCode:201)]
         [ProducesResponseType(statusCode:409)]
@@ -27,7 +28,7 @@ namespace Api.Controllers.Product
             var result = await _productService.AddAsync(request, ct);
             return CreatedAtAction(nameof(CreateProduct), result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetSome")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
@@ -58,12 +59,12 @@ namespace Api.Controllers.Product
         [HttpGet("filter")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
-        public async Task<IActionResult> FilterProducts(string? name,string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, CancellationToken ct)
+        public async Task<IActionResult> FilterProducts(string? name,string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price,bool? offer, CancellationToken ct, int page = 1, int pageSize = 25)
         {
-            var result = await _productService.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price, ct);
+            var result = await _productService.FilterProducts(name,brand,categoryId,subCategoryId,subSubCategoryId,price,offer,page,pageSize, ct);
             return Ok(result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("update")]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(statusCode: 404)]
@@ -74,6 +75,7 @@ namespace Api.Controllers.Product
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
@@ -84,6 +86,8 @@ namespace Api.Controllers.Product
             return Ok(result);
         }
 
+        [ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(statusCode: 404)]
         [HttpGet("brands")]
         public async Task<IActionResult> GetBrands([FromQuery] int? categoryId)
         {

@@ -7,7 +7,8 @@ export function useProductFilters(){
         categoryId: null,
         subCategoryId: null,
         subSubCategoryId: null,
-        price: 0
+        price: 0,
+        offer: false
     });
 
     const updateFilter = (newValues) => {

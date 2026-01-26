@@ -1,4 +1,4 @@
-import {useState, useEffect, use} from 'react'
+import {useState, useEffect} from 'react'
 import {CategoryService} from '../Services/CategoryService'
 import { ProductService } from '../Services/ProductService';
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -10,7 +10,6 @@ export default function ProductFilters({
     updateFilter,
 }){
     const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [brands, setBrands] = useState([])
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
@@ -28,8 +27,6 @@ export default function ProductFilters({
             setCategories(Array.isArray(data) ? data : data.categories);
         } catch (err) {
             console.error("Failed to load categories",err);
-        }finally{
-            setLoading(false);
         }
     };
 
@@ -55,10 +52,10 @@ export default function ProductFilters({
             <div id="filter-container-header">
             <h3  id="filter-container-header-text" style={{display:"flex",alignItems:"center",gap:10}}> <img src="/IMG/icons8-sort-50.png" style={{height:40}}></img> Sortera:</h3>
 
-            <div className="hamburger" onClick={toggleMenu}>
-                <span style={{backgroundColor:"black"}} />
-                <span style={{backgroundColor:"black"}}/>
-                <span style={{backgroundColor:"black"}}/>
+            <div className="hamburger-filter" onClick={toggleMenu}>
+                <span/>
+                <span/>
+                <span/>
             </div> 
             </div>
 
@@ -71,22 +68,26 @@ export default function ProductFilters({
                         onChange={(e) => updateFilter({name: e.target.value})}
                         className="search">
                     </input>                  
-                </div>       
-            
-            <select 
-            value ={filters.brand} 
-            onChange={(e) => updateFilter({brand: e.target.value})}
-            className="brand-select">
-                <option value="">Alla varumärken</option>
-                {brands.map((brand, index) => (
-                    <option key={index} value={brand}>
-                        {brand}
-                    </option>
-                ))}
-            </select>
+                </div>    
+
+                <select 
+                    value ={filters.brand} 
+                    onChange={(e) => updateFilter({brand: e.target.value})}
+                    className="brand-select">
+                        <option value="">Alla varumärken</option>
+                        {brands.map((brand, index) => (
+                            <option key={index} value={brand}>
+                                {brand}
+                            </option>
+                        ))}
+                </select>        
 
             <div className="category-menu">
-                <button id="menu-button">Välj kategori <icon><MdKeyboardArrowDown style={{width:20,height:20,paddingLeft:52}}/></icon></button>
+                <div id="menu-button-div">
+                    <button className="menu-button">Välj kategori </button>
+                    <icon><MdKeyboardArrowDown className="menu-button-icon"/></icon>
+                </div>
+               
                 
 
                 <div className="menu-dropdown">
@@ -101,7 +102,9 @@ export default function ProductFilters({
                         Alla kategorier
                     </div>
 
-                    {categories.map(cat => (
+                    {categories.map(cat => {  
+                        const isCatActive = filters.categoryId === cat.id;  
+                        return (   
                         <div className="menu-item" key={cat.id}>
                             <span
                                 onClick={() => 
@@ -113,24 +116,26 @@ export default function ProductFilters({
                                 }
                             >
                                 {cat.mainCategory}
-                                {cat.subCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" style={{width:15}}></img>}
+                                {cat.subCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png"  className={`menu-item-arrow ${isCatActive ? "open" : ""}`} style={{width:15}}></img>}
                             </span>
 
                                 {/*Sub category */}
-                            <div className="submenu">
-                                {cat.subCategories?.map(sc => (
+                            <div className="submenu" >
+                                {cat.subCategories?.map(sc => {
+                                    const isSubActive = filters.subCategoryId === sc.id;
+                                    return(
                                     <div className="submenu-item" key={sc.id}>
                                         <span
                                             onClick={() =>                                              
                                                 updateFilter({
                                                     categoryId: cat.id,
-                                                    subCategoryId: sc.id,
+                                                    subCategoryId: isSubActive ? null :sc.id,
                                                     subSubCategoryId: null
                                                 })
                                             }
                                         >
                                             {sc.name}
-                                            {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" style={{width:15}}></img>}
+                                            {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" className={`menu-item-arrow ${isSubActive ? "open" : ""}`}style={{width:15}}></img>}
                                         </span>
 
                                         {/* Subsub category */}
@@ -153,28 +158,38 @@ export default function ProductFilters({
                                         </div>
 
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
-
-                    <input  
-                    type="number"
-                    placeholder="Pris"
-                    value={filters.price}
-                    onChange={(e) =>{ 
-                        const value = e.target.value
-                        if(value === ""){
-                            updateFilter({price: ""})
-                            return;
-                        }
-                        updateFilter({price: Number(value)})}}
-                    id="filter-price"
-                    min="0"
-                />
+                    
+                    <div className="price-div">
+                        <input  
+                            type="number"
+                            placeholder="Pris"
+                            value={filters.price}
+                            onChange={(e) =>{ 
+                                const value = e.target.value
+                                if(value === ""){
+                                    updateFilter({price: ""})
+                                    return;
+                                }
+                                updateFilter({price: Number(value)})}}
+                            id="filter-price"
+                            min="0"
+                            style={{paddingLeft:"5px"}}
+                        />
+                    </div>
+                   
+                   <div className="offer-div">                        
+                        <input type="checkbox" id="offer-checkbox" checked={filters.offer} onChange={(e) => updateFilter({offer: e.target.checked})}/>
+                        <p style={{fontSize:14}}>Erbjudanden</p>
+                   </div>
            
 
             <button id="reset-filter" onClick = {() =>                
@@ -184,7 +199,8 @@ export default function ProductFilters({
                 subSubCategoryId: null,
                 price: "",
                 brand: "",
-                name: ""
+                name: "",
+                offer: false
             })}>Rensa filter</button>
             
         </div>

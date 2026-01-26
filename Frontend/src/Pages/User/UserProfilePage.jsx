@@ -18,10 +18,11 @@ export default function UserProfilePage(){
     const [selectedOrder, setSelectedOrder] = useState(null);
     const {logout} = useAuth();
     const navigate = useNavigate();
+    const [status, setStatus] = useState(null)
 
     useEffect(() => {
-        OrderService.myOrders().then(setOrder)
-    }, [])
+        OrderService.myOrders(status).then(setOrder)
+    }, [status])
 
     //Logout
     const handleLogout = async () => {
@@ -61,7 +62,20 @@ export default function UserProfilePage(){
                 ): (
             <div className="order-content">
             <h2 style={{ textAlign: "left", margin: 0 }}>Orderhistorik</h2>
-
+            <div className="order-filter-div">
+                <div id="order-filter-button-div">
+                    <button id="order-btn1" className="order-filter-button" onClick={() => setStatus("Pending")} style={{color:"rgb(255, 193, 7)",backgroundColor:"rgba(255, 193, 7, 0.1)",borderColor:"rgba(255, 193, 7, 0.3)"}}>Väntar</button>
+                </div>
+                <div id="order-filter-button-div">
+                    <button id="order-btn2" className="order-filter-button" onClick={() => setStatus("Processing")} style={{color:"rgb(13, 202, 240)",backgroundColor:"rgba(13, 202, 240, 0.1)",borderColor:"rgba(13, 202, 240, 0.3)"}}>Behandlas</button>
+                </div>
+                <div id="order-filter-button-div">
+                    <button id="order-btn3" className="order-filter-button" onClick={() => setStatus("Shipped")} style={{color:"rgb(13, 110, 253)",backgroundColor:"rgba(13, 110, 253, 0.1)",borderColor:"rgba(13, 110, 253, 0.3)"}}>Skickad</button>
+                </div>
+                <div id="order-filter-button-div">
+                    <button id="order-btn4" className="order-filter-button" onClick={() => setStatus("Delivered")} style={{color:"rgb(25, 135, 84)",backgroundColor:"rgba(25, 135, 84, 0.1)",borderColor:"rgba(25, 135, 84, 0.3)"}}>Levererad</button>
+                </div>
+            </div>
             {order.map(order => (
                 <OrderCard
                     key={order.id}
