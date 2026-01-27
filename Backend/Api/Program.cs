@@ -1,5 +1,6 @@
 
 using Api.Middleware;
+using Application.Abstractions;
 using Application.Auth.Interfaces;
 using Application.Auth.Mapper;
 using Application.Auth.Service;
@@ -27,6 +28,7 @@ using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Infrastructure.Caching;
 using Infrastructure.Data;
 using Infrastructure.ExternalService;
 using Infrastructure.HelperMethod;
@@ -93,6 +95,10 @@ namespace Api
             //Stripe 
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+            //CacheSettings
+            builder.Services.Configure<CacheSettings>(
+                builder.Configuration.GetSection("CacheSettings"));
+
             //Services 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -105,6 +111,8 @@ namespace Api
             builder.Services.AddSingleton<IStripeService, StripeService>();
             builder.Services.AddScoped<ICalculateDiscount, CalculateDiscount>();
             builder.Services.AddScoped<IOfferService, OfferService>();
+            builder.Services.AddScoped<ICacheService, HybridCacheService>();
+            builder.Services.AddHybridCache();
 
 
             //Unit Of Work + Repositories

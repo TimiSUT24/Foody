@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.Abstractions;
+using Application.Exceptions;
 using Application.NutritionValue.Dto.Response;
 using Application.Product.Dto.Request;
 using Application.Product.Dto.Response;
@@ -6,6 +7,8 @@ using Application.Product.Interfaces;
 using AutoMapper;
 using Domain.Enum;
 using Domain.Interfaces;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +23,18 @@ namespace Application.Product.Service
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly ICalculateDiscount _discount;
+        private readonly ICacheService _cache;
+        private readonly ILogger<ProductService> _logger;
+        private readonly CacheSettings _cacheSettings;
 
-        public ProductService(IUnitOfWork uow, IMapper mapper, ICalculateDiscount discount)
+        public ProductService(IUnitOfWork uow, IMapper mapper, ICalculateDiscount discount, ICacheService cache, ILogger<ProductService> logger, IOptions<CacheSettings> cacheSettings)
         {
             _uow = uow;
             _mapper = mapper;
             _discount = discount;
+            _cache = cache;
+            _logger = logger;
+            _cacheSettings = cacheSettings.Value;
         }
 
         public async Task<bool> AddAsync(CreateProductDto request, CancellationToken ct)
@@ -68,94 +77,109 @@ namespace Application.Product.Service
 
         public async Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct)
         {
-            var product = await _uow.Products.GetProductDetailsById(id, ct);
-            if (product == null)
+            var cacheKey = $"product:details:{id.ToString()}";
+
+            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
-                throw new KeyNotFoundException("Couldnt find ProductDetails");
-            }
-
-            var now = DateTime.UtcNow;
-            var finalPrice = _discount.GetFinalPrice(product, now);
-            var mapping = new ProductDetailsResponse
-            {
-
-                Product = new ProductResponseDto
+                var product = await _uow.Products.GetProductDetailsById(id, ct);
+                if (product == null)
                 {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Price = product.Price,
-                    FinalPrice = finalPrice,
-                    HasOffer = finalPrice < product.Price,
-                    ImageUrl = product.ImageUrl,
-                    ComparePrice = product.ComparePrice,
-                    Currency = product.Currency,
-                    WeightText = product.WeightText,
-                    WeightValue = (decimal)product.WeightValue,
-                    Ingredients = product.Ingredients,
-                    Usage = product.Usage,
-                    Storage = product.Storage,
-                    Allergens = product.Allergens,
-                    Brand = product.Brand,
-                    Country = product.Country,
-                    ProductInformation = product.ProductInformation,
-                    OfferName = product.Offer?.Name,
-                    CategoryId = (int)product.CategoryId,
-                    SubCategoryId = (int)product.SubCategoryId,
-                    SubSubCategoryId = (int)product.SubSubCategoryId
-       
-                },
-                Nutrition = product.NutritionValues?.Select(item => new NutritionValueResponse
+                    throw new KeyNotFoundException("Couldnt find ProductDetails");
+                }
+
+                var now = DateTime.UtcNow;
+                var finalPrice = _discount.GetFinalPrice(product, now);
+                var mapping = new ProductDetailsResponse
                 {
-                    Name = item.Name,
-                    Value = item.Value,
-                    NutritionUnitText = item.NutritionUnitText,
-                    Id = item.Id
 
-                }).ToList(),
+                    Product = new ProductResponseDto
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                        FinalPrice = finalPrice,
+                        HasOffer = finalPrice < product.Price,
+                        ImageUrl = product.ImageUrl,
+                        ComparePrice = product.ComparePrice,
+                        Currency = product.Currency,
+                        WeightText = product.WeightText,
+                        WeightValue = (decimal)product.WeightValue,
+                        Ingredients = product.Ingredients,
+                        Usage = product.Usage,
+                        Storage = product.Storage,
+                        Allergens = product.Allergens,
+                        Brand = product.Brand,
+                        Country = product.Country,
+                        ProductInformation = product.ProductInformation,
+                        OfferName = product.Offer?.Name,
+                        CategoryId = (int)product.CategoryId,
+                        SubCategoryId = (int)product.SubCategoryId,
+                        SubSubCategoryId = (int)product.SubSubCategoryId
 
-                Attribute = product.ProductAttributes?.Select(item => new ProductAttributeResponse
-                {
-                    Id = item.Id,
-                    Value = item.Value
-                }).ToList()
+                    },
+                    Nutrition = product.NutritionValues?.Select(item => new NutritionValueResponse
+                    {
+                        Name = item.Name,
+                        Value = item.Value,
+                        NutritionUnitText = item.NutritionUnitText,
+                        Id = item.Id
 
-            };
+                    }).ToList(),
 
-            return mapping;
-                    
+                    Attribute = product.ProductAttributes?.Select(item => new ProductAttributeResponse
+                    {
+                        Id = item.Id,
+                        Value = item.Value
+                    }).ToList()
+
+                };
+
+                return mapping;
+            },
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );                      
         }
 
         public async Task<InfiniteScrollResponse<ProductResponseDto>> FilterProducts(string? name, string? brand,int? categoryId,int? subCategoryId,int? subSubCategoryId,decimal? price,bool? offer, int page, int pageSize, CancellationToken ct)
         {
-            var (items, hasMore) = await _uow.Products.FilterProducts(name ?? "",brand,categoryId,subCategoryId,subSubCategoryId,price,offer,page,pageSize,ct);
+            var cacheKey = BuildFilterCacheKey(name, brand, categoryId, subCategoryId,subSubCategoryId, price, offer, page, pageSize);
 
-            var now = DateTime.UtcNow;
-            var mapping = items.Select(product =>
+            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
-                var finalPrice = _discount.GetFinalPrice(product, now);
+                _logger.LogInformation("Cache Miss: Fetching from db");
+                var (items, hasMore) = await _uow.Products.FilterProducts(name ?? "", brand, categoryId, subCategoryId, subSubCategoryId, price, offer, page, pageSize, ct);
 
-                return new ProductResponseDto
+                var now = DateTime.UtcNow;
+                var mapping = items.Select(product =>
                 {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Price = product.Price,
-                    FinalPrice = finalPrice,
-                    HasOffer = finalPrice < product.Price,
-                    ImageUrl = product.ImageUrl,
-                    ComparePrice = product.ComparePrice,
-                    Currency = product.Currency,
-                    WeightText = product.WeightText,
-                    WeightValue = (decimal)product.WeightValue,
-                    IsAvailable = product.Stock > 0,
-                    OfferName = product.Offer?.Name
-                };
-            }).ToList();
+                    var finalPrice = _discount.GetFinalPrice(product, now);
 
-            return new InfiniteScrollResponse<ProductResponseDto>
-            {
-                Items = mapping,
-                HasMore = hasMore
-            };
+                    return new ProductResponseDto
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                        FinalPrice = finalPrice,
+                        HasOffer = finalPrice < product.Price,
+                        ImageUrl = product.ImageUrl,
+                        ComparePrice = product.ComparePrice,
+                        Currency = product.Currency,
+                        WeightText = product.WeightText,
+                        WeightValue = (decimal)product.WeightValue,
+                        IsAvailable = product.Stock > 0,
+                        OfferName = product.Offer?.Name
+                    };
+                }).ToList();
+
+                return new InfiniteScrollResponse<ProductResponseDto>
+                {
+                    Items = mapping,
+                    HasMore = hasMore
+                };
+            },
+                TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );
+            
         }
 
         public async Task<bool> Update(UpdateProductDto request, CancellationToken ct)
@@ -186,15 +210,34 @@ namespace Application.Product.Service
 
         public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
         {
-            var brands = await _uow.Products.GetBrands(categoryId);
-            if (brands == null)
+            var cacheKey = $"brands:category:{categoryId?.ToString()}";
+            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
-                throw new KeyNotFoundException("No brands found");
-            }
+                var brands = await _uow.Products.GetBrands(categoryId);
+                if (brands == null)
+                {
+                    throw new KeyNotFoundException("No brands found");
+                }
 
-            var mapping = _mapper.Map<IEnumerable<string?>>(brands);
+                var mapping = _mapper.Map<IEnumerable<string?>>(brands);
+                return mapping;
+            },
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );
 
-            return mapping;
+        }
+
+        private static string BuildFilterCacheKey(string? name, string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, bool? offer, int page, int pageSize)
+        {
+            return $"products:filter:" +
+           $"name={name ?? "null"}|" +
+           $"brand={brand ?? "null"}|" +
+           $"cat={categoryId?.ToString() ?? "null"}|" +
+           $"sub={subCategoryId?.ToString() ?? "null"}|" +
+           $"subsub={subSubCategoryId?.ToString() ?? "null"}|" +
+           $"price={price?.ToString() ?? "null"}|" +
+           $"offer={offer?.ToString() ?? "null"}|" +
+           $"page={page}|size={pageSize}";
         }
     }
 }
