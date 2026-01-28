@@ -30,7 +30,7 @@ namespace Application.Category.Service
 
         public async Task<IEnumerable<CategoryTreeResponse>> GetCategoryTree(CancellationToken ct)
         {
-            var cacheKey = $"categories:tree";
+            var cacheKey = $"category:tree";
             return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
                 var categoryTree = await _uow.Category.GetCategoryTree(ct);
@@ -69,7 +69,7 @@ namespace Application.Category.Service
 
         public async Task<SubCategoryResponse> GetSubCategoryById(int id)
         {
-            var cacheKey = $"subCategory:id:{id.ToString()}";
+            var cacheKey = $"category:subCategory:id:{id.ToString()}";
             return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
                 var subCategory = await _uow.Category.GetSubCategory(id);
@@ -88,7 +88,7 @@ namespace Application.Category.Service
 
         public async Task<SubSubCategoryResponse> GetSubSubCategoryById(int id)
         {
-            var cacheKey = $"subsubCategory:id:{id.ToString()}";
+            var cacheKey = $"category:subsubCategory:id:{id.ToString()}";
             return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
                 var subSubCategory = await _uow.Category.GetSubSubCategory(id);

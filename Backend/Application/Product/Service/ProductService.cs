@@ -47,6 +47,8 @@ namespace Application.Product.Service
             var product = _mapper.Map<Domain.Models.Product>(request);
             await _uow.Products.AddAsync(product, CancellationToken.None);
             await _uow.SaveChangesAsync(ct);
+            await _cache.RemoveByPrefixAsync("products:");
+            await _cache.RemoveByPrefixAsync("category:");
             return true;
         }
 
@@ -77,7 +79,7 @@ namespace Application.Product.Service
 
         public async Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct)
         {
-            var cacheKey = $"product:details:{id.ToString()}";
+            var cacheKey = $"products:details:{id.ToString()}";
 
             return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
@@ -193,6 +195,8 @@ namespace Application.Product.Service
             _mapper.Map(request, product);
             _uow.Products.Update(product);
             await _uow.SaveChangesAsync(ct);
+            await _cache.RemoveByPrefixAsync("products:");
+            await _cache.RemoveByPrefixAsync("category:");
             return true; 
         }
 
@@ -205,12 +209,14 @@ namespace Application.Product.Service
             }
             _uow.Products.Delete(product);
             await _uow.SaveChangesAsync(ct);
+            await _cache.RemoveByPrefixAsync("products:");
+            await _cache.RemoveByPrefixAsync("category:");
             return true;
         }
 
         public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
         {
-            var cacheKey = $"brands:category:{categoryId?.ToString()}";
+            var cacheKey = $"products:brands:{categoryId?.ToString()}";
             return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
                 var brands = await _uow.Products.GetBrands(categoryId);

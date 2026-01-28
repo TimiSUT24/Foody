@@ -39,6 +39,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using Stripe;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -99,6 +100,19 @@ namespace Api
             builder.Services.Configure<CacheSettings>(
                 builder.Configuration.GetSection("CacheSettings"));
 
+            //Redis 
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";         
+            });
+
+            builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configuration = "localhost:6379";
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+          
+
             //Services 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -111,7 +125,7 @@ namespace Api
             builder.Services.AddSingleton<IStripeService, StripeService>();
             builder.Services.AddScoped<ICalculateDiscount, CalculateDiscount>();
             builder.Services.AddScoped<IOfferService, OfferService>();
-            builder.Services.AddScoped<ICacheService, HybridCacheService>();
+            builder.Services.AddSingleton<ICacheService, HybridCacheService>();
             builder.Services.AddHybridCache();
 
 

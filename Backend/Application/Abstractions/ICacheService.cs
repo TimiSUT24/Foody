@@ -10,5 +10,6 @@ namespace Application.Abstractions
     {
         ValueTask<T> GetOrCreateAsync<T>(string key, Func<CancellationToken, ValueTask<T>> factory, TimeSpan ttl);
         ValueTask RemoveAsync(string key);
+        ValueTask RemoveByPrefixAsync(string prefix);
     }
 }
