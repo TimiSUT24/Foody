@@ -32,6 +32,7 @@ namespace Infrastructure.Caching
         {
             await TrackKeyAsync("products:", key);
             await TrackKeyAsync("category:", key);
+            await TrackKeyAsync("user-orders:", key);
             return await _cache.GetOrCreateAsync(key, factory,
                 new HybridCacheEntryOptions
                 {

@@ -14,6 +14,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Enum;
+using Application.Abstractions;
+using Microsoft.Extensions.Options;
+using Application.Product.Interfaces;
 
 namespace Application.Order.Service
 {
@@ -23,13 +26,19 @@ namespace Application.Order.Service
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly ICalculateDiscount _discount;
+        private readonly ICacheService _cache;
+        private readonly CacheSettings _cacheSettings;
+        private readonly IProductService _productService;
 
-        public OrderService(IUnitOfWork uow, IMapper mapper, IEmailService emailService, ICalculateDiscount discount)
+        public OrderService(IUnitOfWork uow, IMapper mapper,IProductService productService, IEmailService emailService, ICalculateDiscount discount, ICacheService cache, IOptions<CacheSettings> cacheSettings)
         {
             _uow = uow;
             _mapper = mapper;
             _emailService = emailService;
             _discount = discount;
+            _cache = cache;
+            _cacheSettings = cacheSettings.Value;
+            _productService = productService;
         }
 
         private decimal ConvertToKg(decimal? value, string? unit)
@@ -124,6 +133,7 @@ namespace Application.Order.Service
             await _uow.SaveChangesAsync(ct);
 
             await _emailService.SendOrderConfirmationEmail(order.ShippingInformation.Email, order);
+            await _cache.RemoveByPrefixAsync("user-orders:");
 
             return new CreatedOrderResponse
             {
@@ -145,26 +155,40 @@ namespace Application.Order.Service
 
         public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, OrderStatus? status, CancellationToken ct)
         {
-            var userOrders = await _uow.Orders.GetMyOrders(userId, status, ct);
-            if (userOrders == null)
+            var cacheKey = $"user-orders:{userId}:{status}";
+
+            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
             {
-                throw new KeyNotFoundException("User has no orders");
-            }
+                var userOrders = await _uow.Orders.GetMyOrders(userId, status, ct);
+                if (userOrders == null)
+                {
+                    throw new KeyNotFoundException("User has no orders");
+                }
 
-            var response = _mapper.Map<List<UserOrderResponse>>(userOrders);
+                var response = _mapper.Map<List<UserOrderResponse>>(userOrders);
 
-            return response;
-
+                return response;
+            },
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );         
         }
 
         public async Task<UserOrderResponse> GetUserOrder(Guid userId, Guid orderId, CancellationToken ct)
         {
-            var userOrder = await _uow.Orders.GetMyOrder(userId, orderId, ct);
-            if (userOrder == null) throw new KeyNotFoundException("Order was not found");
+            var cacheKey = $"user-orders:{userId}:{orderId}";
 
-            var response = _mapper.Map<UserOrderResponse>(userOrder);
+            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            {
+                var userOrder = await _uow.Orders.GetMyOrder(userId, orderId, ct);
+                if (userOrder == null) throw new KeyNotFoundException("Order was not found");
 
-            return response;
+                var response = _mapper.Map<UserOrderResponse>(userOrder);
+
+                return response;
+            },
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );
+            
         }
 
         public async Task<bool> UpdateOrder(UpdateOrder request, CancellationToken ct) 
@@ -229,6 +253,7 @@ namespace Application.Order.Service
             if (!updated) { return false; }
 
             await _uow.SaveChangesAsync(ct);
+            await _cache.RemoveByPrefixAsync("user-orders:");
 
             return true;
         }
@@ -247,6 +272,7 @@ namespace Application.Order.Service
                     userOrder.OrderStatus = Domain.Enum.OrderStatus.Cancelled;
                     _uow.Orders.Update(userOrder);
                     await _uow.SaveChangesAsync(ct);
+                    await _cache.RemoveByPrefixAsync("user-orders:");
                     return true;
                 }
                 else
@@ -271,7 +297,8 @@ namespace Application.Order.Service
             var unitPrice = 0M;
             var productIds = cartItems.Items.Select(s => s.Id).ToList();
 
-            var products = await _uow.Products.GetByIdsAsync(productIds, ct);
+            //var products = await _uow.Products.GetByIdsAsync(productIds, ct);
+            var products = await _productService.GetByIdsAsync(productIds, ct);
             var now = DateTime.UtcNow;
 
             foreach (var item in cartItems.Items)

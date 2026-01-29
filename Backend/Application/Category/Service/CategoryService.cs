@@ -44,7 +44,7 @@ namespace Application.Category.Service
 
                 return mapping;
             },
-            TimeSpan.FromHours(_cacheSettings.LongLivedMinutes)
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
             );
             
         }
@@ -63,7 +63,7 @@ namespace Application.Category.Service
                 var mapping = _mapper.Map<CategoryResponse>(category);
                 return mapping;
             },
-            TimeSpan.FromHours(_cacheSettings.LongLivedMinutes)
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
             );          
         }
 
@@ -81,7 +81,7 @@ namespace Application.Category.Service
                 var mapping = _mapper.Map<SubCategoryResponse>(subCategory);
                 return mapping;
             },
-            TimeSpan.FromHours(_cacheSettings.LongLivedMinutes)
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
             );
             
         }
@@ -100,7 +100,7 @@ namespace Application.Category.Service
                 var mapping = _mapper.Map<SubSubCategoryResponse>(subSubCategory);
                 return mapping;
             },
-            TimeSpan.FromHours(_cacheSettings.LongLivedMinutes)
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
             );
             
         }      

@@ -233,6 +233,23 @@ namespace Application.Product.Service
 
         }
 
+        public async Task<IReadOnlyList<Domain.Models.Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken ct)
+        {
+            var cacheKey = $"products:byids:{string.Join(",", ids.OrderBy(x => x))}";
+            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            {
+                var products = await _uow.Products.GetByIdsAsync(ids, ct);
+                if (products == null || !products.Any())
+                {
+                    throw new KeyNotFoundException("No products found");
+                }
+                return products;
+            },
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );
+                     
+        }
+
         private static string BuildFilterCacheKey(string? name, string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, bool? offer, int page, int pageSize)
         {
             return $"products:filter:" +

@@ -39,8 +39,12 @@ export default function CartPage(){
   // Enable the skeleton loader UI for optimal loading.
   const loader = 'auto';
 
+
   useEffect(() => {
     const fetchTotal = async () => {
+        if(cart.length <= 0){
+            return;
+        }
         const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
         setTotal(response.data)
         setUserId(user.id)
