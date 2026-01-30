@@ -372,3 +372,4 @@ FodyWeavers.xsd
 /Frontend/localhost-key.pem
 /Frontend/localhost.pem
 /.gitignore
+/Backend/Api/Docker-Compose.yml
