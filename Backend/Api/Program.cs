@@ -71,7 +71,7 @@ namespace Api
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
-                    BearerFormat = "JWT",
+                    BearerFormat = "Jwt",
                     In = ParameterLocation.Header,
                     Description = "Skriv: Bearer {ditt_jwt}"
                 });
@@ -103,12 +103,12 @@ namespace Api
             //Redis 
             builder.Services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = "localhost:6379";         
+                options.Configuration = builder.Configuration["Redis:ConnectionString"];         
             });
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
-                var configuration = "localhost:6379";
+                var configuration = builder.Configuration["Redis:ConnectionString"];
                 return ConnectionMultiplexer.Connect(configuration);
             });
           
@@ -156,7 +156,7 @@ namespace Api
             builder.Services.AddFluentValidationAutoValidation();
 
 
-            var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+            var connectionString = builder.Configuration["DefaultConnection"];
 
             builder.Services.AddDbContext<FoodyDbContext>(options =>
                 options.UseNpgsql(connectionString));
@@ -186,10 +186,10 @@ namespace Api
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["JWT:Issuer"],
-                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
                     IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
+                        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
                 };
             });
 
@@ -206,20 +206,35 @@ namespace Api
                 });
             });
 
-            var app = builder.Build();       
+            var app = builder.Build();
 
             //Seed users and roles
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var userManager = services.GetRequiredService<UserManager<User>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();;
-                var dbContext = services.GetRequiredService<FoodyDbContext>();
+            var retry = 0;
+            var maxRetries = 2;
 
-                await IcaDataSeeding.IcaSeed(dbContext);
-                await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
-                
+            while(retry < maxRetries)
+            {
+                try
+                {
+                    using (var scope = app.Services.CreateScope())
+                    {
+                        var services = scope.ServiceProvider;
+                        var userManager = services.GetRequiredService<UserManager<User>>();
+                        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>(); ;
+                        var dbContext = services.GetRequiredService<FoodyDbContext>();
+
+                        await IcaDataSeeding.IcaSeed(dbContext);
+                        await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
+
+                    }
+                }
+                catch
+                {
+                    retry++;
+                    await Task.Delay(2000);
+                }
             }
+            
 
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
