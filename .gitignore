@@ -373,3 +373,5 @@ FodyWeavers.xsd
 /Frontend/localhost.pem
 /.gitignore
 /Backend/Api/Docker-Compose.yml
+/Backend/.env
+/Backend/launchSettings.json
