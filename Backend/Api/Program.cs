@@ -209,33 +209,22 @@ namespace Api
             var app = builder.Build();
 
             //Seed users and roles
-            var retry = 0;
-            var maxRetries = 2;
-
-            while(retry < maxRetries)
-            {
-                try
-                {
+  
                     using (var scope = app.Services.CreateScope())
                     {
                         var services = scope.ServiceProvider;
+                        var dbContext = services.GetRequiredService<FoodyDbContext>();
+                        dbContext.Database.Migrate();   
+
                         var userManager = services.GetRequiredService<UserManager<User>>();
                         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>(); ;
-                        var dbContext = services.GetRequiredService<FoodyDbContext>();
+                        
 
                         await IcaDataSeeding.IcaSeed(dbContext);
                         await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
 
                     }
-                }
-                catch
-                {
-                    retry++;
-                    await Task.Delay(2000);
-                }
-            }
-            
-
+      
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {
