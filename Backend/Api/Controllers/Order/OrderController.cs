@@ -50,7 +50,7 @@ namespace Api.Controllers.Order
         [ProducesResponseType(statusCode: 401)]
         public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken ct)
         {
-            var result = await _orderService.GetByIdAsync(id, ct);
+            var result = await _orderService.GetByIdAsync(id,ct);
             return Ok(result);
         }
 

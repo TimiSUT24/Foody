@@ -13,6 +13,7 @@ using Application.NutritionValue.Service;
 using Application.Offer.Interfaces;
 using Application.Offer.Mapper;
 using Application.Offer.Service;
+using Application.Order.Handlers;
 using Application.Order.Interfaces;
 using Application.Order.Mapper;
 using Application.Order.Service;
@@ -35,6 +36,7 @@ using Infrastructure.HelperMethod;
 using Infrastructure.Repositories;
 using Infrastructure.Seeding;
 using Infrastructure.UnitOfWork;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -110,6 +112,27 @@ namespace Api
             {
                 var configuration = builder.Configuration["Redis:ConnectionString"];
                 return ConnectionMultiplexer.Connect(configuration);
+            });
+
+            //RabbitMq/MassTransit
+            builder.Services.AddMassTransit(x =>
+            {
+                x.AddConsumer<CapturePaymentConsumer>();
+                x.AddConsumer<BookShipmentConsumer>();
+                x.AddConsumer<SendOrderEmailConsumer>();
+                x.AddConsumer<UpdateOrderStatusConsumer>();
+
+                x.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ConfigureEndpoints(ctx);
+                });
+
             });
           
 

@@ -1,4 +1,5 @@
-﻿using Domain.Enum;
+﻿using Application.Order.Dto.Request;
+using Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace Application.Order.Dto.Response
         DateTime OrderDate,
         Decimal TotalPrice,
         string OrderStatus,
-        List<OrderItemsResponse> OrderItems 
+        List<OrderItemsResponse> OrderItems,
+        ShippingInformation ShippingInformation
         );
 
  

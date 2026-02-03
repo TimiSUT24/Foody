@@ -17,6 +17,9 @@ using Domain.Enum;
 using Application.Abstractions;
 using Microsoft.Extensions.Options;
 using Application.Product.Interfaces;
+using MassTransit;
+using Application.Order.Events;
+using Application.Postnord.Dto;
 
 namespace Application.Order.Service
 {
@@ -29,8 +32,9 @@ namespace Application.Order.Service
         private readonly ICacheService _cache;
         private readonly CacheSettings _cacheSettings;
         private readonly IProductService _productService;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public OrderService(IUnitOfWork uow, IMapper mapper,IProductService productService, IEmailService emailService, ICalculateDiscount discount, ICacheService cache, IOptions<CacheSettings> cacheSettings)
+        public OrderService(IUnitOfWork uow, IMapper mapper,IPublishEndpoint publishEndpoint,IProductService productService, IEmailService emailService, ICalculateDiscount discount, ICacheService cache, IOptions<CacheSettings> cacheSettings)
         {
             _uow = uow;
             _mapper = mapper;
@@ -39,6 +43,7 @@ namespace Application.Order.Service
             _cache = cache;
             _cacheSettings = cacheSettings.Value;
             _productService = productService;
+            _publishEndpoint = publishEndpoint;
         }
 
         private decimal ConvertToKg(decimal? value, string? unit)
@@ -58,7 +63,7 @@ namespace Application.Order.Service
             };
         }
 
-        public async Task<CreatedOrderResponse> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
+        public async Task<CreatedOrderResponse> CreateAsync(Guid userId, CreateOrderDto request, string paymentIntentId, CancellationToken ct)
         {
             var products = await _uow.Products.GetAllAsync(ct);
             foreach(var item in request.Items)
@@ -132,8 +137,27 @@ namespace Application.Order.Service
             await _uow.Orders.AddAsync(order, ct);
             await _uow.SaveChangesAsync(ct);
 
-            await _emailService.SendOrderConfirmationEmail(order.ShippingInformation.Email, order);
-            await _cache.RemoveByPrefixAsync("user-orders:");
+            await _publishEndpoint.Publish(new OrderCreatedEvent(order.Id, paymentIntentId,
+                order.TotalWeight,
+                new ShippingDto
+                {
+                    ServiceCode = request.ServiceCode,
+                    Email = request.ShippingInformation.Email,
+                    Lastname = request.ShippingInformation.LastName,
+                    Shipping = new StripeShippingDto
+                    {
+                        Phone = request.ShippingInformation.PhoneNumber,
+                        Name = request.ShippingInformation.FirstName,
+                        Address = new AddressDto
+                        {
+                            Line1 = request.ShippingInformation.Adress,
+                            Postal_Code = request.ShippingInformation.PostalCode,
+                            City = request.ShippingInformation.City
+                        }
+                    }
+                    
+                }), 
+                ct);
 
             return new CreatedOrderResponse
             {
