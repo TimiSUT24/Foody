@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Events
 {
-    public record ShipmentBookedEvent(
-        Guid Id,
-        string? PaymentStatus,
-        string? OrderStatus,
-        string? PaymentMethod,
-        ShippingPatchDto? ShippingInformation
-        );
-   
+    public record ShipmentBookedEvent
+    {
+        public Guid Id { get; set; }
+        public string PaymentStatus { get; set; } = string.Empty;
+        public string OrderStatus { get; set; } = string.Empty;
+        public string PaymentMethod { get; set; } = string.Empty;
+        public ShippingPatchDto? ShippingInformation { get; set; }
+    }  
 }

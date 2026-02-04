@@ -36,9 +36,9 @@ namespace Api.Controllers.Order
         [ProducesResponseType(statusCode:404)]
         [ProducesResponseType(statusCode:400)]
         [ProducesResponseType(statusCode:401)]
-        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto request, CancellationToken ct)
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto request,string paymentIntentId, CancellationToken ct)
         {
-            var order = await _orderService.CreateAsync(UserId, request, ct);
+            var order = await _orderService.CreateAsync(UserId, request,paymentIntentId, ct);
             return Ok(order);
             
         }

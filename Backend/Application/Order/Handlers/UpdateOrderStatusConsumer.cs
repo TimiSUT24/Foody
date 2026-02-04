@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Handlers
 {
-    public class UpdateOrderStatusConsumer : IConsumer<OrderCreatedEvent>
+    public class UpdateOrderStatusConsumer : IConsumer<ShipmentBookedEvent>
     {
         private readonly IOrderService _orderService;
 

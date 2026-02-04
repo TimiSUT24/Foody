@@ -137,9 +137,11 @@ namespace Application.Order.Service
             await _uow.Orders.AddAsync(order, ct);
             await _uow.SaveChangesAsync(ct);
 
-            await _publishEndpoint.Publish(new OrderCreatedEvent(order.Id, paymentIntentId,
-                order.TotalWeight,
-                new ShippingDto
+            await _publishEndpoint.Publish(new OrderCreatedEvent{
+                OrderId = order.Id, 
+                PaymentIntentId = paymentIntentId,
+                TotalWeight = order.TotalWeight,
+                Shipping = new ShippingDto
                 {
                     ServiceCode = request.ServiceCode,
                     Email = request.ShippingInformation.Email,
@@ -155,8 +157,8 @@ namespace Application.Order.Service
                             City = request.ShippingInformation.City
                         }
                     }
-                    
-                }), 
+
+                }}, 
                 ct);
 
             return new CreatedOrderResponse

@@ -118,9 +118,9 @@ namespace Api
             builder.Services.AddMassTransit(x =>
             {
                 x.AddConsumer<CapturePaymentConsumer>();
-                x.AddConsumer<BookShipmentConsumer>();
-                x.AddConsumer<SendOrderEmailConsumer>();
+                x.AddConsumer<BookShipmentConsumer>();               
                 x.AddConsumer<UpdateOrderStatusConsumer>();
+                x.AddConsumer<SendOrderEmailConsumer>();
 
                 x.UsingRabbitMq((ctx, cfg) =>
                 {

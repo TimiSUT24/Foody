@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Events
 {
-    public class OrderCreatedEvent
+    public class PaymentCapturedEvent
     {
         public Guid OrderId { get; set; }
+        public string PaymentStatus { get; set; } = string.Empty;
+        public string PaymentMethod { get; set; } = string.Empty;
         public decimal TotalWeight { get; set; }
-        public string PaymentIntentId { get; set; } = string.Empty;
         public ShippingDto? Shipping { get; set; }
     }
 }

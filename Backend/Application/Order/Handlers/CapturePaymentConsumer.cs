@@ -12,15 +12,25 @@ namespace Application.Order.Handlers
     public class CapturePaymentConsumer : IConsumer<OrderCreatedEvent>
     {
         private readonly IStripeService _stripeService;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public CapturePaymentConsumer(IStripeService stripeService)
+        public CapturePaymentConsumer(IStripeService stripeService, IPublishEndpoint publishEndpoint)
         {
             _stripeService = stripeService;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task Consume(ConsumeContext<OrderCreatedEvent> context)
         {
-            await _stripeService.CapturePaymentIntentAsync(context.Message.PaymentIntentId);
+            var result = await _stripeService.CapturePaymentIntentAsync(context.Message.PaymentIntentId);
+
+            await _publishEndpoint.Publish(new PaymentCapturedEvent{
+                OrderId = context.Message.OrderId,
+                PaymentMethod = result.PaymentMethod,
+                PaymentStatus = result.Status,
+                TotalWeight = context.Message.TotalWeight,
+                Shipping = context.Message.Shipping
+            });
         }
     }
 }

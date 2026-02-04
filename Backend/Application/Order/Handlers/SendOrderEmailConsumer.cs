@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Handlers
 {
-    public class SendOrderEmailConsumer : IConsumer<OrderCreatedEvent>
+    public class SendOrderEmailConsumer : IConsumer<ShipmentBookedEvent>
     {
         private readonly IEmailService _emailService;
         private readonly IUnitOfWork _uow;
@@ -21,9 +21,9 @@ namespace Application.Order.Handlers
             _uow = uow;
         }
 
-        public async Task Consume(ConsumeContext<OrderCreatedEvent> context)
+        public async Task Consume(ConsumeContext<ShipmentBookedEvent> context)
         {
-            var order = await _uow.Orders.GetOrder(context.Message.OrderId, context.CancellationToken);
+            var order = await _uow.Orders.GetOrder(context.Message.Id, context.CancellationToken);
             await _emailService.SendOrderConfirmationEmail(order.ShippingInformation.Email,order);
         }
     }
