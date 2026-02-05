@@ -27,7 +27,7 @@ namespace Application.Order.Handlers
             var update = new UpdateOrder
             {
                 Id = msg.Id,
-                OrderStatus = OrderStatus.Pending.ToString(),
+                OrderStatus = msg.OrderStatus,
                 PaymentMethod = msg.PaymentMethod,
                 PaymentStatus = msg.PaymentStatus,
                 ShippingInformation = new ShippingPatchDto
@@ -35,7 +35,7 @@ namespace Application.Order.Handlers
                     ShipmentId = msg.ShippingInformation.ShipmentId,
                     TrackingId = msg.ShippingInformation.TrackingId,
                     TrackingUrl = msg.ShippingInformation.TrackingUrl,
-                    Carrier = "Postnord"
+                    Carrier = msg.ShippingInformation.Carrier,
                 }
 
             };

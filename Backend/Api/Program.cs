@@ -116,15 +116,14 @@ namespace Api
 
             //RabbitMq/MassTransit
             builder.Services.AddMassTransit(x =>
-            {
-                x.AddConsumer<CapturePaymentConsumer>();
+            {       
                 x.AddConsumer<BookShipmentConsumer>();               
                 x.AddConsumer<UpdateOrderStatusConsumer>();
                 x.AddConsumer<SendOrderEmailConsumer>();
 
                 x.UsingRabbitMq((ctx, cfg) =>
                 {
-                    cfg.Host("localhost", "/", h =>
+                    cfg.Host("rabbitmq", "/", h =>
                     {
                         h.Username("guest");
                         h.Password("guest");

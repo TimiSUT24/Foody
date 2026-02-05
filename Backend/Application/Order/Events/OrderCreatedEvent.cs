@@ -12,6 +12,8 @@ namespace Application.Order.Events
         public Guid OrderId { get; set; }
         public decimal TotalWeight { get; set; }
         public string PaymentIntentId { get; set; } = string.Empty;
+        public string PaymentStatus { get; set; } = string.Empty;
+        public string PaymentMethod { get; set; } = string.Empty;
         public ShippingDto? Shipping { get; set; }
     }
 }

@@ -13,20 +13,18 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Handlers
 {
-    public class BookShipmentConsumer : IConsumer<PaymentCapturedEvent>
+    public class BookShipmentConsumer : IConsumer<OrderCreatedEvent>
     {
-        private readonly IUnitOfWork _uow;
         private readonly IPostnordService _postnord;
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public BookShipmentConsumer(IUnitOfWork uow, IPublishEndpoint publishEndpoint, IPostnordService postnord)
-        {
-            _uow = uow;
+        public BookShipmentConsumer(IPublishEndpoint publishEndpoint, IPostnordService postnord)
+        {     
             _postnord = postnord;
             _publishEndpoint = publishEndpoint;
         }
 
-        public async Task Consume(ConsumeContext<PaymentCapturedEvent> context)
+        public async Task Consume(ConsumeContext<OrderCreatedEvent> context)
         {
             var evt = context.Message;
             var request = new PostNordBookingRequestDto
@@ -54,8 +52,8 @@ namespace Application.Order.Handlers
             };
             var booking = await _postnord.BookShipmentAsync(request,context.CancellationToken);
 
-            var idInfo = booking.IdInformation;
-            var trackingId = idInfo?.Ids?[0].Value ?? string.Empty;
+            var idInfo = booking.IdInformation?.FirstOrDefault();
+            var trackingId = idInfo?.Ids?.FirstOrDefault()?.Value ?? string.Empty;
             var trackingUrl = idInfo?.Urls?.FirstOrDefault(s => s.Type == "TRACKING")?.Url ?? string.Empty;
 
 
