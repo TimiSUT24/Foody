@@ -29,13 +29,24 @@ namespace Infrastructure.Caching
         public async ValueTask<T> GetOrCreateAsync<T>(string prefix,string key, Func<CancellationToken, ValueTask<T>> factory, TimeSpan ttl)
         {
             var fullKey = $"{prefix}{key}";
-            await TrackKeyAsync(prefix, fullKey);
 
-            return await _cache.GetOrCreateAsync(fullKey, factory,
-                new HybridCacheEntryOptions
-                {
-                    Expiration = ttl,
-                });
+            try
+            {
+                await TrackKeyAsync(prefix, fullKey);
+
+                return await _cache.GetOrCreateAsync(fullKey, factory,
+                    new HybridCacheEntryOptions
+                    {
+                        Expiration = ttl,
+                    });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Cache failed, fallback to DB: {ex.Message}");
+
+                return await factory(CancellationToken.None);
+            }
+            
         }  
 
         public async ValueTask RemoveByPrefixAsync(string prefix)

@@ -111,7 +111,10 @@ namespace Api
             builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
                 var configuration = builder.Configuration["Redis:ConnectionString"];
-                return ConnectionMultiplexer.Connect(configuration);
+                var options = ConfigurationOptions.Parse(configuration);
+                options.AbortOnConnectFail = true;
+                return ConnectionMultiplexer.Connect(options);
+                
             });
 
             //RabbitMq/MassTransit
