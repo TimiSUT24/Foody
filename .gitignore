@@ -375,3 +375,5 @@ FodyWeavers.xsd
 /Backend/Api/Docker-Compose.yml
 /Backend/.env
 /Backend/launchSettings.json
+/Backend/xUnitFoody/appsettings.test.json
+/Backend/xUnitFoody/Properties/launchSettings.json
