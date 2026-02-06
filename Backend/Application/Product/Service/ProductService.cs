@@ -79,9 +79,9 @@ namespace Application.Product.Service
 
         public async Task<ProductDetailsResponse> GetProductDetailsById(int id, CancellationToken ct)
         {
-            var cacheKey = $"products:details:{id.ToString()}";
+            var cacheKey = $"details:{id.ToString()}";
 
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            return await _cache.GetOrCreateAsync("products:",cacheKey, async _ =>
             {
                 var product = await _uow.Products.GetProductDetailsById(id, ct);
                 if (product == null)
@@ -146,7 +146,7 @@ namespace Application.Product.Service
         {
             var cacheKey = BuildFilterCacheKey(name, brand, categoryId, subCategoryId,subSubCategoryId, price, offer, page, pageSize);
 
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            return await _cache.GetOrCreateAsync("products:",cacheKey, async _ =>
             {
                 _logger.LogInformation("Cache Miss: Fetching from db");
                 var (items, hasMore) = await _uow.Products.FilterProducts(name ?? "", brand, categoryId, subCategoryId, subSubCategoryId, price, offer, page, pageSize, ct);
@@ -216,8 +216,8 @@ namespace Application.Product.Service
 
         public async Task<IEnumerable<string?>> GetBrands(int? categoryId)
         {
-            var cacheKey = $"products:brands:{categoryId?.ToString()}";
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            var cacheKey = $"brands:{categoryId?.ToString()}";
+            return await _cache.GetOrCreateAsync("products:",cacheKey, async _ =>
             {
                 var brands = await _uow.Products.GetBrands(categoryId);
                 if (brands == null)
@@ -235,8 +235,8 @@ namespace Application.Product.Service
 
         public async Task<IReadOnlyList<Domain.Models.Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken ct)
         {
-            var cacheKey = $"products:byids:{string.Join(",", ids.OrderBy(x => x))}";
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            var cacheKey = $"byids:{string.Join(",", ids.OrderBy(x => x))}";
+            return await _cache.GetOrCreateAsync("products:",cacheKey, async _ =>
             {
                 var products = await _uow.Products.GetByIdsAsync(ids, ct);
                 if (products == null || !products.Any())
@@ -252,7 +252,7 @@ namespace Application.Product.Service
 
         private static string BuildFilterCacheKey(string? name, string? brand, int? categoryId, int? subCategoryId, int? subSubCategoryId, decimal? price, bool? offer, int page, int pageSize)
         {
-            return $"products:filter:" +
+            return $"filter:" +
            $"name={name ?? "null"}|" +
            $"brand={brand ?? "null"}|" +
            $"cat={categoryId?.ToString() ?? "null"}|" +

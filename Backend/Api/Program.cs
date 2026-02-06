@@ -147,7 +147,7 @@ namespace Api
             builder.Services.AddSingleton<IStripeService, StripeService>();
             builder.Services.AddScoped<ICalculateDiscount, CalculateDiscount>();
             builder.Services.AddScoped<IOfferService, OfferService>();
-            builder.Services.AddSingleton<ICacheService, HybridCacheService>();
+            builder.Services.AddScoped<ICacheService, HybridCacheService>();
             builder.Services.AddHybridCache();
 
 

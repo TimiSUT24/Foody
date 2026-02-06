@@ -13,27 +13,25 @@ namespace Infrastructure.Caching
     public class HybridCacheService : ICacheService
     {
         private readonly HybridCache _cache;
-        private readonly IConnectionMultiplexer _redis;
         private readonly IDatabase _redisDb;
 
         public HybridCacheService(HybridCache cache, IConnectionMultiplexer redis)
         {
             _cache = cache;
-            _redis = redis;
             _redisDb = redis.GetDatabase();
         }
 
-        private async Task TrackKeyAsync(string prefix, string key)
+        private async Task TrackKeyAsync(string prefix, string fullKey)
         {
-            await _redisDb.SetAddAsync($"cache-keys:{prefix}", key);
+            await _redisDb.SetAddAsync($"cache-keys:{prefix}", fullKey);
         }
 
-        public async ValueTask<T> GetOrCreateAsync<T>(string key, Func<CancellationToken, ValueTask<T>> factory, TimeSpan ttl)
+        public async ValueTask<T> GetOrCreateAsync<T>(string prefix,string key, Func<CancellationToken, ValueTask<T>> factory, TimeSpan ttl)
         {
-            await TrackKeyAsync("products:", key);
-            await TrackKeyAsync("category:", key);
-            await TrackKeyAsync("user-orders:", key);
-            return await _cache.GetOrCreateAsync(key, factory,
+            var fullKey = $"{prefix}{key}";
+            await TrackKeyAsync(prefix, fullKey);
+
+            return await _cache.GetOrCreateAsync(fullKey, factory,
                 new HybridCacheEntryOptions
                 {
                     Expiration = ttl,

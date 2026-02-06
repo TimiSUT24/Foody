@@ -177,14 +177,14 @@ namespace Application.Order.Service
                     Status = paymentResult.Status
                 };
             }
-            catch
+            catch (Exception ex)
             {
                 var paymentResult = await _stripeService.CancelPaymentIntentAsync(request.PaymentIntentId);
 
                 return new CreatedOrderResponse
                 {
                     Status = paymentResult.Status,
-                    Message = $"Order creation failed"
+                    Message = $"Order creation failed {ex.Message}"
                 };
             }
            
@@ -203,9 +203,9 @@ namespace Application.Order.Service
 
         public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, OrderStatus? status, CancellationToken ct)
         {
-            var cacheKey = $"user-orders:{userId}:{status}";
+            var cacheKey = $"orders:{userId}:{status}";
 
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            return await _cache.GetOrCreateAsync("user:",cacheKey, async _ =>
             {
                 var userOrders = await _uow.Orders.GetMyOrders(userId, status, ct);
                 if (userOrders == null)
@@ -223,9 +223,9 @@ namespace Application.Order.Service
 
         public async Task<UserOrderResponse> GetUserOrder(Guid userId, Guid orderId, CancellationToken ct)
         {
-            var cacheKey = $"user-orders:{userId}:{orderId}";
+            var cacheKey = $"order:{userId}:{orderId}";
 
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            return await _cache.GetOrCreateAsync("user:",cacheKey, async _ =>
             {
                 var userOrder = await _uow.Orders.GetMyOrder(userId, orderId, ct);
                 if (userOrder == null) throw new KeyNotFoundException("Order was not found");
@@ -301,7 +301,7 @@ namespace Application.Order.Service
             if (!updated) { return false; }
 
             await _uow.SaveChangesAsync(ct);
-            await _cache.RemoveByPrefixAsync("user-orders:");
+            await _cache.RemoveByPrefixAsync("user:");
 
             return true;
         }
@@ -320,7 +320,7 @@ namespace Application.Order.Service
                     userOrder.OrderStatus = Domain.Enum.OrderStatus.Cancelled;
                     _uow.Orders.Update(userOrder);
                     await _uow.SaveChangesAsync(ct);
-                    await _cache.RemoveByPrefixAsync("user-orders:");
+                    await _cache.RemoveByPrefixAsync("user:");
                     return true;
                 }
                 else

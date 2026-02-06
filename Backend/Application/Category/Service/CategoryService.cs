@@ -30,8 +30,8 @@ namespace Application.Category.Service
 
         public async Task<IEnumerable<CategoryTreeResponse>> GetCategoryTree(CancellationToken ct)
         {
-            var cacheKey = $"category:tree";
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            var cacheKey = $"tree:";
+            return await _cache.GetOrCreateAsync("category:",cacheKey, async _ =>
             {
                 var categoryTree = await _uow.Category.GetCategoryTree(ct);
                 if (categoryTree == null)
@@ -51,8 +51,8 @@ namespace Application.Category.Service
 
         public async Task<CategoryResponse> GetCategoryById(int id, CancellationToken ct)
         {
-            var cacheKey = $"category:id:{id.ToString()}";
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            var cacheKey = $"id:{id.ToString()}";
+            return await _cache.GetOrCreateAsync("category:",cacheKey, async _ =>
             {
                 var category = await _uow.Category.GetByIdAsync(id, ct);
                 if (category == null)
@@ -69,8 +69,8 @@ namespace Application.Category.Service
 
         public async Task<SubCategoryResponse> GetSubCategoryById(int id)
         {
-            var cacheKey = $"category:subCategory:id:{id.ToString()}";
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            var cacheKey = $"subCategory:id:{id.ToString()}";
+            return await _cache.GetOrCreateAsync("category:", cacheKey, async _ =>
             {
                 var subCategory = await _uow.Category.GetSubCategory(id);
                 if (subCategory == null)
@@ -88,8 +88,8 @@ namespace Application.Category.Service
 
         public async Task<SubSubCategoryResponse> GetSubSubCategoryById(int id)
         {
-            var cacheKey = $"category:subsubCategory:id:{id.ToString()}";
-            return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+            var cacheKey = $"subsubCategory:id:{id.ToString()}";
+            return await _cache.GetOrCreateAsync("category:",cacheKey, async _ =>
             {
                 var subSubCategory = await _uow.Category.GetSubSubCategory(id);
                 if (subSubCategory == null)

@@ -8,7 +8,7 @@ namespace Application.Abstractions
 {
     public interface ICacheService
     {
-        ValueTask<T> GetOrCreateAsync<T>(string key, Func<CancellationToken, ValueTask<T>> factory, TimeSpan ttl);
+        ValueTask<T> GetOrCreateAsync<T>(string prefix, string key, Func<CancellationToken, ValueTask<T>> factory, TimeSpan ttl);
         ValueTask RemoveAsync(string key);
         ValueTask RemoveByPrefixAsync(string prefix);
     }
