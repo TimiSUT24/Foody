@@ -26,24 +26,5 @@ namespace Api.Controllers.Stripe
                 return Ok(new { clientSecret });                   
         }
 
-
-        [ProducesResponseType(statusCode: 200)]
-        [ProducesResponseType(statusCode: 400)]
-        [HttpPost("capture-payment-intent")]
-        public async Task<IActionResult> CapturePaymentIntent([FromBody] PaymentIntentIdDto dto)
-        {       
-                var intent = await _stripeService.CapturePaymentIntentAsync(dto.PaymentIntentId);
-                return Ok(intent);         
-        }
-
-
-        [ProducesResponseType(statusCode: 200)]
-        [ProducesResponseType(statusCode: 400)]
-        [HttpPost("cancel-payment-intent")]
-        public async Task<IActionResult> CancelPaymentIntent([FromBody] PaymentIntentIdDto dto)
-        {         
-                var intent = await _stripeService.CancelPaymentIntentAsync(dto.PaymentIntentId);
-                return Ok(intent);            
-        }
     }
 }

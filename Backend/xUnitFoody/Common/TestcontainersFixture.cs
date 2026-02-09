@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +15,6 @@ namespace xUnitFoody.Common
     {
         public PostgreSqlContainer Postgres { get; private set; } = null!;
         public RedisContainer Redis { get; private set; } = null!;
-        public RabbitMqContainer RabbitMq { get; private set; } = null!;
         public DatabaseReset DbReset { get; private set; }
 
         public async Task InitializeAsync()
@@ -26,14 +27,17 @@ namespace xUnitFoody.Common
 
             Redis = new RedisBuilder("redis:latest").Build();
 
-            RabbitMq = new RabbitMqBuilder("rabbitmq:4-management")
-                .WithUsername("guest")
-                .WithPassword("guest")
-                .Build();
-
             await Postgres.StartAsync();
             await Redis.StartAsync();
-            await RabbitMq.StartAsync();
+
+            var options = new DbContextOptionsBuilder<FoodyDbContext>()
+            .UseNpgsql(Postgres.GetConnectionString())
+            .Options;
+
+            using (var db = new FoodyDbContext(options))
+            {
+                await db.Database.MigrateAsync(); // ensures tables exist
+            }
 
             DbReset = new DatabaseReset(Postgres.GetConnectionString());
             await DbReset.InitializeAsync();
@@ -44,7 +48,6 @@ namespace xUnitFoody.Common
         {
             await Postgres.DisposeAsync();
             await Redis.DisposeAsync();
-            await RabbitMq.DisposeAsync();
         }
     }
 }

@@ -7,7 +7,12 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
+  
+  
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
@@ -28,13 +33,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integration\" />
     <Folder Include="Unit\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Api\Api.csproj" />
     <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 

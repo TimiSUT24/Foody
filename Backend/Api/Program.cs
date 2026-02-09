@@ -56,7 +56,7 @@ namespace Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            var isTest = builder.Environment.IsEnvironment("Test");
             builder.Services.AddControllers().AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -118,25 +118,28 @@ namespace Api
             });
 
             //RabbitMq/MassTransit
-            builder.Services.AddMassTransit(x =>
-            {       
-                x.AddConsumer<BookShipmentConsumer>();               
-                x.AddConsumer<UpdateOrderStatusConsumer>();
-                x.AddConsumer<SendOrderEmailConsumer>();
-
-                x.UsingRabbitMq((ctx, cfg) =>
+            if (!isTest)
+            {
+                builder.Services.AddMassTransit(x =>
                 {
-                    cfg.Host("rabbitmq", "/", h =>
+                    x.AddConsumer<BookShipmentConsumer>();
+                    x.AddConsumer<UpdateOrderStatusConsumer>();
+                    x.AddConsumer<SendOrderEmailConsumer>();
+
+                    x.UsingRabbitMq((ctx, cfg) =>
                     {
-                        h.Username("guest");
-                        h.Password("guest");
+                        cfg.Host("RABBITMQ:RABBITMQ_DEFAULT_HOST", "/", h =>
+                        {
+                            h.Username("RABBITMQ:RABBITMQ_DEFAULT_USER");
+                            h.Password("RABBITMQ:RABBITMQ_DEFAULT_PASS");
+                        });
+
+                        cfg.ConfigureEndpoints(ctx);
                     });
 
-                    cfg.ConfigureEndpoints(ctx);
                 });
-
-            });
-          
+            }
+                 
 
             //Services 
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -243,11 +246,12 @@ namespace Api
 
                         var userManager = services.GetRequiredService<UserManager<User>>();
                         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>(); ;
-                        
 
-                        await IcaDataSeeding.IcaSeed(dbContext);
-                        await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
-
+                        if (!isTest)
+                        {
+                            await IcaDataSeeding.IcaSeed(dbContext);
+                            await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
+                        }                      
                     }
       
                 // Configure the HTTP request pipeline.
@@ -269,4 +273,6 @@ namespace Api
             app.Run();
         }
     }
+    
 }
+public partial class Program { }
