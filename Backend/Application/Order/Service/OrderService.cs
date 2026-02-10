@@ -20,7 +20,7 @@ using Application.Product.Interfaces;
 using MassTransit;
 using Application.Order.Events;
 using Application.Postnord.Dto;
-using Application.StripeChargeShippingOptions.Interfaces;
+using Application.Stripe.Interfaces;
 
 namespace Application.Order.Service
 {

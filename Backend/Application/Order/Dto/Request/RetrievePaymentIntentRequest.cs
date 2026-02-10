@@ -8,7 +8,7 @@ namespace Application.Order.Dto.Request
 {
     public class RetrievePaymentIntentRequest
     {
-        public string ClientSecret { get; set; }
+        public string ClientSecret { get; set; } = string.Empty;
 
     }
 }

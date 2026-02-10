@@ -1,5 +1,5 @@
-﻿using Application.StripeChargeShippingOptions.Dto;
-using Application.StripeChargeShippingOptions.Interfaces;
+﻿using Application.Stripe.Dto;
+using Application.Stripe.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

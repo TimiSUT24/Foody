@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.StripeChargeShippingOptions.Dto
+namespace Application.Stripe.Dto
 {
     public record StripeShippingDto2
     {

@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data;
+﻿using Application.Order.Handlers;
+using Infrastructure.Data;
+using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +50,7 @@ namespace xUnitFoody.Common
                     ["Jwt:ExpireInMintues"] = "30",
                     ["Jwt:RefreshDays"] = "1",
                     ["CacheSettings:LongLivedMinutes"] = "2",
-                    ["CacheSettings:ShortLivedMinutes"] = "1"
+                    ["CacheSettings:ShortLivedMinutes"] = "1",
                 });
             });
 
@@ -92,6 +94,29 @@ namespace xUnitFoody.Common
                     var options = ConfigurationOptions.Parse(configuration);
                     options.AbortOnConnectFail = true;
                     return ConnectionMultiplexer.Connect(options);
+                });
+
+                var massTransitDescriptors = services
+                .Where(d => d.ServiceType.Namespace?.StartsWith("MassTransit") == true)
+                .ToList();
+
+                foreach(var descriptor2 in massTransitDescriptors)
+                {
+                    services.Remove(descriptor2);
+                }
+
+                services.AddMassTransit(x =>
+                {
+                    x.AddConsumer<BookShipmentConsumer>();
+                    x.AddConsumer<UpdateOrderStatusConsumer>();
+                    x.AddConsumer<SendOrderEmailConsumer>();
+
+                    x.UsingRabbitMq((ctx, config) =>
+                    {
+                        var connectionString = _containers!.RabbitMQ.GetConnectionString();
+                        config.Host(connectionString);
+                        config.ConfigureEndpoints(ctx);
+                    });
                 });
             });
         }

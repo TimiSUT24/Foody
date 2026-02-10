@@ -32,7 +32,7 @@ namespace Api.Controllers.Order
 
         [Authorize]
         [HttpPost("create")]
-        [ProducesResponseType(statusCode:201)]
+        [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         [ProducesResponseType(statusCode:400)]
         [ProducesResponseType(statusCode:401)]

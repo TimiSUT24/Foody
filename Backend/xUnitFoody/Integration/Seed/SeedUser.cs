@@ -16,7 +16,7 @@ namespace xUnitFoody.Integration.Seed
 {
     public static class SeedUser
     {
-        public static async Task<string> CreateAdminAndLoginAsync(HttpClient client, IServiceProvider serviceProvider)
+        public static async Task<(string Token, string UserId)> CreateAdminAndLoginAsync(HttpClient client, IServiceProvider serviceProvider)
         {
             
             using var scope = serviceProvider.CreateScope();
@@ -45,7 +45,7 @@ namespace xUnitFoody.Integration.Seed
             loginResponse.EnsureSuccessStatusCode();
 
             var json = await loginResponse.Content.ReadFromJsonAsync<LoginDtoResponse>();
-            return json!.AccessToken;
+            return (json!.AccessToken, admin.Id.ToString());
         }
     }
 }

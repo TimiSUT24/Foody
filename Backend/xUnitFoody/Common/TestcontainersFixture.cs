@@ -15,6 +15,7 @@ namespace xUnitFoody.Common
     {
         public PostgreSqlContainer Postgres { get; private set; } = null!;
         public RedisContainer Redis { get; private set; } = null!;
+        public RabbitMqContainer RabbitMQ { get; private set; } = null!;
         public DatabaseReset DbReset { get; private set; }
 
         public async Task InitializeAsync()
@@ -27,8 +28,15 @@ namespace xUnitFoody.Common
 
             Redis = new RedisBuilder("redis:latest").Build();
 
+            RabbitMQ = new RabbitMqBuilder("rabbitmq:4-management")
+                .WithUsername("guest")
+                .WithPassword("guest")
+                .Build();
+
+
             await Postgres.StartAsync();
             await Redis.StartAsync();
+            await RabbitMQ.StartAsync();
 
             var options = new DbContextOptionsBuilder<FoodyDbContext>()
             .UseNpgsql(Postgres.GetConnectionString())
@@ -48,6 +56,7 @@ namespace xUnitFoody.Common
         {
             await Postgres.DisposeAsync();
             await Redis.DisposeAsync();
+            await RabbitMQ.DisposeAsync();
         }
     }
 }

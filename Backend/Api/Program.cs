@@ -23,8 +23,8 @@ using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
 using Application.Product.Validator;
-using Application.StripeChargeShippingOptions.Interfaces;
-using Application.StripeChargeShippingOptions.Service;
+using Application.Stripe.Interfaces;
+using Application.Stripe.Service;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
@@ -128,10 +128,10 @@ namespace Api
 
                     x.UsingRabbitMq((ctx, cfg) =>
                     {
-                        cfg.Host("RABBITMQ:RABBITMQ_DEFAULT_HOST", "/", h =>
+                        cfg.Host("RABBITMQ_DEFAULT_HOST", "/", h =>
                         {
-                            h.Username("RABBITMQ:RABBITMQ_DEFAULT_USER");
-                            h.Password("RABBITMQ:RABBITMQ_DEFAULT_PASS");
+                            h.Username("RABBITMQ_DEFAULT_USER");
+                            h.Password("RABBITMQ_DEFAULT_PASS");
                         });
 
                         cfg.ConfigureEndpoints(ctx);

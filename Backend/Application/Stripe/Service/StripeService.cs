@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.StripeChargeShippingOptions.Dto;
 using Microsoft.Extensions.Configuration;
-using Application.StripeChargeShippingOptions;
-using Application.StripeChargeShippingOptions.Interfaces;
 using Stripe;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Application.Stripe.Dto;
+using Application.Stripe.Interfaces;
 
-namespace Application.StripeChargeShippingOptions.Service
+namespace Application.Stripe.Service
 {
     public class StripeService : IStripeService
     {

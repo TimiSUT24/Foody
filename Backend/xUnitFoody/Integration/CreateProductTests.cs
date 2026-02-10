@@ -32,7 +32,7 @@ namespace xUnitFoody.Integration
             await _factory.Containers.DbReset.ResetAsync();
 
             //Arrange create admin and login as one
-            var token = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
+            var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
