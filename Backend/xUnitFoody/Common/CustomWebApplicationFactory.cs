@@ -105,16 +105,14 @@ namespace xUnitFoody.Common
                     services.Remove(descriptor2);
                 }
 
-                services.AddMassTransit(x =>
+                services.AddMassTransitTestHarness(x =>
                 {
                     x.AddConsumer<BookShipmentConsumer>();
                     x.AddConsumer<UpdateOrderStatusConsumer>();
                     x.AddConsumer<SendOrderEmailConsumer>();
 
-                    x.UsingRabbitMq((ctx, config) =>
-                    {
-                        var connectionString = _containers!.RabbitMQ.GetConnectionString();
-                        config.Host(connectionString);
+                    x.UsingInMemory((ctx, config) =>
+                    {                       
                         config.ConfigureEndpoints(ctx);
                     });
                 });
