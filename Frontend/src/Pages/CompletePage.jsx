@@ -94,7 +94,6 @@ function CompletePageContent() {
       });
 
       setStatus(create.data.status);
-      console.log(status)
       if(create.data.status === "succeeded"){
         clearCart();
         setTimeout(() => {

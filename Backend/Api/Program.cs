@@ -117,6 +117,9 @@ namespace Api
                 
             });
 
+            var rabbitHost = builder.Configuration["RABBITMQ_DEFAULT_HOST"];
+            var rabbitUser = builder.Configuration["RABBITMQ_DEFAULT_USER"];
+            var rabbitPass = builder.Configuration["RABBITMQ_DEFAULT_PASS"];
             //RabbitMq/MassTransit
             if (!isTest)
             {
@@ -128,10 +131,10 @@ namespace Api
 
                     x.UsingRabbitMq((ctx, cfg) =>
                     {
-                        cfg.Host("RABBITMQ_DEFAULT_HOST", "/", h =>
+                        cfg.Host(rabbitHost, "/", h =>
                         {
-                            h.Username("RABBITMQ_DEFAULT_USER");
-                            h.Password("RABBITMQ_DEFAULT_PASS");
+                            h.Username(rabbitUser!);
+                            h.Password(rabbitPass!);
                         });
 
                         cfg.ConfigureEndpoints(ctx);

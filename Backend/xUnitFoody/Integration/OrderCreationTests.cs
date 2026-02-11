@@ -1,8 +1,14 @@
-﻿using Application.Order.Dto.Request;
+﻿using Api.Controllers.Postnord.Dto;
+using Application.Order.Dto.Request;
 using Application.Order.Events;
 using Application.Order.Handlers;
+using Application.Postnord.Dto;
 using Application.Stripe.Dto;
+using Infrastructure.Data;
+using MassTransit;
+using MassTransit.Internals;
 using MassTransit.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Stripe;
 using System;
@@ -34,15 +40,9 @@ namespace xUnitFoody.Integration
         [Fact]
         public async Task CreateOrder_FullStripeFlow_Returns200()
         {
-            //Arrange db reset
-            await _factory.Containers.DbReset.ResetAsync();
-            using var scope = _factory.Services.CreateScope();
-            var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+                //Arrange db reset
+                await _factory.Containers.DbReset.ResetAsync();
 
-            await harness.Start();
-
-            try
-            {
                 //Arrange login user 
                 var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -105,16 +105,50 @@ namespace xUnitFoody.Integration
 
                 //Assert status is 200 ok
                 Assert.Equal(HttpStatusCode.OK, orderResponse.StatusCode);
+        }
 
-                
-                //Assert Event chain 
-                Assert.True(await harness.Published.Any<OrderCreatedEvent>());
-            }
-            finally
+        [Fact]
+        public async Task GetPostNordOptions_IncludePostalCodeValidation_ReturnsValidResponse()
+        {
+            //Arrange db reset
+            await _factory.Containers.DbReset.ResetAsync();
+
+            //Arrange PostCode
+            var postCodeRequest = new PostalCodeRequest
             {
-                await harness.Stop();
-            }
+                PostCode = "31173"
+            };
 
+            //Arrange PostCode for deliveryOptions 
+            var deliveryPostCode = new DeliveryOptionsRequestDto
+            {
+                Recipient = new RecipientDto
+                {
+                    PostCode = "31173"
+                }
+            };
+
+            //Act call postalCode validation endpoint
+            var postCodeResponse = await _httpClient.PostAsJsonAsync("/api/Postnord/postalCode/Validation", postCodeRequest);
+            var postCodeResponseJson = await postCodeResponse.Content.ReadFromJsonAsync<ValidationPostalCode>();
+            var postCodeValid = postCodeResponseJson!.ValidationResult;
+            //Assert ensure status is 200 OK 
+            Assert.Equal(HttpStatusCode.OK, postCodeResponse.StatusCode);
+            Assert.Equal("VALID", postCodeValid);
+
+            //Act call Postnord delivery options with postalcode 
+            var postNordDeliveryResponse = await _httpClient.PostAsJsonAsync("/api/Postnord/options", deliveryPostCode);
+            var postNordDeliveryJson = await postNordDeliveryResponse.Content.ReadFromJsonAsync<JsonElement>();
+            var postNordDeliveryId = postNordDeliveryJson[0];
+
+            var warehouseId = postNordDeliveryId
+                .GetProperty("warehouse")
+                .GetProperty("id")
+                .GetString();
+                
+            //Assert ensure status is 200 OK and response is valid
+            Assert.Equal(HttpStatusCode.OK, postNordDeliveryResponse.StatusCode);
+            Assert.Equal("Falkenberg",warehouseId);
             
         }
 

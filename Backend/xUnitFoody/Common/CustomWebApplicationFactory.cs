@@ -97,23 +97,32 @@ namespace xUnitFoody.Common
                 });
 
                 var massTransitDescriptors = services
-                .Where(d => d.ServiceType.Namespace?.StartsWith("MassTransit") == true)
-                .ToList();
+                   .Where(d => d.ServiceType.Namespace != null &&
+                              (d.ServiceType.Namespace.StartsWith("MassTransit") ||
+                               d.ServiceType == typeof(IBus) ||
+                               d.ServiceType == typeof(IPublishEndpoint) ||
+                               d.ServiceType == typeof(ISendEndpointProvider)))
+                   .ToList();
 
-                foreach(var descriptor2 in massTransitDescriptors)
+                foreach (var descriptor2 in massTransitDescriptors)
                 {
                     services.Remove(descriptor2);
                 }
 
-                services.AddMassTransitTestHarness(x =>
+                // Add MassTransit Test Harness with In-Memory transport
+                services.AddMassTransit(cfg =>
                 {
-                    x.AddConsumer<BookShipmentConsumer>();
-                    x.AddConsumer<UpdateOrderStatusConsumer>();
-                    x.AddConsumer<SendOrderEmailConsumer>();
 
-                    x.UsingInMemory((ctx, config) =>
-                    {                       
-                        config.ConfigureEndpoints(ctx);
+                    // Add all your consumers
+                    cfg.AddConsumer<BookShipmentConsumer>();
+                    cfg.AddConsumer<UpdateOrderStatusConsumer>();
+                    cfg.AddConsumer<SendOrderEmailConsumer>();
+
+                    cfg.UsingRabbitMq((context, cgf) =>
+                    {
+                        var connectionString = _containers!.RabbitMQ.GetConnectionString();
+                        cgf.Host(connectionString);
+                        cgf.ConfigureEndpoints(context);
                     });
                 });
             });

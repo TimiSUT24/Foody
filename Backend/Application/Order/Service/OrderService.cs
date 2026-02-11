@@ -35,7 +35,7 @@ namespace Application.Order.Service
         private readonly IProductService _productService;
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public OrderService(IUnitOfWork uow, IMapper mapper,IStripeService stripeService,IPublishEndpoint publishEndpoint,IProductService productService, IEmailService emailService, ICalculateDiscount discount, ICacheService cache, IOptions<CacheSettings> cacheSettings)
+        public OrderService(IUnitOfWork uow, IMapper mapper,IStripeService stripeService,IPublishEndpoint publishEndpoint,IProductService productService,ICalculateDiscount discount, ICacheService cache, IOptions<CacheSettings> cacheSettings)
         {
             _uow = uow;
             _mapper = mapper;
