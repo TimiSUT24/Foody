@@ -97,6 +97,11 @@ namespace Api
 
             //Stripe 
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+            if(StripeConfiguration.ApiKey == null)
+            {
+                var envVar = Environment.GetEnvironmentVariable("Stripe__SecretKey");
+                StripeConfiguration.ApiKey = envVar;
+            }
 
             //CacheSettings
             builder.Services.Configure<CacheSettings>(
