@@ -20,7 +20,7 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore dependencies
-        run: dotnet restore Backend
+        run: dotnet restore Backend/Api.sln
 
       - name: Run tests (xUnit + Testcontainers)
-        run: dotnet test Backend/xUnitFoody --no-restore
+        run: dotnet test Backend/xUnitFoody/xUnitFoody.csproj --no-restore
