@@ -8,7 +8,7 @@ namespace Application.Order.Dto.Response
 {
     public record CreatedOrderResponse
     {
-        public Guid OrderId { get; init; }
-        public decimal? TotalWeightKg { get; init; }
+        public string Status { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
     }
 }

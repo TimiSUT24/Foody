@@ -1,4 +1,5 @@
 ﻿using Application.Postnord.Dto;
+using Application.Postnord.Dto.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Application.Postnord.Interfaces
 {
     public interface IPostnordService
     {
-        Task<object> BookShipmentAsync(PostNordBookingRequestDto dto, CancellationToken ct);
+        Task<PostNordBookingResponseDto> BookShipmentAsync(PostNordBookingRequestDto dto, CancellationToken ct);
         Task<object> GetDeliveryOptionsAsync(string postCode);
         Task<ValidationPostalCode> ValidatePostalCode(PostalCodeRequest dtorequest);
     }

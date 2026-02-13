@@ -32,7 +32,7 @@ namespace Api.Controllers.Order
 
         [Authorize]
         [HttpPost("create")]
-        [ProducesResponseType(statusCode:201)]
+        [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:404)]
         [ProducesResponseType(statusCode:400)]
         [ProducesResponseType(statusCode:401)]
@@ -50,7 +50,7 @@ namespace Api.Controllers.Order
         [ProducesResponseType(statusCode: 401)]
         public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken ct)
         {
-            var result = await _orderService.GetByIdAsync(id, ct);
+            var result = await _orderService.GetByIdAsync(id,ct);
             return Ok(result);
         }
 

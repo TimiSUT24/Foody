@@ -14,6 +14,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Enum;
+using Application.Abstractions;
+using Microsoft.Extensions.Options;
+using Application.Product.Interfaces;
+using MassTransit;
+using Application.Order.Events;
+using Application.Postnord.Dto;
+using Application.Stripe.Interfaces;
 
 namespace Application.Order.Service
 {
@@ -21,15 +28,23 @@ namespace Application.Order.Service
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-        private readonly IEmailService _emailService;
+        private readonly IStripeService _stripeService;
         private readonly ICalculateDiscount _discount;
+        private readonly ICacheService _cache;
+        private readonly CacheSettings _cacheSettings;
+        private readonly IProductService _productService;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public OrderService(IUnitOfWork uow, IMapper mapper, IEmailService emailService, ICalculateDiscount discount)
+        public OrderService(IUnitOfWork uow, IMapper mapper,IStripeService stripeService,IPublishEndpoint publishEndpoint,IProductService productService,ICalculateDiscount discount, ICacheService cache, IOptions<CacheSettings> cacheSettings)
         {
             _uow = uow;
             _mapper = mapper;
-            _emailService = emailService;
+            _stripeService = stripeService;
             _discount = discount;
+            _cache = cache;
+            _cacheSettings = cacheSettings.Value;
+            _productService = productService;
+            _publishEndpoint = publishEndpoint;
         }
 
         private decimal ConvertToKg(decimal? value, string? unit)
@@ -51,85 +66,128 @@ namespace Application.Order.Service
 
         public async Task<CreatedOrderResponse> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct)
         {
-            var products = await _uow.Products.GetAllAsync(ct);
-            foreach(var item in request.Items)
+            try
             {
-                if (!products.Any(s => s.Id == item.FoodId))
-                {
-                    throw new KeyNotFoundException("Invalid id");
+                var fetchedProducts = new List<Domain.Models.Product>();
+                foreach (var item in request.Items)
+                {                   
+                    var product = await _uow.Products.GetByIdAsync(item.FoodId,ct);
+                    if(product == null)
+                    {
+                        throw new KeyNotFoundException("Invalid product ID");
+                    }
+                    fetchedProducts.Add(product);
                 }
-            }
-            var orderItems = new List<OrderItem>();
+                var orderItems = new List<OrderItem>();
 
-            var cartItems = new CartItemsDto
-            {
-                Items = request.Items.Select(i => new CartItemDto
+                var cartItems = new CartItemsDto
                 {
-                    Id = i.FoodId,
-                    Qty = i.Quantity
-                }).ToList(),
-                ServiceCode = request.ServiceCode,
-            };
-            var totals = await CalculateTax(cartItems, ct);
-            decimal? totalWeightKg = 0m;
-
-            foreach (var item in request.Items)
-            {
-                var product = await _uow.Products.GetByIdAsync<int>(item.FoodId, ct);
-                if (product == null) throw new KeyNotFoundException("Cannot find product");
-                if (product.Stock <= 0) throw new ArgumentException("Product sold out");
-                if (item.Quantity > product.Stock) throw new InvalidOperationException("Quantity exceeds product stock");
-
-                var unitToKg = ConvertToKg(product.WeightValue, product.WeightUnit);
-                totalWeightKg += unitToKg * item.Quantity;
-
-                var orderItem = new OrderItem
-                {
-                    FoodId = item.FoodId,
-                    Quantity = item.Quantity,
-                    UnitPrice = totals.UnitPrice,
-                    UnitPriceOriginal = product.Price,
-                    WeightValue = (decimal)product.WeightValue
+                    Items = request.Items.Select(i => new CartItemDto
+                    {
+                        Id = i.FoodId,
+                        Qty = i.Quantity
+                    }).ToList(),
+                    ServiceCode = request.ServiceCode,
                 };
-                product.Stock -= item.Quantity;
-                orderItems.Add(orderItem);
-            }
+                var totals = await CalculateTax(cartItems, ct);
+                decimal? totalWeightKg = 0m;
 
-            var order = new Domain.Models.Order
-            {
-                UserId = userId,
-                TotalPrice = totals.Total,
-                Moms = totals.Moms,
-                SubTotal = totals.SubTotal,
-                OrderStatus = Domain.Enum.OrderStatus.Pending,
-                TotalWeight = (decimal)totalWeightKg,
-                ShippingTax = totals.ShippingTax,
-                OrderDate = DateTime.UtcNow,
-                OrderItems = orderItems,
-                ShippingInformation = new Domain.Models.ShippingInformation
+                foreach (var item in request.Items)
                 {
-                    FirstName = request.ShippingInformation.FirstName,
-                    LastName = request.ShippingInformation.LastName,
-                    Adress = request.ShippingInformation.Adress,
-                    City = request.ShippingInformation.City,
-                    State= request.ShippingInformation.State,
-                    PostalCode = request.ShippingInformation.PostalCode,
-                    PhoneNumber = request.ShippingInformation.PhoneNumber,
-                    Email = request.ShippingInformation.Email
+                    var product = fetchedProducts.First(s => s.Id == item.FoodId);
+                    if (product == null) throw new KeyNotFoundException("Cannot find product");
+                    if (product.Stock <= 0) throw new ArgumentException("Product sold out");
+                    if (item.Quantity > product.Stock) throw new InvalidOperationException("Quantity exceeds product stock");
+
+                    var unitToKg = ConvertToKg(product.WeightValue, product.WeightUnit);
+                    totalWeightKg += unitToKg * item.Quantity;
+
+                    var orderItem = new OrderItem
+                    {
+                        FoodId = item.FoodId,
+                        Quantity = item.Quantity,
+                        UnitPrice = totals.UnitPrice,
+                        UnitPriceOriginal = product.Price,
+                        WeightValue = (decimal)product.WeightValue
+                    };
+                    product.Stock -= item.Quantity;
+                    orderItems.Add(orderItem);
                 }
-            };
 
-         
-            await _uow.Orders.AddAsync(order, ct);
-            await _uow.SaveChangesAsync(ct);
+                var order = new Domain.Models.Order
+                {
+                    UserId = userId,
+                    TotalPrice = totals.Total,
+                    Moms = totals.Moms,
+                    SubTotal = totals.SubTotal,
+                    OrderStatus = Domain.Enum.OrderStatus.Pending,
+                    TotalWeight = (decimal)totalWeightKg,
+                    ShippingTax = totals.ShippingTax,
+                    OrderDate = DateTime.UtcNow,
+                    OrderItems = orderItems,
+                    ShippingInformation = new Domain.Models.ShippingInformation
+                    {
+                        FirstName = request.ShippingInformation.FirstName,
+                        LastName = request.ShippingInformation.LastName,
+                        Adress = request.ShippingInformation.Adress,
+                        City = request.ShippingInformation.City,
+                        State = request.ShippingInformation.State,
+                        PostalCode = request.ShippingInformation.PostalCode,
+                        PhoneNumber = request.ShippingInformation.PhoneNumber,
+                        Email = request.ShippingInformation.Email
+                    }
+                };
 
-            await _emailService.SendOrderConfirmationEmail(order.ShippingInformation.Email, order);
 
-            return new CreatedOrderResponse
+                await _uow.Orders.AddAsync(order, ct);
+                await _uow.SaveChangesAsync(ct);
+
+                var paymentResult = await _stripeService.CapturePaymentIntentAsync(request.PaymentIntentId);
+
+                await _publishEndpoint.Publish(new OrderCreatedEvent
+                {
+                    OrderId = order.Id,
+                    PaymentIntentId = request.PaymentIntentId,
+                    TotalWeight = order.TotalWeight,
+                    PaymentMethod = paymentResult.PaymentMethod,
+                    PaymentStatus = paymentResult.Status,
+                    Shipping = new ShippingDto
+                    {
+                        ServiceCode = request.ServiceCode,
+                        Email = request.ShippingInformation.Email,
+                        Lastname = request.ShippingInformation.LastName,
+                        Shipping = new StripeShippingDto
+                        {
+                            Phone = request.ShippingInformation.PhoneNumber,
+                            Name = request.ShippingInformation.FirstName,
+                            Address = new AddressDto
+                            {
+                                Line1 = request.ShippingInformation.Adress,
+                                Postal_Code = request.ShippingInformation.PostalCode,
+                                City = request.ShippingInformation.City
+                            }
+                        }
+
+                    }
+                },
+                    ct);
+
+                return new CreatedOrderResponse
+                {
+                    Status = paymentResult.Status
+                };
+            }
+            catch (Exception ex)
             {
-                OrderId = order.Id,
-                TotalWeightKg = totalWeightKg
-            };
+                var paymentResult = await _stripeService.CancelPaymentIntentAsync(request.PaymentIntentId);
+
+                return new CreatedOrderResponse
+                {
+                    Status = paymentResult.Status,
+                    Message = $"Order creation failed {ex.Message}"
+                };
+            }
+           
         }
 
         public async Task<OrderResponse> GetByIdAsync(Guid id, CancellationToken ct)
@@ -145,26 +203,40 @@ namespace Application.Order.Service
 
         public async Task<List<UserOrderResponse>> GetUserOrders(Guid userId, OrderStatus? status, CancellationToken ct)
         {
-            var userOrders = await _uow.Orders.GetMyOrders(userId, status, ct);
-            if (userOrders == null)
+            var cacheKey = $"orders:{userId}:{status}";
+
+            return await _cache.GetOrCreateAsync("user:",cacheKey, async _ =>
             {
-                throw new KeyNotFoundException("User has no orders");
-            }
+                var userOrders = await _uow.Orders.GetMyOrders(userId, status, ct);
+                if (userOrders == null)
+                {
+                    throw new KeyNotFoundException("User has no orders");
+                }
 
-            var response = _mapper.Map<List<UserOrderResponse>>(userOrders);
+                var response = _mapper.Map<List<UserOrderResponse>>(userOrders);
 
-            return response;
-
+                return response;
+            },
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );         
         }
 
         public async Task<UserOrderResponse> GetUserOrder(Guid userId, Guid orderId, CancellationToken ct)
         {
-            var userOrder = await _uow.Orders.GetMyOrder(userId, orderId, ct);
-            if (userOrder == null) throw new KeyNotFoundException("Order was not found");
+            var cacheKey = $"order:{userId}:{orderId}";
 
-            var response = _mapper.Map<UserOrderResponse>(userOrder);
+            return await _cache.GetOrCreateAsync("user:",cacheKey, async _ =>
+            {
+                var userOrder = await _uow.Orders.GetMyOrder(userId, orderId, ct);
+                if (userOrder == null) throw new KeyNotFoundException("Order was not found");
 
-            return response;
+                var response = _mapper.Map<UserOrderResponse>(userOrder);
+
+                return response;
+            },
+            TimeSpan.FromMinutes(_cacheSettings.LongLivedMinutes)
+            );
+            
         }
 
         public async Task<bool> UpdateOrder(UpdateOrder request, CancellationToken ct) 
@@ -229,6 +301,7 @@ namespace Application.Order.Service
             if (!updated) { return false; }
 
             await _uow.SaveChangesAsync(ct);
+            await _cache.RemoveByPrefixAsync("user:");
 
             return true;
         }
@@ -247,6 +320,7 @@ namespace Application.Order.Service
                     userOrder.OrderStatus = Domain.Enum.OrderStatus.Cancelled;
                     _uow.Orders.Update(userOrder);
                     await _uow.SaveChangesAsync(ct);
+                    await _cache.RemoveByPrefixAsync("user:");
                     return true;
                 }
                 else
@@ -271,7 +345,7 @@ namespace Application.Order.Service
             var unitPrice = 0M;
             var productIds = cartItems.Items.Select(s => s.Id).ToList();
 
-            var products = await _uow.Products.GetByIdsAsync(productIds, ct);
+            var products = await _productService.GetByIdsAsync(productIds, ct);
             var now = DateTime.UtcNow;
 
             foreach (var item in cartItems.Items)

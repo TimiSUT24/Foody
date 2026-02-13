@@ -12,7 +12,7 @@ namespace Application.Order.Interfaces
     public interface IOrderService
     {
         Task<CreatedOrderResponse> CreateAsync(Guid userId, CreateOrderDto request, CancellationToken ct);
-        Task<OrderResponse> GetByIdAsync(Guid id, CancellationToken ct);
+        Task<OrderResponse> GetByIdAsync(Guid id,CancellationToken ct);
         Task<List<UserOrderResponse>> GetUserOrders(Guid userId, OrderStatus? status, CancellationToken ct);
         Task<UserOrderResponse> GetUserOrder(Guid userId, Guid orderId, CancellationToken ct);
         Task<bool> CancelMyOrder(Guid userId, Guid orderId, CancellationToken ct);

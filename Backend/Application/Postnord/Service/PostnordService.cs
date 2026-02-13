@@ -1,4 +1,5 @@
 ﻿using Application.Postnord.Dto;
+using Application.Postnord.Dto.Response;
 using Application.Postnord.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
@@ -115,7 +116,7 @@ namespace Application.Postnord.Service
 
         }
 
-        public async Task<object> BookShipmentAsync(PostNordBookingRequestDto dto,CancellationToken ct)
+        public async Task<PostNordBookingResponseDto> BookShipmentAsync(PostNordBookingRequestDto dto,CancellationToken ct)
         {
             var address = dto.Shipping.Shipping.Address;
             var payload = new
@@ -241,7 +242,7 @@ namespace Application.Postnord.Service
                 );
             }
 
-            return JsonSerializer.Deserialize<object>(body)!;
+            return JsonSerializer.Deserialize<PostNordBookingResponseDto>(body)!;
         }
 
     }

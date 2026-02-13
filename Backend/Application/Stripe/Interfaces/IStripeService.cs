@@ -1,5 +1,4 @@
 ﻿using Application.Stripe.Dto;
-using Application.StripeChargeShippingOptions.Dto;
 using Stripe;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.StripeChargeShippingOptions.Interfaces
+namespace Application.Stripe.Interfaces
 {
     public interface IStripeService
     {

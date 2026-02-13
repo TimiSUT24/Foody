@@ -29,18 +29,6 @@ namespace Api.Controllers.Postnord
             return Ok(result);
         }
 
-        [ProducesResponseType(statusCode: 200)]
-        [ProducesResponseType(statusCode: 400)]
-        [HttpPost("booking")]
-        public async Task<IActionResult> Book([FromBody] PostNordBookingRequestDto dto,CancellationToken ct)
-        {
-            if (dto.Shipping == null)
-                return BadRequest("Shipping info required");
-
-            var result = await _postNord.BookShipmentAsync(dto,ct);
-            return Ok(result);
-        }
-
         [ProducesResponseType(statusCode:200)]
         [ProducesResponseType(statusCode:400)]
         [HttpPost("postalCode/Validation")]

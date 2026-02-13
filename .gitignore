@@ -372,3 +372,8 @@ FodyWeavers.xsd
 /Frontend/localhost-key.pem
 /Frontend/localhost.pem
 /.gitignore
+/Backend/Api/Docker-Compose.yml
+/Backend/.env
+/Backend/launchSettings.json
+/Backend/xUnitFoody/appsettings.test.json
+/Backend/xUnitFoody/Properties/launchSettings.json

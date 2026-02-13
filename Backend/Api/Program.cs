@@ -1,5 +1,6 @@
 
 using Api.Middleware;
+using Application.Abstractions;
 using Application.Auth.Interfaces;
 using Application.Auth.Mapper;
 using Application.Auth.Service;
@@ -12,6 +13,7 @@ using Application.NutritionValue.Service;
 using Application.Offer.Interfaces;
 using Application.Offer.Mapper;
 using Application.Offer.Service;
+using Application.Order.Handlers;
 using Application.Order.Interfaces;
 using Application.Order.Mapper;
 using Application.Order.Service;
@@ -21,22 +23,25 @@ using Application.Product.Interfaces;
 using Application.Product.Mapper;
 using Application.Product.Service;
 using Application.Product.Validator;
-using Application.StripeChargeShippingOptions.Interfaces;
-using Application.StripeChargeShippingOptions.Service;
+using Application.Stripe.Interfaces;
+using Application.Stripe.Service;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Infrastructure.Caching;
 using Infrastructure.Data;
 using Infrastructure.ExternalService;
 using Infrastructure.HelperMethod;
 using Infrastructure.Repositories;
 using Infrastructure.Seeding;
 using Infrastructure.UnitOfWork;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using Stripe;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -51,7 +56,7 @@ namespace Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            var isTest = builder.Environment.IsEnvironment("Test");
             builder.Services.AddControllers().AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -68,7 +73,7 @@ namespace Api
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
-                    BearerFormat = "JWT",
+                    BearerFormat = "Jwt",
                     In = ParameterLocation.Header,
                     Description = "Skriv: Bearer {ditt_jwt}"
                 });
@@ -93,6 +98,52 @@ namespace Api
             //Stripe 
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+            //CacheSettings
+            builder.Services.Configure<CacheSettings>(
+                builder.Configuration.GetSection("CacheSettings"));
+
+            //Redis 
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration["Redis:ConnectionString"];         
+            });
+
+            builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configuration = builder.Configuration["Redis:ConnectionString"];
+                var options = ConfigurationOptions.Parse(configuration);
+                options.AbortOnConnectFail = true;
+                return ConnectionMultiplexer.Connect(options);
+                
+            });
+
+            var rabbitHost = builder.Configuration["RABBITMQ_DEFAULT_HOST"];
+            var rabbitUser = builder.Configuration["RABBITMQ_DEFAULT_USER"];
+            var rabbitPass = builder.Configuration["RABBITMQ_DEFAULT_PASS"];
+            //RabbitMq/MassTransit
+            if (!isTest)
+            {
+                builder.Services.AddMassTransit(x =>
+                {
+                    x.AddConsumer<BookShipmentConsumer>();
+                    x.AddConsumer<UpdateOrderStatusConsumer>();
+                    x.AddConsumer<SendOrderEmailConsumer>();
+
+                    x.UsingRabbitMq((ctx, cfg) =>
+                    {
+                        cfg.Host(rabbitHost, "/", h =>
+                        {
+                            h.Username(rabbitUser!);
+                            h.Password(rabbitPass!);
+                        });
+
+                        cfg.ConfigureEndpoints(ctx);
+                    });
+
+                });
+            }
+                 
+
             //Services 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -105,6 +156,8 @@ namespace Api
             builder.Services.AddSingleton<IStripeService, StripeService>();
             builder.Services.AddScoped<ICalculateDiscount, CalculateDiscount>();
             builder.Services.AddScoped<IOfferService, OfferService>();
+            builder.Services.AddScoped<ICacheService, HybridCacheService>();
+            builder.Services.AddHybridCache();
 
 
             //Unit Of Work + Repositories
@@ -134,7 +187,7 @@ namespace Api
             builder.Services.AddFluentValidationAutoValidation();
 
 
-            var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+            var connectionString = builder.Configuration["DefaultConnection"];
 
             builder.Services.AddDbContext<FoodyDbContext>(options =>
                 options.UseNpgsql(connectionString));
@@ -164,10 +217,10 @@ namespace Api
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["JWT:Issuer"],
-                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
                     IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
+                        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
                 };
             });
 
@@ -184,21 +237,26 @@ namespace Api
                 });
             });
 
-            var app = builder.Build();       
+            var app = builder.Build();
 
             //Seed users and roles
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var userManager = services.GetRequiredService<UserManager<User>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();;
-                var dbContext = services.GetRequiredService<FoodyDbContext>();
+  
+                    using (var scope = app.Services.CreateScope())
+                    {
+                        var services = scope.ServiceProvider;
+                        var dbContext = services.GetRequiredService<FoodyDbContext>();
+                        dbContext.Database.Migrate();   
 
-                await IcaDataSeeding.IcaSeed(dbContext);
-                await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
-                
-            }
+                        var userManager = services.GetRequiredService<UserManager<User>>();
+                        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>(); ;
 
+                        if (!isTest)
+                        {
+                            await IcaDataSeeding.IcaSeed(dbContext);
+                            await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
+                        }                      
+                    }
+      
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {
@@ -218,4 +276,6 @@ namespace Api
             app.Run();
         }
     }
+    
 }
+public partial class Program { }

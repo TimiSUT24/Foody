@@ -36,6 +36,10 @@ export default function NavBar (){
 
       useEffect(() => {
     const fetchTotal = async () => {
+      if(cart.length <= 0){
+            setTotalPrice(0);
+            return;
+        }
         const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:""})
         setTotalPrice(response.data.total);
     };
