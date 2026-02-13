@@ -18,7 +18,7 @@ namespace Infrastructure.ExternalService
 
         public EmailService(IConfiguration configuration)
         {
-            _apiKey = configuration["SendGrid:ApiKey"] ?? Environment.GetEnvironmentVariable("SendGrid:ApiKey");
+            _apiKey = configuration["SendGrid:ApiKey"] ?? Environment.GetEnvironmentVariable("SendGrid__ApiKey");
         }
 
         public async Task SendOrderConfirmationEmail(string toEmail, Order order)

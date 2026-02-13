@@ -17,7 +17,7 @@ namespace Application.Stripe.Service
 
         public StripeService(IConfiguration config)
         {
-            _client = new StripeClient(config["Stripe:SecretKey"]!);
+            _client = new StripeClient(config["Stripe:SecretKey"] ?? Environment.GetEnvironmentVariable("Stripe__SecretKey"));
         }
 
         public async Task<string> CreatePaymentIntentAsync(CreatePaymentRequestDto dto)

@@ -27,4 +27,7 @@ jobs:
       - name: Run tests (xUnit + Testcontainers)
         env:
             AllowedOrigins: ${{secrets.ALLOWEDORIGINS}}
+            Stripe__SecretKey: ${{secrets.STRIPE__SECRETKEY}}
+            Postnord__ApiKey: ${{secrets.POSTNORD__APIKEY}}
+            SendGrid__ApiKey: ${{secrets.SENDGRID__APIKEY}}
         run: dotnet test Backend/xUnitFoody/xUnitFoody.csproj --no-restore

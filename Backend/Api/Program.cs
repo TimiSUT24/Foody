@@ -110,7 +110,7 @@ namespace Api
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
-                var configuration = builder.Configuration["Redis:ConnectionString"];
+                var configuration = builder.Configuration["Redis:ConnectionString"];              
                 var options = ConfigurationOptions.Parse(configuration);
                 options.AbortOnConnectFail = true;
                 return ConnectionMultiplexer.Connect(options);
