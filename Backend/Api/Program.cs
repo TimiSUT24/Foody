@@ -226,6 +226,12 @@ namespace Api
 
             //Cors
             var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+            if(allowedOrigins == null || allowedOrigins.Length == 0)
+            {
+                var envOrigins = Environment.GetEnvironmentVariable("AllowedOrigins");
+                allowedOrigins = envOrigins?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            }
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
