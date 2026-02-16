@@ -35,4 +35,6 @@ jobs:
             Jwt__Key: ${{secrets.JWT__KEY}}
             Jwt__ExpireInMinutes: ${{secrets.JWT__EXPIREINMINUTES}}
             Jwt__RefreshDays: ${{secrets.JWT__REFRESHDAYS}}
+            CacheSettings__LongLivedMinutes: ${{secrets.CACHESETTINGS__LONGLIVEDMINUTES}}
+            CacheSettings__ShortLivedMinutes: ${{secrets.CACHESETTINGS__SHORTLIVEDMINUTES}}
         run: dotnet test Backend/xUnitFoody/xUnitFoody.csproj --no-restore
