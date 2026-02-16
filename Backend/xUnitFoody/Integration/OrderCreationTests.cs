@@ -45,6 +45,7 @@ namespace xUnitFoody.Integration
 
                 //Arrange login user 
                 var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
+                Console.WriteLine("create oreder token " + token + "userid:" + userId);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 //Arrange Seed Products
                 var products = await SeedProductsAsync.SeedProducts(_factory.ServiceProvider, count: 2);

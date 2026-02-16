@@ -24,7 +24,9 @@ namespace xUnitFoody.Integration.Seed
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
             if (!await roleManager.RoleExistsAsync("Admin"))
+            {
                 await roleManager.CreateAsync(new IdentityRole<Guid>("Admin"));
+            }          
 
             var admin = new User
             {
@@ -43,8 +45,10 @@ namespace xUnitFoody.Integration.Seed
             });
 
             loginResponse.EnsureSuccessStatusCode();
+            Console.WriteLine("Status code " + loginResponse.StatusCode);
 
             var json = await loginResponse.Content.ReadFromJsonAsync<LoginDtoResponse>();
+            Console.WriteLine("AccessToken and admin id " + json.AccessToken, admin.Id);
             return (json!.AccessToken, admin.Id.ToString());
         }
     }
