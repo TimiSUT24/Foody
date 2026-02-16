@@ -18,13 +18,11 @@ namespace xUnitFoody.Integration
     {
         private readonly HttpClient _httpClient;
         private readonly CustomWebApplicationFactory _factory;
-        private readonly ITestOutputHelper _output;
 
-        public CreateProductTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
+        public CreateProductTests(CustomWebApplicationFactory factory)
         {
             _factory = factory;
             _httpClient = factory.CreateClient();
-            _output = output;
         }
 
         [Fact]
@@ -35,7 +33,7 @@ namespace xUnitFoody.Integration
             await _factory.Containers.DbReset.ResetAsync();
 
             //Arrange create admin and login as one
-            var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider, _output);
+            var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var dto = new CreateProductDto

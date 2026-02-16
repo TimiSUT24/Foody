@@ -2,6 +2,7 @@
 using Application.Auth.Dto.Response;
 using Domain.Models;
 using EllipticCurve;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,12 +18,13 @@ namespace xUnitFoody.Integration.Seed
 {
     public static class SeedUser
     {
-        public static async Task<(string Token, string UserId)> CreateAdminAndLoginAsync(HttpClient client, IServiceProvider serviceProvider, ITestOutputHelper output)
+        public static async Task<(string Token, string UserId)> CreateAdminAndLoginAsync(HttpClient client, IServiceProvider serviceProvider)
         {
             
             using var scope = serviceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<FoodyDbContext>();
 
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
@@ -43,14 +45,17 @@ namespace xUnitFoody.Integration.Seed
             if (!roleResult.Succeeded)
                 throw new Exception(string.Join(", ", roleResult.Errors.Select(e => e.Description)));
 
+
+            var found = await userManager.FindByEmailAsync("admin@test.com");
+            if (found == null)
+                throw new Exception("Admin user not found in DB");
+
             // login
             var loginResponse = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
             (
                 Email: "admin@test.com",
                 Password: "Admin123!"
             ));
-            output.WriteLine(loginResponse.StatusCode.ToString());
-            output.WriteLine(loginResponse.Content.ToString());
             loginResponse.EnsureSuccessStatusCode();
 
             var json = await loginResponse.Content.ReadFromJsonAsync<LoginDtoResponse>();

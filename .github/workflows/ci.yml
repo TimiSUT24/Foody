@@ -30,4 +30,9 @@ jobs:
             Stripe__SecretKey: ${{secrets.STRIPE__SECRETKEY}}
             Postnord__ApiKey: ${{secrets.POSTNORD__APIKEY}}
             SendGrid__ApiKey: ${{secrets.SENDGRID__APIKEY}}
+            Jwt__Issuer: ${{secrets.JWT__ISSUER}}
+            Jwt__Audience: ${{secrets.JWT__AUDIENCE}}
+            Jwt__Key: ${{secrets.JWT__KEY}}
+            Jwt__ExpireInMinutes: ${{secrets.JWT__EXPIREINMINUTES}}
+            Jwt__RefreshDays: ${{secrets.JWT__REFRESHDAYS}}
         run: dotnet test Backend/xUnitFoody/xUnitFoody.csproj --no-restore
