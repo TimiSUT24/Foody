@@ -20,6 +20,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 using xUnitFoody.Common;
 using xUnitFoody.Integration.Helpers;
 using xUnitFoody.Integration.Seed;
@@ -30,11 +31,13 @@ namespace xUnitFoody.Integration
     {
         private readonly HttpClient _httpClient;
         private readonly CustomWebApplicationFactory _factory;
+        private readonly ITestOutputHelper _output;
 
-        public OrderCreationTests(CustomWebApplicationFactory factory)
+        public OrderCreationTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
         {
             _factory = factory;
             _httpClient = factory.CreateClient();
+            _output = output;
         }
 
         [Fact]
@@ -44,7 +47,7 @@ namespace xUnitFoody.Integration
                 await _factory.Containers.DbReset.ResetAsync();
 
                 //Arrange login user 
-                var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
+                var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider, _output);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 //Arrange Seed Products
                 var products = await SeedProductsAsync.SeedProducts(_factory.ServiceProvider, count: 2);
