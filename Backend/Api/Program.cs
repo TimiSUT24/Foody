@@ -125,6 +125,7 @@ namespace Api
             var rabbitHost = builder.Configuration["RABBITMQ_DEFAULT_HOST"];
             var rabbitUser = builder.Configuration["RABBITMQ_DEFAULT_USER"];
             var rabbitPass = builder.Configuration["RABBITMQ_DEFAULT_PASS"];
+            var rabbitPort = builder.Configuration["RABBITMQ_DEFAULT_PORT"];        
             //RabbitMq/MassTransit
             if (!isTest)
             {
@@ -136,7 +137,7 @@ namespace Api
 
                     x.UsingRabbitMq((ctx, cfg) =>
                     {
-                        cfg.Host(rabbitHost, "/", h =>
+                        cfg.Host(rabbitHost,rabbitPort, "/", h =>
                         {
                             h.Username(rabbitUser!);
                             h.Password(rabbitPass!);
