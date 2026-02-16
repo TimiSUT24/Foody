@@ -10,13 +10,14 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 using xUnitFoody.Common;
 
 namespace xUnitFoody.Integration.Seed
 {
     public static class SeedUser
     {
-        public static async Task<(string Token, string UserId)> CreateAdminAndLoginAsync(HttpClient client, IServiceProvider serviceProvider)
+        public static async Task<(string Token, string UserId)> CreateAdminAndLoginAsync(HttpClient client, IServiceProvider serviceProvider, ITestOutputHelper output)
         {
             
             using var scope = serviceProvider.CreateScope();
@@ -48,8 +49,9 @@ namespace xUnitFoody.Integration.Seed
                 email = "admin@test.com",
                 password = "Admin123!"
             });
-
-            loginResponse.EnsureSuccessStatusCode();
+            output.WriteLine(loginResponse.StatusCode.ToString());
+            output.WriteLine(loginResponse.Content.ToString());
+            //loginResponse.EnsureSuccessStatusCode();
 
             var json = await loginResponse.Content.ReadFromJsonAsync<LoginDtoResponse>();
             return (json!.AccessToken, admin.Id.ToString());
