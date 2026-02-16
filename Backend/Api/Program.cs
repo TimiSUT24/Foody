@@ -256,8 +256,7 @@ namespace Api
                     using (var scope = app.Services.CreateScope())
                     {
                         var services = scope.ServiceProvider;
-                        var dbContext = services.GetRequiredService<FoodyDbContext>();
-                        dbContext.Database.Migrate();   
+                        var dbContext = services.GetRequiredService<FoodyDbContext>();                
 
                         var userManager = services.GetRequiredService<UserManager<User>>();
                         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>(); ;
