@@ -1,0 +1,40 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: Pipeline
+    
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore Backend/Api.sln
+
+      - name: Run tests (xUnit + Testcontainers)
+        env:
+            AllowedOrigins: ${{secrets.ALLOWEDORIGINS}}
+            Stripe__SecretKey: ${{secrets.STRIPE__SECRETKEY}}
+            Postnord__ApiKey: ${{secrets.POSTNORD__APIKEY}}
+            SendGrid__ApiKey: ${{secrets.SENDGRID__APIKEY}}
+            Jwt__Issuer: ${{secrets.JWT__ISSUER}}
+            Jwt__Audience: ${{secrets.JWT__AUDIENCE}}
+            Jwt__Key: ${{secrets.JWT__KEY}}
+            Jwt__ExpireInMinutes: ${{secrets.JWT__EXPIREINMINUTES}}
+            Jwt__RefreshDays: ${{secrets.JWT__REFRESHDAYS}}
+            CacheSettings__LongLivedMinutes: ${{secrets.CACHESETTINGS__LONGLIVEDMINUTES}}
+            CacheSettings__ShortLivedMinutes: ${{secrets.CACHESETTINGS__SHORTLIVEDMINUTES}}
+        run: dotnet test Backend/xUnitFoody/xUnitFoody.csproj --no-restore

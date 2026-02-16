@@ -20,6 +20,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 using xUnitFoody.Common;
 using xUnitFoody.Integration.Helpers;
 using xUnitFoody.Integration.Seed;

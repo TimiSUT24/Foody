@@ -97,6 +97,11 @@ namespace Api
 
             //Stripe 
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+            if(StripeConfiguration.ApiKey == null)
+            {
+                var envVar = Environment.GetEnvironmentVariable("Stripe__SecretKey");
+                StripeConfiguration.ApiKey = envVar;
+            }
 
             //CacheSettings
             builder.Services.Configure<CacheSettings>(
@@ -110,7 +115,7 @@ namespace Api
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
-                var configuration = builder.Configuration["Redis:ConnectionString"];
+                var configuration = builder.Configuration["Redis:ConnectionString"];              
                 var options = ConfigurationOptions.Parse(configuration);
                 options.AbortOnConnectFail = true;
                 return ConnectionMultiplexer.Connect(options);
@@ -226,6 +231,12 @@ namespace Api
 
             //Cors
             var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+            if(allowedOrigins == null || allowedOrigins.Length == 0)
+            {
+                var envOrigins = Environment.GetEnvironmentVariable("AllowedOrigins");
+                allowedOrigins = envOrigins?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            }
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>

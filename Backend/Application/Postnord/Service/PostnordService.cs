@@ -24,7 +24,7 @@ namespace Application.Postnord.Service
         public PostnordService(HttpClient http, IConfiguration config)
         {
             _http = http;
-            _apiKey = config["Postnord:ApiKey"]!;
+            _apiKey = config["Postnord:ApiKey"] ?? Environment.GetEnvironmentVariable("Postnord__ApiKey");
         }
 
         public async Task<object> GetDeliveryOptionsAsync(string postCode)

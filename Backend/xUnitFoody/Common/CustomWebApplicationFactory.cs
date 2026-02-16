@@ -52,6 +52,8 @@ namespace xUnitFoody.Common
                     ["CacheSettings:LongLivedMinutes"] = "2",
                     ["CacheSettings:ShortLivedMinutes"] = "1",
                 });
+
+                config.AddEnvironmentVariables();
             });
 
             builder.ConfigureServices(services =>

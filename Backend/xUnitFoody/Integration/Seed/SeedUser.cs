@@ -2,6 +2,7 @@
 using Application.Auth.Dto.Response;
 using Domain.Models;
 using EllipticCurve;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 using xUnitFoody.Common;
 
 namespace xUnitFoody.Integration.Seed
@@ -22,26 +24,38 @@ namespace xUnitFoody.Integration.Seed
             using var scope = serviceProvider.CreateScope();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<FoodyDbContext>();
 
             if (!await roleManager.RoleExistsAsync("Admin"))
+            {
                 await roleManager.CreateAsync(new IdentityRole<Guid>("Admin"));
+            }          
 
             var admin = new User
             {
                 UserName = "admin@test.com",
-                Email = "admin@test.com"
+                Email = "admin@test.com",
+                EmailConfirmed = true
             };
+            var createResult = await userManager.CreateAsync(admin, "Admin123!");
+            if (!createResult.Succeeded)
+                throw new Exception(string.Join(", ", createResult.Errors.Select(e => e.Description)));
 
-            await userManager.CreateAsync(admin, "Admin123!");
-            await userManager.AddToRoleAsync(admin, "Admin");
+            var roleResult = await userManager.AddToRoleAsync(admin, "Admin");
+            if (!roleResult.Succeeded)
+                throw new Exception(string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+
+
+            var found = await userManager.FindByEmailAsync("admin@test.com");
+            if (found == null)
+                throw new Exception("Admin user not found in DB");
 
             // login
-            var loginResponse = await client.PostAsJsonAsync("/api/auth/login", new
-            {
-                email = "admin@test.com",
-                password = "Admin123!"
-            });
-
+            var loginResponse = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
+            (
+                Email: "admin@test.com",
+                Password: "Admin123!"
+            ));
             loginResponse.EnsureSuccessStatusCode();
 
             var json = await loginResponse.Content.ReadFromJsonAsync<LoginDtoResponse>();

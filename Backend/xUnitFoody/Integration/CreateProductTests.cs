@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 using xUnitFoody.Common;
 using xUnitFoody.Integration.Seed;
 
@@ -33,7 +34,6 @@ namespace xUnitFoody.Integration
 
             //Arrange create admin and login as one
             var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
-
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var dto = new CreateProductDto
@@ -62,7 +62,7 @@ namespace xUnitFoody.Integration
             );
 
             //Act 
-            var response = await _httpClient.PostAsJsonAsync("/api/product/create", dto);
+            var response = await _httpClient.PostAsJsonAsync("/api/product/create", dto);          
 
             //Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
