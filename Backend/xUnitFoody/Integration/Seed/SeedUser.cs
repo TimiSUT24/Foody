@@ -31,11 +31,16 @@ namespace xUnitFoody.Integration.Seed
             var admin = new User
             {
                 UserName = "admin@test.com",
-                Email = "admin@test.com"
+                Email = "admin@test.com",
+                EmailConfirmed = true
             };
+            var createResult = await userManager.CreateAsync(admin, "Admin123!");
+            if (!createResult.Succeeded)
+                throw new Exception(string.Join(", ", createResult.Errors.Select(e => e.Description)));
 
-            await userManager.CreateAsync(admin, "Admin123!");
-            await userManager.AddToRoleAsync(admin, "Admin");
+            var roleResult = await userManager.AddToRoleAsync(admin, "Admin");
+            if (!roleResult.Succeeded)
+                throw new Exception(string.Join(", ", roleResult.Errors.Select(e => e.Description)));
 
             // login
             var loginResponse = await client.PostAsJsonAsync("/api/auth/login", new
@@ -45,10 +50,8 @@ namespace xUnitFoody.Integration.Seed
             });
 
             loginResponse.EnsureSuccessStatusCode();
-            Console.WriteLine("Status code " + loginResponse.StatusCode);
 
             var json = await loginResponse.Content.ReadFromJsonAsync<LoginDtoResponse>();
-            Console.WriteLine("AccessToken and admin id " + json.AccessToken, admin.Id);
             return (json!.AccessToken, admin.Id.ToString());
         }
     }

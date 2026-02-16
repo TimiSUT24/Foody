@@ -33,7 +33,6 @@ namespace xUnitFoody.Integration
 
             //Arrange create admin and login as one
             var (token, userId) = await SeedUser.CreateAdminAndLoginAsync(_httpClient, _factory.ServiceProvider);
-            Console.WriteLine("Token " + token);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var dto = new CreateProductDto
