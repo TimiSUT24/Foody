@@ -44,14 +44,14 @@ namespace xUnitFoody.Integration.Seed
                 throw new Exception(string.Join(", ", roleResult.Errors.Select(e => e.Description)));
 
             // login
-            var loginResponse = await client.PostAsJsonAsync("/api/auth/login", new
-            {
-                email = "admin@test.com",
-                password = "Admin123!"
-            });
+            var loginResponse = await client.PostAsJsonAsync("/api/auth/login", new LoginDto
+            (
+                Email: "admin@test.com",
+                Password: "Admin123!"
+            ));
             output.WriteLine(loginResponse.StatusCode.ToString());
             output.WriteLine(loginResponse.Content.ToString());
-            //loginResponse.EnsureSuccessStatusCode();
+            loginResponse.EnsureSuccessStatusCode();
 
             var json = await loginResponse.Content.ReadFromJsonAsync<LoginDtoResponse>();
             return (json!.AccessToken, admin.Id.ToString());
