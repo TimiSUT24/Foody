@@ -109,22 +109,46 @@ namespace Api
                 builder.Configuration.GetSection("CacheSettings"));
 
             //Redis 
+
+            var redisUrl = builder.Configuration["Redis:ConnectionString"];
+
+            var config = new ConfigurationOptions
+            {
+                AbortOnConnectFail = false,
+                ConnectRetry = 5,
+                ConnectTimeout = 10000,
+                SyncTimeout = 10000
+            };
+
+            // If the URL starts with "rediss://", treat it as Upstash TLS
+            if (redisUrl!.StartsWith("rediss://"))
+            {
+                var uri = new Uri(redisUrl);
+                config.EndPoints.Add($"{uri.Host}:{uri.Port}");
+                config.Password = uri.UserInfo.Split(':')[1];
+                config.Ssl = true;
+            }
+            else
+            {
+                // Assume normal TCP Redis (docker compose local)
+                config.EndPoints.Add(redisUrl); // e.g. "redis:6379" from docker-compose
+                config.Ssl = false;
+            }
+
             builder.Services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = builder.Configuration["Redis:ConnectionString"];         
+                options.ConfigurationOptions = config;
             });
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-            {
-                var configuration = builder.Configuration["Redis:ConnectionString"];              
-                var options = ConfigurationOptions.Parse(configuration);
-                options.AbortOnConnectFail = false;
-                return ConnectionMultiplexer.Connect(options);
+            {                        
+                return ConnectionMultiplexer.Connect(config);
                 
             });
 
-            var rabbitUrl = builder.Configuration["RABBITMQ_URL"];      
+
             //RabbitMq/MassTransit
+            var rabbitUrl = builder.Configuration["RABBITMQ_URL"];
             if (!isTest)
             {
                 builder.Services.AddMassTransit(x =>
@@ -293,9 +317,12 @@ namespace Api
             //Root endpoint so GET doesnt 404 
             app.MapGet("/", () => "Api is running");
             //Bind to Render port
-            var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
-            app.Urls.Add($"http://*:{port}");
-
+            if (app.Environment.IsProduction())
+            {
+                var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+                app.Urls.Add($"http://*:{port}");
+            }
+          
             app.Run();
         }
     }
