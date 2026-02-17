@@ -121,7 +121,7 @@ namespace Api
             };
 
             // If the URL starts with "rediss://", treat it as Upstash TLS
-            if (redisUrl!.StartsWith("rediss://"))
+            if (redisUrl.StartsWith("rediss://"))
             {
                 var uri = new Uri(redisUrl);
                 config.EndPoints.Add($"{uri.Host}:{uri.Port}");
