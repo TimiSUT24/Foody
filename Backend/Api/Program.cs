@@ -290,6 +290,9 @@ namespace Api
 
 
             app.MapControllers();
+            //Bind to Render port
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+            app.Urls.Add($"http://*:{port}");
 
             app.Run();
         }
