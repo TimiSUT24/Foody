@@ -24,7 +24,7 @@ export default function RegisterPage(){
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if(!formData.email || !formData.userName || formData.password){
+        if(!formData.email || !formData.userName || !formData.password){
             setError("Empty fields");
             return;
         }
@@ -51,8 +51,6 @@ export default function RegisterPage(){
         <div className="register-page">
             <h1>Skapa ditt konto</h1>
             <form onSubmit={handleSubmit}>
-
-               
 
                 <div className="register-row">
                     <div className="register-row-input">
