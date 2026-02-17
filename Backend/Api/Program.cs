@@ -118,7 +118,7 @@ namespace Api
             {
                 var configuration = builder.Configuration["Redis:ConnectionString"];              
                 var options = ConfigurationOptions.Parse(configuration);
-                options.AbortOnConnectFail = true;
+                options.AbortOnConnectFail = false;
                 return ConnectionMultiplexer.Connect(options);
                 
             });
