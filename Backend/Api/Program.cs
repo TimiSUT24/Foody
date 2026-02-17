@@ -290,6 +290,8 @@ namespace Api
 
 
             app.MapControllers();
+            //Root endpoint so GET doesnt 404 
+            app.MapGet("/", () => "Api is running");
             //Bind to Render port
             var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
             app.Urls.Add($"http://*:{port}");
