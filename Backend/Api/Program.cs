@@ -263,6 +263,7 @@ namespace Api
 
                         if (!isTest)
                         {
+                            await dbContext.Database.MigrateAsync();
                             await IcaDataSeeding.IcaSeed(dbContext);
                             await UserSeed.SeedUsersAndRolesAsync(userManager, roleManager);
                         }                      
