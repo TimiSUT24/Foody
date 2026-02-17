@@ -38,6 +38,7 @@ using Infrastructure.Seeding;
 using Infrastructure.UnitOfWork;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -122,10 +123,7 @@ namespace Api
                 
             });
 
-            var rabbitHost = builder.Configuration["RABBITMQ_DEFAULT_HOST"];
-            var rabbitUser = builder.Configuration["RABBITMQ_DEFAULT_USER"];
-            var rabbitPass = builder.Configuration["RABBITMQ_DEFAULT_PASS"];
-            var rabbitPort = builder.Configuration["RABBITMQ_DEFAULT_PORT"];        
+            var rabbitUrl = builder.Configuration["RABBITMQ_URL"];      
             //RabbitMq/MassTransit
             if (!isTest)
             {
@@ -137,11 +135,7 @@ namespace Api
 
                     x.UsingRabbitMq((ctx, cfg) =>
                     {
-                        cfg.Host(rabbitHost,rabbitPort, "/", h =>
-                        {
-                            h.Username(rabbitUser!);
-                            h.Password(rabbitPass!);
-                        });
+                        cfg.Host(new Uri(rabbitUrl!));
 
                         cfg.ConfigureEndpoints(ctx);
                     });
@@ -249,6 +243,16 @@ namespace Api
                 });
             });
 
+            //Tells asp.net to trust proxt headers
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                //Sends header to say what protocol the client used
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
+                //Clear security restrictions
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
+
             var app = builder.Build();
 
             //Seed users and roles
@@ -276,6 +280,8 @@ namespace Api
                     app.UseSwaggerUI();
                 }
 
+            //Makes request scheme https instead of http
+            app.UseForwardedHeaders();
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend"); // Cors after httpsredirection
             app.UseMiddleware<GlobalExceptionMiddleware>();

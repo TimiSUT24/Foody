@@ -111,11 +111,11 @@ namespace xUnitFoody.Common
                     services.Remove(descriptor2);
                 }
 
-                // Add MassTransit Test Harness with In-Memory transport
+                // Add MassTransit
                 services.AddMassTransit(cfg =>
                 {
 
-                    // Add all your consumers
+                    // Add all consumers
                     cfg.AddConsumer<BookShipmentConsumer>();
                     cfg.AddConsumer<UpdateOrderStatusConsumer>();
                     cfg.AddConsumer<SendOrderEmailConsumer>();

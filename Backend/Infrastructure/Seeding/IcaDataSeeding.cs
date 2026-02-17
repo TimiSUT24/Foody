@@ -16,6 +16,12 @@ namespace Infrastructure.Seeding
     {
         public static async Task IcaSeed(FoodyDbContext _context)
         {
+                
+                if(await _context.Products.AnyAsync())
+                {
+                    Console.WriteLine("Database already seeded");
+                    return;
+                }
    
                 // Path to your JSON file
                 var jsonFile = Path.Combine("JsonFiles/Products.json");
@@ -31,7 +37,7 @@ namespace Infrastructure.Seeding
                     PropertyNameCaseInsensitive = true
                 });
 
-                if (productsJson == null) return;
+                if (productsJson == null || productsJson.Count == 0) return;
 
                 var existingMainCategory = await _context.Categories
                   .Include(c => c.SubCategories)

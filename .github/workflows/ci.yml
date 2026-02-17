@@ -37,8 +37,4 @@ jobs:
             Jwt__RefreshDays: ${{secrets.JWT__REFRESHDAYS}}
             CacheSettings__LongLivedMinutes: ${{secrets.CACHESETTINGS__LONGLIVEDMINUTES}}
             CacheSettings__ShortLivedMinutes: ${{secrets.CACHESETTINGS__SHORTLIVEDMINUTES}}
-            RABBITMQ_DEFAULT_HOST: ${{secrets.RABBITMQ_DEFAULT_HOST}}
-            RABBITMQ_DEFAULT_PASS: ${{secrets.RABBITMQ_DEFAULT_PASS}}
-            RABBITMQ_DEFAULT_USER: ${{secrets.RABBITMQ_DEFAULT_USER}}
-            RABBITMQ_DEFAULT_PORT: ${{secrets.RABBITMQ_DEFAULT_PORT}}
         run: dotnet test Backend/xUnitFoody/xUnitFoody.csproj --no-restore
