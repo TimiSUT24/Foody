@@ -10,8 +10,8 @@ export default defineConfig(({mode}) => {
     ...(isDev && {//development
       server: {
         https: {
-          key: fs.readFileSync('./localhost.key.pem'),
-          cert: fs.readFileSync('./localhost.cert.pem'),
+          key: fs.readFileSync('./localhost-key.pem'),
+          cert: fs.readFileSync('./localhost.pem'),
         },
         port: 5173,
       }
