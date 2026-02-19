@@ -11,7 +11,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${import.meta.env.VITE_API_BASE_URL}/order-complete`
+        return_url: `${import.meta.env.VITE_FRONTEND_URL}/order-complete`
       },
     });
 
