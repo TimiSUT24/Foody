@@ -1,4 +1,5 @@
-﻿using Application.Offer.Dto.Request;
+﻿using Application.Abstractions;
+using Application.Offer.Dto.Request;
 using Application.Offer.Dto.Response;
 using Application.Offer.Interfaces;
 using AutoMapper;
@@ -15,11 +16,13 @@ namespace Application.Offer.Service
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cache;
 
-        public OfferService(IUnitOfWork uow, IMapper mapper)
+        public OfferService(IUnitOfWork uow, ICacheService cache, IMapper mapper)
         {
             _uow = uow;
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<bool> AddOffer(AddOfferDto request, CancellationToken ct)
@@ -32,6 +35,8 @@ namespace Application.Offer.Service
             var mapper = _mapper.Map<Domain.Models.Offer>(request);
             await _uow.Offer.AddAsync(mapper, ct);
             await _uow.SaveChangesAsync(ct);
+            await _cache.RemoveByPrefixAsync("products:");
+            await _cache.RemoveByPrefixAsync("category:");
 
             return true;
         }
@@ -74,6 +79,8 @@ namespace Application.Offer.Service
 
             _uow.Offer.Delete(offer);
             await _uow.SaveChangesAsync(ct);
+            await _cache.RemoveByPrefixAsync("products:");
+            await _cache.RemoveByPrefixAsync("category:");
             return true;
         }
         
