@@ -26,6 +26,7 @@
     height:50px;
     opacity: 80%;
     cursor: pointer;
+    color:black;    
 }
 
 .tabs button:hover{
