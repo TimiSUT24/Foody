@@ -6,7 +6,7 @@
     justify-content: center;
     align-items: center;
     background-color:transparent;
-    width:100vw;
+    width:100%;
     justify-self: center;
 }
 
@@ -19,6 +19,7 @@
     appearance: solid;
     cursor: pointer;
     padding-left:5px;
+    color:black;
 }
 
 .menu-dropdown {
@@ -151,6 +152,7 @@
     background-color: white;
     border: 1px none #5e5d5d; 
     cursor: pointer;
+    color:black;
 }
 
 .filter-container input{
@@ -229,9 +231,10 @@
     width:50%;
   }
 
-  #menu-button{
+  .menu-button{
     width:100%;
     justify-content: space-between;
+    color:black;
   }
 
 .category-menu,
