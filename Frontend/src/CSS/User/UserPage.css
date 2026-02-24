@@ -12,10 +12,10 @@
 }
 
 #user-header {
-  position: relative;
-  left:0;
-  width: 100vw;
-  height: 400px;
+  position:fixed;
+  width: 100%;
+  max-height: 400px;
+  height:100%;
   background-color: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(8px);
   align-content: center;
@@ -28,10 +28,16 @@
   display: flex;
   flex-direction: row;
   gap: 30px;
-  height: 300px;
+  height:100dvh;
   width: 100vw;
   justify-content: center;
   align-items: center;
+}
+#user-content .user-order-h2,
+#user-content .user-settings-h2,
+#user-content .user-settings-p,
+#user-content .user-order-p{
+  color:black;
 }
 
 #user-order {
@@ -39,7 +45,8 @@
   flex-direction: column;
   padding: 20px;
   align-items: start;
-  width: 400px;
+  max-width: 400px;
+  width:100%;
   height: 200px;
   background-color: white;
   border-radius: 10px;
@@ -69,7 +76,8 @@
   flex-direction: column;
   padding: 20px;
   align-items: start;
-  width: 400px;
+  max-width: 400px;
+  width:100%;
   height: 200px;
   background-color: white;
   border-radius: 10px;
@@ -85,11 +93,10 @@
 }
 
 #user-footer{
-  position: relative;
-  width: 100vw;
-  height: 80px;
+  display:flex;
+  width:100%;
   background-color: rgb(210, 212, 213);
-  align-content: center;
+  justify-content: center;
 }
 
 @media (max-width: 860px){
@@ -102,8 +109,11 @@
 
 @media (max-width: 400px){
   #user-content{
-    margin-top:200px;
-    margin-bottom:150px;
     flex-direction: column;
   }
+
+  #user-content #user-order{
+    margin-top:200px;
+  }
+
 }

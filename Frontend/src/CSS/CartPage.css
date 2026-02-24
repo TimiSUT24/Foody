@@ -177,6 +177,7 @@
 .qty-delete-product{
     border-style: none !important;
     background-color: transparent !important;
+    color:black;
 }
 
 .qty-delete-product:hover{

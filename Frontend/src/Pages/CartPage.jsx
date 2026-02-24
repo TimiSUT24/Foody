@@ -258,9 +258,9 @@ export default function CartPage(){
                     )}
                         
                         <div className="qty-controls">
-                            <button onClick ={() => removeFromCart(item.id)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCircleMinus className="ciCircleMinus"style={{width:22,height:22}}/></button>
+                            <button onClick ={() => removeFromCart(item.id)} style={{color:"black",borderStyle:"none",backgroundColor:"transparent"}}><CiCircleMinus className="ciCircleMinus"style={{width:22,height:22}}/></button>
                             <span>{item.qty}</span>
-                            <button onClick ={() => addToCart(item)} style={{borderStyle:"none",backgroundColor:"transparent"}}><CiCirclePlus className="ciCirclePlus" style={{width:22,height:22}}/></button>   
+                            <button onClick ={() => addToCart(item)} style={{color:"black",borderStyle:"none",backgroundColor:"transparent"}}><CiCirclePlus className="ciCirclePlus" style={{width:22,height:22}}/></button>   
                             <button className="qty-delete-product" onClick ={() => removeWholeProductFromCart(item)}><RiDeleteBin6Line style={{width:18,height:18}}/></button>             
                         </div>
                     </div>
