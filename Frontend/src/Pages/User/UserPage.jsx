@@ -18,7 +18,8 @@ export default function UserPage(){
 
             <div id="user-content">
 
-                <Link to={"/user-profile-page"}
+                <div className="user-options">
+                    <Link to={"/user-profile-page"}
                  state={{tab: "orders"}}
                  style={{textDecoration:"none"}}>
                 <button id="user-order">
@@ -41,12 +42,17 @@ export default function UserPage(){
                     <p className="user-settings-p">Uppdatera dina uppgifter, ändra lösenord och hantera leveransaddress.</p>
                 </button>
                     </Link>
+                </div>
+                
+                    <div className="user-footer-div">
+                     <footer id="user-footer">
+                    <p className="user-footer-p">© 2025 Foody Alla rättigheter förbehållna</p>
+                </footer>
+                </div>
 
                 </div>
 
-                <footer id="user-footer">
-                    <p className="user-footer-p">© 2025 Foody Alla rättigheter förbehållna</p>
-                </footer>
+                
 
         </div>
     )

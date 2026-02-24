@@ -12,40 +12,62 @@ body{
 }
 .food-container{
     margin-top:110px;
+    position: relative;
+    width: 100%;
+    height: 400px;
     justify-self: center;
     overflow: hidden;
 }
+#food-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: black;
+  opacity: 0.55;
+}
+
+#food-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  z-index: 2;
+}
 
 .food-pic{
-    width:100vw;
-    max-height:400px;
-    height:100dvh;
-    object-fit:cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /*Home Search  search and icon inside div at productfilter.jsx div class not inside css file*/ 
 .search{
     width:400px !important;
-    height:45px !important;
+    height:40px !important;
     border-style:none !important;
+    z-index:900;
+}
+
+.search-div{
+    margin-top: 85px;
 }
 .search:focus{
     outline: none !important;
 }
-
-@media (max-width: 1000px) {
-    #food-container-h2{
-        font-size: 20px;
-        line-height: 1;
+@media (max-width: 1000px){
+    .food-container{
+        margin-top:40px;
     }
 
-    #food-container-h2,
-    #food-container-p{
-        padding-right:20px;
-        padding-left:20px;
+    .search-div{
+        margin-top:0;
     }
 }
-
 @media (max-width:360px){
     .product-grid{
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
