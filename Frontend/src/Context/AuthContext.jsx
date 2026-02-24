@@ -5,6 +5,10 @@ import {AuthService} from "../Services/AuthService"
 const decodeUser = (token) => {
   try {
     const decoded = jwtDecode(token);
+
+    if(decoded.exp * 1000 < Date.now()){
+        return null;
+    }
     return {
       id: decoded.sub || decoded.id,
       email:
@@ -32,7 +36,14 @@ export function AuthProvider({children}){
     accessToken ? decodeUser(accessToken) : null)
 
     useEffect(() => {
-  setUser(accessToken ? decodeUser(accessToken) : null);
+        const decoded = accessToken ? decodeUser(accessToken) : null;
+
+        if(!decoded){
+            setAccessToken(null);
+            setUser(null);
+        }else{
+            setUser(decoded);
+        }
 }, [accessToken]);
 
     useEffect(() => {
