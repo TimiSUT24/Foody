@@ -116,8 +116,10 @@ useEffect(() => {
     return (
         <div className ="home-container">
             <div className="food-container">
-                <h2 id="food-container-h2"style={{position:"absolute",top:250,placeSelf:"center",color:"white",zIndex:1}}>Premiumlivsmedel, levererade färska</h2>
-                <p  id="food-container-p"style={{position:"absolute",top:300,placeSelf:"center",color:"white",zIndex:1}}>Upptäck utsökta köttdetaljer, hantverksbakat bröd och den allra färskaste havsmaten — direkt från noggrant utvalda kvalitetsleverantörer.</p>
+                <div>
+                    <h2 id="food-container-h2"style={{position:"absolute",top:250,placeSelf:"center",color:"white",zIndex:1}}>Premiumlivsmedel, levererade färska</h2>
+                    <p id="food-container-p"style={{position:"absolute",top:300,placeSelf:"center",color:"white",zIndex:1}}>Upptäck utsökta köttdetaljer, hantverksbakat bröd och den allra färskaste havsmaten — direkt från noggrant utvalda kvalitetsleverantörer.</p>
+                </div>             
                 <div style={{position:"absolute",backgroundColor:"black",top:150,width:"100vw",height:400,zIndex:0,opacity:"55%" }}></div>
                 <img src="IMG/food.jpg" alt="" className="food-pic" />
             </div>

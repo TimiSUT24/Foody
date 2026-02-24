@@ -19,7 +19,7 @@
     display: flex;
     align-items: center;
     gap:50px;
-    -webkit-text-fill-color: rgb(212, 210, 210);
+    color: rgb(212, 210, 210);
 }
 
 .navbar-links a{
@@ -27,12 +27,12 @@
 }
 
 .navbar-links a:hover{
-    -webkit-text-fill-color: whitesmoke;
+    color: whitesmoke;
 }
 
 .navbar-left{
    position:static;
-   -webkit-text-fill-color: whitesmoke;
+   color: whitesmoke;
 }
 
 .navbar-logo{
@@ -44,7 +44,7 @@
     display: flex;
     align-self: center;
     background-color: orange;
-    -webkit-text-fill-color: white;
+    color: white;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;

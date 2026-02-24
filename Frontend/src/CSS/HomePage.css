@@ -17,10 +17,9 @@ body{
 }
 
 .food-pic{
-    display:flex;
     width:100vw;
-    height:400px;
-    justify-self: center;
+    max-height:400px;
+    height:100dvh;
     object-fit:cover;
 }
 
