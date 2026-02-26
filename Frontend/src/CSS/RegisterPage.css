@@ -1,6 +1,6 @@
 .register-page{
     background-color: white;
-    max-height: 600px;
+    max-height: fit-content;
     max-width:500px;
     width:100%;
     height:100dvh;
@@ -14,6 +14,12 @@
     -o-border-radius: 10px;
 }
 
+.register-page h1{
+    width:fit-content;
+    justify-self: center;
+    padding:0;
+}
+
 .register-page input{
     height:35px;
     border-radius: 8px;
@@ -23,16 +29,17 @@
     -o-border-radius: 8px;
     border: 1px solid #5e5d5d;
     padding-left:5px;
+    
 }
 
 .register-row{
     display: flex;   
+    flex-direction: row;
     place-self: center;
     margin-bottom:20px;
     flex-direction: row;
     gap:20px;
     text-align: left;
-    width:75%;
 }
 
 .register-row h3{
@@ -58,7 +65,7 @@
 }
 
 .register-button{
-    width:76%;
+    width:75%;
     height:40px;
     background-color: rgba(15, 23, 42, 0.95);
     color:white;
@@ -73,19 +80,23 @@
 }
 
 @media (max-width: 630px) {
-     .register-page{
-        place-items: center;
+     .register-page{       
         margin-top:100px;
         padding-bottom: 20px;
+        max-height:fit-content;
+        justify-items: center;
     }  
 
     .register-row{
         flex-direction: column;
         gap:10px;
+        width:75%;
+        
     }
 
-    .register-row input{
-        width:97%;
+    .register-row-input{
+        display: flex;
+        flex-direction: column;      
     }
 
 }

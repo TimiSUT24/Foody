@@ -40,6 +40,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
@@ -278,6 +279,28 @@ namespace Api
                 options.KnownProxies.Clear();
             });
 
+            //Rate limiter
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("fixed", opt =>
+                {
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.PermitLimit = 20;
+                    opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+                    opt.QueueLimit = 0;
+                });
+                options.OnRejected = async (context, token) =>
+                {
+                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                    context.HttpContext.Response.ContentType = "application/json";
+                    await context.HttpContext.Response.WriteAsJsonAsync(new
+                    {
+                        error = "Too many requests. Try again later."
+                    },token);
+
+                };
+            });
+
             var app = builder.Build();
 
             //Seed users and roles
@@ -305,16 +328,18 @@ namespace Api
                     app.UseSwaggerUI();
                 }
 
-            //Makes request scheme https instead of http
-            app.UseForwardedHeaders();
+          
+            
+            app.UseForwardedHeaders();   //Makes request scheme https instead of http           
+            app.UseCors("AllowFrontend");
             app.UseHttpsRedirection();
-            app.UseCors("AllowFrontend"); // Cors after httpsredirection
+            app.UseRateLimiter(); // Cors after httpsredirection
             app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization(); //Authorization after authentication
 
 
-            app.MapControllers();
+            app.MapControllers().RequireRateLimiting("fixed");
             //Root endpoint so GET doesnt 404 
             app.MapGet("/", () => "Api is running");
             //Bind to Render port

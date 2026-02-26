@@ -12,10 +12,10 @@ export default function RegisterPage(){
         email: "",
         password: ""
     });
-
+    const [message, setMessage] = useState("");
     const {register} = AuthService;
     const navigate = useNavigate();
-    const [error, setError] = useState("");
+    const [error, setError] = useState([]);
 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value})
@@ -25,7 +25,7 @@ export default function RegisterPage(){
         e.preventDefault();
 
         if(!formData.email || !formData.userName || !formData.password){
-            setError("Empty fields");
+            setError(["Empty fields"]);
             return;
         }
 
@@ -38,10 +38,18 @@ export default function RegisterPage(){
                 email: formData.email,
                 password: formData.password
             }
-                await register(body)
-            navigate("/login")
+                const response = await register(body)
+                if(response.status === 201){
+                    setError([])
+                    setMessage("Registration successful");
+                    setTimeout(() => {
+                    navigate("/login")
+                    },3000)
+                    
+                }
         }catch(err){
-            console.error("Registration failed",err)
+            setError(err.messages || ["Something went wrong"]);
+            
         }
 
     }
@@ -54,7 +62,7 @@ export default function RegisterPage(){
 
                 <div className="register-row">
                     <div className="register-row-input">
-                        <h3 >Efternamn</h3>
+                        <h3 >Förnamn</h3>
                         <input 
                             type="text"
                             name="firstName"
@@ -64,7 +72,7 @@ export default function RegisterPage(){
                     </div>
                
                     <div  className="register-row-input">
-                        <h3 >Förnamn</h3>
+                        <h3 >Efternamn</h3>
                         <input 
                             type="text"
                             name="lastName"
@@ -110,7 +118,8 @@ export default function RegisterPage(){
                 </div>
                
                 <button type="submit" className="register-button">Registrera</button>
-                {error && <p>{error}</p>}
+                {error.map((err, i) => (<p key={i}>{err}</p>))}
+                {message && <p>{message}</p>}
             </form>
 
         </div>
