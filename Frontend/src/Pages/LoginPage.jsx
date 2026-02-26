@@ -13,7 +13,7 @@ export default function LoginPage () {
         password: ""
     })
 
-    const [error, setError] = useState("");
+    const [error, setError] = useState([]);
 
     const handleChange = (e) => {
         setLoginRequest({ ...loginRequest, [e.target.name]: e.target.value})
@@ -23,7 +23,7 @@ export default function LoginPage () {
         e.preventDefault();
 
           if (!loginRequest.email || !loginRequest.password) {
-            setError("Email and password required");
+            setError(["Email and password required"]);
             return;
             }
    
@@ -31,7 +31,11 @@ export default function LoginPage () {
             await login(loginRequest.email,loginRequest.password);
             navigate("/");
         }catch(error){
-            setError("Fel inloggninguppgifter")
+            if(error.response?.status === 401){
+                setError(["Invalid email or password"]);
+                return;
+            }
+            setError(error.messages || ["Something went wrong"]);
         }
     }
 
@@ -61,7 +65,7 @@ export default function LoginPage () {
             
 
             <button type="submit" className="login-button">Logga in</button>
-            {error && <p>{error}</p>}
+            {error.map((err, i) => (<p key={i}>{err}</p>))}
             </form>
 
         </div>
