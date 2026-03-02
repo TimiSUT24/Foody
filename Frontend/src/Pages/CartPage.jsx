@@ -17,6 +17,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY)
 export default function CartPage(){
     const {cart, addToCart, removeFromCart,removeWholeProductFromCart} = useCart();
     const [error, setError] = useState({})
+    const [errors, setErrors] = useState([]);
     const [clientSecret, setClientSecret] = useState(null);
     const [userId, setUserId] = useState(null)
     const {user} = useAuth();
@@ -42,16 +43,19 @@ export default function CartPage(){
 
   useEffect(() => {
     const fetchTotal = async () => {
-        if(cart.length <= 0){
+        try{
+            if(cart.length <= 0){
             return;
         }
         const response = await api.post("/api/Order/CalculateTax", {items: cart, serviceCode:shipping.serviceCode})
         setTotal(response.data)
         setUserId(user.id)
+        setErrors([]);
+        }catch(err){
+            setErrors(err.messages || ["Something went wrong"]);
+        }   
     };
     fetchTotal();
-   
-
   },[cart])
     
   //Shipping logic
@@ -129,7 +133,6 @@ export default function CartPage(){
       setClientSecret(clientSecret);
 
     } catch(err) {
-        console.error(err);
         alert("Klarna betalning misslyckades");
     }
     }
@@ -157,6 +160,7 @@ export default function CartPage(){
                 if(options.status = 200){
                     setPostnordOptions(options)
                     setDeliver(true);
+                    setErrors([]);
                 }
             }
             else{
@@ -165,6 +169,7 @@ export default function CartPage(){
 
         }catch(err){
             console.error(err);
+            setErrors(err.messages || ["Something went wrong"]);
         }
     }
 
@@ -349,8 +354,8 @@ export default function CartPage(){
                   <CheckoutForm></CheckoutForm>
                 </Elements>
                 </div>
-            )}      
-        
+            )}    
+            {errors.map((err, i) => (<p key={i}>{err}</p>))}          
         </div>
     )
 }
