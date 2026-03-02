@@ -13,6 +13,7 @@ export default function HomePage(){
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
+    const [error, setError] = useState([]);
     const pageSize = 25;
     const loadMoreRef = useRef(null); // ref does not trigger re-renders
 
@@ -86,6 +87,7 @@ useEffect(() => {
                 if (err.name !== "AbortError") {
                     console.error(err);
                 }
+                setError(err.messages || ["Something went wrong"]);
             })
             .finally(() => setLoading(false));
 
@@ -146,6 +148,8 @@ useEffect(() => {
                     Loading…
                 </p>
             )}
+
+            {error.map((err, i) => (<p key={i}>{err}</p>))}
             
         </div>
     )

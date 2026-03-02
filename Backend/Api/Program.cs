@@ -285,7 +285,7 @@ namespace Api
                 options.AddFixedWindowLimiter("fixed", opt =>
                 {
                     opt.Window = TimeSpan.FromMinutes(1);
-                    opt.PermitLimit = 20;
+                    opt.PermitLimit = 30;
                     opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
                     opt.QueueLimit = 0;
                 });

@@ -19,9 +19,17 @@ export default function UserProfilePage(){
     const {logout} = useAuth();
     const navigate = useNavigate();
     const [status, setStatus] = useState(null)
+    const [error, setError] = useState([]);
+
+    
+    console.log(error.length)
 
     useEffect(() => {
-        OrderService.myOrders(status).then(setOrder)
+        OrderService.myOrders(status).then((data) => {
+            setOrder(data);
+            setError([]);
+        })
+        .catch((err) => setError(err.messages || ["Something went wrong"]));
     }, [status])
 
     //Logout
@@ -91,6 +99,8 @@ export default function UserProfilePage(){
                 <ProfileSettings />}
             
             </div>
+
+            {error.map((err, i) => (<p key={i}>{err}</p>))}
             
         </div>
     )

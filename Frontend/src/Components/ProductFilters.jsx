@@ -10,6 +10,9 @@ export default function ProductFilters({
     updateFilter,
 }){
     const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+    const [selectedSubSubCategory, setSelectedSubSubCategory] = useState(null);
     const [brands, setBrands] = useState([])
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
@@ -19,6 +22,18 @@ export default function ProductFilters({
      useEffect(() => {
       setMenuOpen(false);
     },[location.pathname])
+
+    const getCategoryLabel = () => {
+        if(selectedSubSubCategory){
+           return `${selectedCategory?.mainCategory} - ${selectedSubCategory?.name} - ${selectedSubSubCategory?.name}`
+        }else if(selectedSubCategory) {
+            return `${selectedCategory?.mainCategory} - ${selectedSubCategory?.name}`
+        }
+        else if(selectedCategory){
+            return selectedCategory?.mainCategory;
+        }
+        return "Välj kategori"
+    }
 
     useEffect(() => {
     const loadCategories = async () => {
@@ -45,6 +60,7 @@ export default function ProductFilters({
         }
         loadBrands();
     }, [filters.categoryId])
+    console.log(selectedCategory)
 
     return (
         <div className={`filter-container ${menuOpen ? "open" : ""}`} >
@@ -84,7 +100,7 @@ export default function ProductFilters({
 
             <div className="category-menu">
                 <div id="menu-button-div">
-                    <button className="menu-button">Välj kategori </button>
+                    <button className="menu-button">{getCategoryLabel()} </button>
                     <icon><MdKeyboardArrowDown className="menu-button-icon"/></icon>
                 </div>
                
@@ -93,11 +109,16 @@ export default function ProductFilters({
                 <div className="menu-dropdown">
                     <div 
                         className="menu-item"
-                        onClick={() => updateFilter({
+                        onClick={() => {
+                            updateFilter({
                             categoryId: null,
                             subCategoryId: null,
                             subSubCategoryId: null
-                        })}                       
+                        });
+                        setSelectedCategory(null)
+                        setSelectedSubCategory(null)
+                        setSelectedSubSubCategory(null)
+                    }}                       
                     >
                         Alla kategorier
                     </div>
@@ -107,14 +128,18 @@ export default function ProductFilters({
                         return (   
                         <div className="menu-item" key={cat.id}>
                             <span
-                                onClick={() => 
+                                onClick={() => {
                                         updateFilter({
                                                     categoryId: cat.id,
                                                     subCategoryId: null,
                                                     subSubCategoryId: null
-                                                })
-                                }
+                                                }); 
+                                                setSelectedCategory(cat) 
+                                                setSelectedSubCategory(null) 
+                                                setSelectedSubSubCategory(null)                                          
+                                }}
                             >
+                                {cat.name}
                                 {cat.mainCategory}
                                 {cat.subCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png"  className={`menu-item-arrow ${isCatActive ? "open" : ""}`} style={{width:15}}></img>}
                             </span>
@@ -126,14 +151,16 @@ export default function ProductFilters({
                                     return(
                                     <div className="submenu-item" key={sc.id}>
                                         <span
-                                            onClick={() =>                                              
+                                            onClick={() => {                                             
                                                 updateFilter({
                                                     categoryId: cat.id,
                                                     subCategoryId: isSubActive ? null :sc.id,
                                                     subSubCategoryId: null
-                                                })
-                                            }
-                                        >
+                                                });                                               
+                                                setSelectedSubCategory(sc)
+                                                setSelectedSubSubCategory(null)
+                                            }}
+                                        >                                          
                                             {sc.name}
                                             {sc.subSubCategories?.length > 0 && <img src="/IMG/icons8-arrow-24.png" className={`menu-item-arrow ${isSubActive ? "open" : ""}`}style={{width:15}}></img>}
                                         </span>
@@ -144,13 +171,14 @@ export default function ProductFilters({
                                                 <div 
                                                     key={ss.id} 
                                                     className="subsubmenu-item"
-                                                    onClick={() => 
+                                                    onClick={() => {
                                                         updateFilter({
                                                             categoryId: cat.id,
                                                             subCategoryId: sc.id,
                                                             subSubCategoryId: ss.id
                                                         })
-                                                    }
+                                                        setSelectedSubSubCategory(ss)
+                                                    }}
                                                 >
                                                     {ss.name}                                                    
                                                 </div>
