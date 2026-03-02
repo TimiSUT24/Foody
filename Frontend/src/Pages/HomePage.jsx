@@ -77,6 +77,7 @@ useEffect(() => {
                         return Array.from(map.values());
                 });
                     setHasMore(res.hasMore);
+                    setError([]);
 
                     if(page === 1){
                         isResettingRef.current = false;
