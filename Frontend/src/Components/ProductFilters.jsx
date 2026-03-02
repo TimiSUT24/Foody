@@ -10,9 +10,9 @@ export default function ProductFilters({
     updateFilter,
 }){
     const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-    const [selectedSubSubCategory, setSelectedSubSubCategory] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedSubCategory, setSelectedSubCategory] = useState("");
+    const [selectedSubSubCategory, setSelectedSubSubCategory] = useState("");
     const [brands, setBrands] = useState([])
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
@@ -115,9 +115,9 @@ export default function ProductFilters({
                             subCategoryId: null,
                             subSubCategoryId: null
                         });
-                        setSelectedCategory(null)
-                        setSelectedSubCategory(null)
-                        setSelectedSubSubCategory(null)
+                        setSelectedCategory("")
+                        setSelectedSubCategory("")
+                        setSelectedSubSubCategory("")
                     }}                       
                     >
                         Alla kategorier
@@ -135,8 +135,8 @@ export default function ProductFilters({
                                                     subSubCategoryId: null
                                                 }); 
                                                 setSelectedCategory(cat) 
-                                                setSelectedSubCategory(null) 
-                                                setSelectedSubSubCategory(null)                                          
+                                                setSelectedSubCategory("")
+                                                setSelectedSubSubCategory("")                                       
                                 }}
                             >
                                 {cat.name}
@@ -156,9 +156,10 @@ export default function ProductFilters({
                                                     categoryId: cat.id,
                                                     subCategoryId: isSubActive ? null :sc.id,
                                                     subSubCategoryId: null
-                                                });                                               
+                                                });   
+                                                setSelectedCategory(cat)                                            
                                                 setSelectedSubCategory(sc)
-                                                setSelectedSubSubCategory(null)
+                                                setSelectedSubSubCategory("")
                                             }}
                                         >                                          
                                             {sc.name}
@@ -177,6 +178,8 @@ export default function ProductFilters({
                                                             subCategoryId: sc.id,
                                                             subSubCategoryId: ss.id
                                                         })
+                                                        setSelectedCategory(cat) 
+                                                        setSelectedSubCategory(sc)
                                                         setSelectedSubSubCategory(ss)
                                                     }}
                                                 >
@@ -220,7 +223,7 @@ export default function ProductFilters({
                    </div>
            
 
-            <button id="reset-filter" onClick = {() =>                
+            <button id="reset-filter" onClick = {() => {               
                 updateFilter({
                 categoryId: null,
                 subCategoryId: null,
@@ -229,7 +232,11 @@ export default function ProductFilters({
                 brand: "",
                 name: "",
                 offer: false
-            })}>Rensa filter</button>
+            })
+            setSelectedCategory("")
+            setSelectedSubCategory("")
+            setSelectedSubSubCategory("")
+            }}>Rensa filter</button>
             
         </div>
     )
