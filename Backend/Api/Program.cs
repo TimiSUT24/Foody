@@ -279,13 +279,13 @@ namespace Api
                 options.KnownProxies.Clear();
             });
 
-            //Rate limiter
+            //Rate limiter global
             builder.Services.AddRateLimiter(options =>
             {
                 options.AddFixedWindowLimiter("fixed", opt =>
                 {
-                    opt.Window = TimeSpan.FromMinutes(1);
-                    opt.PermitLimit = 40;
+                    opt.Window = TimeSpan.FromSeconds(15);
+                    opt.PermitLimit = 100;
                     opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
                     opt.QueueLimit = 0;
                 });
