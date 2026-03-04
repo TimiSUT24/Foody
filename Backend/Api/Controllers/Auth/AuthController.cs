@@ -123,5 +123,14 @@ namespace Api.Controllers.Auth
                     accessToken = AccessToken,
                 });                  
         }
+
+        [AllowAnonymous]
+        [HttpGet("Ping")]
+        public Task<IActionResult> Ping()
+        {
+            return Task.FromResult<IActionResult>(Ok("Pong"));
+        }
+
+
     }
 }
