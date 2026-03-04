@@ -1,4 +1,4 @@
-# Foody
+# Foody [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/2gkgv.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
 Foody is a full-stack E-commerce system for home-delivered food. Built with .NET 8 and React
 
 # Tech Stack
