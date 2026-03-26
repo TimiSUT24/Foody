@@ -60,8 +60,7 @@ export default function RegisterPage(){
             <h1>Skapa ditt konto</h1>
             <form onSubmit={handleSubmit}>
 
-                <div className="register-row">
-                    <div className="register-row-input">
+                <div className="register-row">             
                         <h3 >Förnamn</h3>
                         <input 
                             type="text"
@@ -69,17 +68,14 @@ export default function RegisterPage(){
                             placeholder="Jan"
                             value={formData.firstName}
                             onChange={handleChange}/>
-                    </div>
-               
-                    <div  className="register-row-input">
+
                         <h3 >Efternamn</h3>
                         <input 
                             type="text"
                             name="lastName"
                             placeholder="Andersson"
                             value={formData.lastName} 
-                            onChange={handleChange}/>
-                    </div>
+                            onChange={handleChange}/>                 
                     
                 </div>
                 
