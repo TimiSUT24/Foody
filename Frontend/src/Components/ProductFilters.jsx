@@ -219,7 +219,7 @@ export default function ProductFilters({
                    
                    <div className="offer-div">                        
                         <input type="checkbox" id="offer-checkbox" checked={filters.offer} onChange={(e) => updateFilter({offer: e.target.checked})}/>
-                        <p style={{fontSize:14}}>Erbjudanden</p>
+                        <p>Erbjudanden</p>
                    </div>
            
 

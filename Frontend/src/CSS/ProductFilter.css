@@ -180,6 +180,14 @@
     -webkit-text-fill-color: black;
 }
 
+.filter-container button,
+.filter-container input,
+.filter-container select,
+.offer-div p{
+    font-size:16px;
+}
+
+
 .offer-div{
     display:flex;
     height:43px;
