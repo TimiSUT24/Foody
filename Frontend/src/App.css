@@ -1,9 +1,12 @@
 #root {
-  max-width: 1980px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
   font-family: "Roboto", sans-serif;
 }
+
+html, body, #root{
+  padding:0;
+  margin:0 auto;
+}
+
 
 
