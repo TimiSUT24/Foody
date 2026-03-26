@@ -53,3 +53,8 @@
     cursor: pointer;
 }
 
+@media (max-width: 1000px){
+    .login-page{
+        margin-top:120px;
+    }
+}
