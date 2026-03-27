@@ -129,9 +129,9 @@ export default function OrderDetails({ order, onBack }) {
                 ))}
             </div>
 
-              <div id="br-div"></div>
-
-             <div className="details-prices">
+            <div id="br-div"></div>
+            
+            <div className="details-prices">
                     
                     <div className="details-price">
                     <span >Delsumma:</span>
@@ -158,6 +158,10 @@ export default function OrderDetails({ order, onBack }) {
             </div>
 
             <div id="br-div"></div>
+
+            <div className="tracking-url">
+                <p>Spårnings länk: <a href={order.shippingItems.trackingUrl} target="_blank" rel="noopener noreferrer">{order.shippingItems.trackingUrl}</a></p>
+            </div>
 
             <div className="details-extra">
 

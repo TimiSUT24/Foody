@@ -96,6 +96,7 @@ function CompletePageContent() {
       setStatus(create.data.status);
       if(create.data.status === "succeeded"){
         clearCart();
+        alert("Du skickas snart till order bekräftelse sidan");
         setTimeout(() => {
           navigate("/thank-you-page")
         },3000)

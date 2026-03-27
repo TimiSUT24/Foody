@@ -38,6 +38,8 @@ export default function OrderThankYouPage(){
                 <PiPackage className="order-info-icon" />
                 <span className="order-info-text">
                   Snart börjar vi packa din order. Orderbekräftelse har skickats via mail.
+                  <br/>
+                  Spårningslänk hittar du vid order detaljer. 
                 </span>
               </div>
             </div>

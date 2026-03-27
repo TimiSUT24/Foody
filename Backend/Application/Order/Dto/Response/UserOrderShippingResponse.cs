@@ -12,6 +12,7 @@ namespace Application.Order.Dto.Response
         public string PostalCode { get; init; } = string.Empty;
         public string City { get; init; } = string.Empty;
         public string Adress { get; init; } = string.Empty;
-      
+        public string? TrackingUrl { get; init; } = string.Empty;
+
     }
 }

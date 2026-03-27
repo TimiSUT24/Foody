@@ -177,6 +177,23 @@
     justify-self: center;
 }
 
+.tracking-url{
+    display:flex;
+    width:100%;
+    margin:0 auto;
+    font-size:17px;
+}
+
+.tracking-url a{
+    text-decoration-line:underline;
+    -moz-text-decoration-line:underline;
+}
+
+.tracking-url p{
+    text-align: left;
+    padding-left:20px;
+}
+
 @media (max-width: 1055px){
     .order-details-content,
     .order-details,
