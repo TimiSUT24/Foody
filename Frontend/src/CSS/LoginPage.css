@@ -10,15 +10,19 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-    padding:20px;
+    padding-bottom:10px;
+    padding-top:10px;
 }
 
 .login-page h1{
     text-align: center;
+    padding:0;
 }
 
 .login-page h3{
+    width:90%;
     text-align: left;
+    justify-self: center;
 }
 
 .login-page form{
@@ -26,7 +30,7 @@
 }
 
 .login-page input{
-    width: 100%;
+    width: 90%;
     height:40px;
     border-radius: 10px;
     -webkit-border-radius: 8px;
@@ -39,7 +43,7 @@
 }
 
 .login-button{
-    width:100%;
+    width:90%;
     height:40px;
     margin-top:20px;
     background-color: rgba(15, 23, 42, 0.95);

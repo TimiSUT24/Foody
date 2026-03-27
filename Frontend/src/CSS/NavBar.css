@@ -97,11 +97,11 @@
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
-    margin-right:40px;
+    padding-right:20px;
   }
 
   .hamburger span {
-    width: 28px;
+    width:28px;
     height: 3px;
     background: whitesmoke;
     border-radius: 2px;
