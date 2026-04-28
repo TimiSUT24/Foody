@@ -53,7 +53,8 @@ export default function DetailsPage(){
 
     return (
         <div className="product-details">
-            <div className="category-breadcrumb">
+            <div className="product-details-container">
+                 <div className="category-breadcrumb">
                 <nav className="breadcrumb">
                     <Link to={`/?categoryId=${category?.id}`}>
                         {category?.mainCategory}
@@ -111,10 +112,10 @@ export default function DetailsPage(){
             <div className="product-extra-info">
             {/*if empty or null dont show p tags */}
             {productdetails.product.productInformation && <p><strong>ProduktInformation:</strong> {productdetails.product.productInformation}</p>}
-            {productdetails.product.country && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Land:</strong> {productdetails.product.country}</p>}
-            {productdetails.product.usage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Användning:</strong> {productdetails.product.usage}</p>}
-            {productdetails.product.allergens && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
-            {productdetails.product.storage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
+            {productdetails.product.country && <p><strong>Land:</strong> {productdetails.product.country}</p>}
+            {productdetails.product.usage && <p><strong>Användning:</strong> {productdetails.product.usage}</p>}
+            {productdetails.product.allergens && <p><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
+            {productdetails.product.storage && <p><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
 
                 {productdetails.nutrition?.length > 0 && (
                     <table className="product-nutrition"> 
@@ -145,8 +146,10 @@ export default function DetailsPage(){
                 </table>
                 )}
 
-                {productdetails.product.ingredients && <p style={{backgroundColor:"white",borderRadius:5,width:630,marginLeft:20,padding:10}}><strong>Ingredienser:</strong> {productdetails.product.ingredients}</p>}
+                {productdetails.product.ingredients && <p style={{backgroundColor:"white",borderRadius:5}}><strong>Ingredienser:</strong> {productdetails.product.ingredients}</p>}
             </div>
+
+            </div>        
         </div>
     )
 
