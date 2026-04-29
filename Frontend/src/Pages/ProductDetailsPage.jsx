@@ -83,18 +83,18 @@ export default function DetailsPage(){
             <hr style={{width:"100%",borderStyle:"solid",borderColor:"gray",opacity:"15%"}}/>
             <div id="product-info-price">
                 {productdetails.product.hasOffer ? (
-                        <div >
-                            <span style={{ textDecoration: "line-through", opacity: 0.6, paddingLeft:20, fontSize:18 }}>
+                        <div id="product-price-offer">
+                            <span style={{ textDecoration: "line-through", opacity: 0.6, fontSize:18 }}>
                                 {productdetails.product.price} {productdetails.product.currency}
                             </span>
-                            <span style={{ color: "red", marginLeft: 8, fontWeight:"bold", fontSize:18 }}>
+                            <span style={{ color: "red", marginLeft: 8, fontWeight:"bold", fontSize:18}}>
                                 {productdetails.product.finalPrice} {productdetails.product.currency} {productdetails.product.offerName}
                             </span>
                         </div>
                     ) : (
                         <p style={{fontWeight:"bold",fontSize:18}}>{productdetails.product.price}</p>
                     )}
-                <p>{productdetails.product.comparePrice}</p>    
+                <p style={{paddingLeft:10}}>{productdetails.product.comparePrice}</p>    
             </div>
             <p id="weightText">{productdetails.product.weightText}</p>  
              <hr style={{width:"100%",borderStyle:"solid",borderColor:"gray",opacity:"15%"}}/>

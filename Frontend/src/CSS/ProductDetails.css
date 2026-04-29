@@ -65,15 +65,10 @@
     text-align: left;
 }
 
-.product-info p, h1{
-    padding-left: 10px;
-}
-
 .product-attribute{
     display:flex;
     flex-wrap: wrap;
     gap:10px;
-    margin-left:10px;
     width: 100%;
 }
 
