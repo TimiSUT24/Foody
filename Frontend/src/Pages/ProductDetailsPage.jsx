@@ -53,7 +53,8 @@ export default function DetailsPage(){
 
     return (
         <div className="product-details">
-            <div className="category-breadcrumb">
+            <div className="product-details-container">
+                 <div className="category-breadcrumb">
                 <nav className="breadcrumb">
                     <Link to={`/?categoryId=${category?.id}`}>
                         {category?.mainCategory}
@@ -82,18 +83,18 @@ export default function DetailsPage(){
             <hr style={{width:"100%",borderStyle:"solid",borderColor:"gray",opacity:"15%"}}/>
             <div id="product-info-price">
                 {productdetails.product.hasOffer ? (
-                        <div >
-                            <span style={{ textDecoration: "line-through", opacity: 0.6, paddingLeft:20, fontSize:18 }}>
+                        <div id="product-price-offer">
+                            <span style={{ textDecoration: "line-through", opacity: 0.6, fontSize:18 }}>
                                 {productdetails.product.price} {productdetails.product.currency}
                             </span>
-                            <span style={{ color: "red", marginLeft: 8, fontWeight:"bold", fontSize:18 }}>
+                            <span style={{ color: "red", marginLeft: 8, fontWeight:"bold", fontSize:18}}>
                                 {productdetails.product.finalPrice} {productdetails.product.currency} {productdetails.product.offerName}
                             </span>
                         </div>
                     ) : (
                         <p style={{fontWeight:"bold",fontSize:18}}>{productdetails.product.price}</p>
                     )}
-                <p>{productdetails.product.comparePrice}</p>    
+                <p style={{paddingLeft:10}}>{productdetails.product.comparePrice}</p>    
             </div>
             <p id="weightText">{productdetails.product.weightText}</p>  
              <hr style={{width:"100%",borderStyle:"solid",borderColor:"gray",opacity:"15%"}}/>
@@ -111,10 +112,10 @@ export default function DetailsPage(){
             <div className="product-extra-info">
             {/*if empty or null dont show p tags */}
             {productdetails.product.productInformation && <p><strong>ProduktInformation:</strong> {productdetails.product.productInformation}</p>}
-            {productdetails.product.country && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Land:</strong> {productdetails.product.country}</p>}
-            {productdetails.product.usage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Användning:</strong> {productdetails.product.usage}</p>}
-            {productdetails.product.allergens && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
-            {productdetails.product.storage && <p style={{display:"flex", flexDirection:"column", gap:5}}><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
+            {productdetails.product.country && <p><strong>Land:</strong> {productdetails.product.country}</p>}
+            {productdetails.product.usage && <p><strong>Användning:</strong> {productdetails.product.usage}</p>}
+            {productdetails.product.allergens && <p><strong>Allergener:</strong> {productdetails.product.allergens}</p>}
+            {productdetails.product.storage && <p><strong>Förvaring:</strong> {productdetails.product.storage}</p>}
 
                 {productdetails.nutrition?.length > 0 && (
                     <table className="product-nutrition"> 
@@ -145,8 +146,10 @@ export default function DetailsPage(){
                 </table>
                 )}
 
-                {productdetails.product.ingredients && <p style={{backgroundColor:"white",borderRadius:5,width:630,marginLeft:20,padding:10}}><strong>Ingredienser:</strong> {productdetails.product.ingredients}</p>}
+                {productdetails.product.ingredients && <p style={{backgroundColor:"white",borderRadius:5}}><strong>Ingredienser:</strong> {productdetails.product.ingredients}</p>}
             </div>
+
+            </div>        
         </div>
     )
 
